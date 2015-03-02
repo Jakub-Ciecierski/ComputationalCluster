@@ -1,0 +1,5 @@
+h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Calculator\bin\Debug\Calculator.pdb
+h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Calculator\obj\Debug\Calculator.pdb
+h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Calculator\bin\Debug\Calculator.dll.config
+h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Calculator\bin\Debug\Calculator.dll
+h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Calculator\obj\Debug\Calculator.dll
