@@ -1,7 +1,0 @@
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\bin\Debug\StringCalculatorTest.dll
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\bin\Debug\StringCalculatorTest.pdb
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\bin\Debug\Calculator.pdb
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\obj\Debug\StringCalculatorTest.csprojResolveAssemblyReference.cache
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\obj\Debug\StringCalculatorTest.dll
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\obj\Debug\StringCalculatorTest.pdb
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\StringCalculatorTest\bin\Debug\Calculator.dll

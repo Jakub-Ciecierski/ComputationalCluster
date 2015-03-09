@@ -1,1 +1,0 @@
-h:\Windows7\Desktop\Semestr6\SE\StringCalculator\Test\obj\Debug\Test.csprojResolveAssemblyReference.cache

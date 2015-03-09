@@ -1,17 +1,17 @@
 \documentclass{article}
 
-\usepackage{pdfpages}
 \usepackage{enumerate}
+\usepackage{enumitem}
 
 \begin{document}
 
 \vspace*{3ex}
 \begin{flushright}
-{\large 12 January 2015}
+{\bf \large 12 January 2015}
 \end{flushright}
 
 \begin{flushleft}
-{\large Jakub Ciecierski\\
+{ \bf \large Jakub Ciecierski\\
 Bartlomiej Dybisz \\
 Lukasz Wojcik\\
 Karol Korczak\\
@@ -22,115 +22,183 @@ Karol Korczak\\
 
 \begin{center}
 
-\Large {\bf Computational Cluster}
+\Large {\bf Universal Computational Cluster}
 
 \vskip2ex
 
-{\large Start up documentation}
+{\bf \large Start up documentation}
 
 \end{center}
 
 \vskip20ex
 
+\newpage
+
 \section{Methodology and technology }
-Agile
+We choose Agile development to provide a regular and iterative work flow. \\
 \\
-.Net C\#
+For technology we have chosen .NET C\#, a powerful tool which we would like to explore even further.
 
 
 \section{Schedule of tasks}
-	{\large Stage 1 Communication. Deadline 31.03 \\}
-	Progress meetings 16.03, 23.03
 
-\begin{enumerate}
-	Stage 1.1 Progress meeting 16.03
-		\item Communication Server Lukasz
-		\begin{itemize}
-				\item Registering, computational node,
-				 task manager.
-				 \item Updating their states (keeping alive / removal)			
-		\end{itemize}
-		
-		\item Computational node, Task manager, Client Karol
-		\begin{itemize}
-				\item Scheme of classes
-				\item Client input mechanism
-		\end{itemize}		
+\begin{itemize}
+{\item \large \bf Stage 1: Communication \\ \\ 
+	Deadline 31.03 \\
+	Progress meetings (within the team) 16.03, 23.03 }
+	
+	\begin{itemize}
 
-
-		\item Communication protocol - Kuba 6h
-		\begin{itemize}
-				\item appropriate API
-				\item Classes of messages and problems	
-		\end{itemize}
-
-
-		\item Network Bartek
-		\begin{itemize}
-				\item TCP/IP connection
-				\item Listening to given port
-				\item Establishing connection
-		\end{itemize}
-
-
-		\item Testing - All
-		\begin{itemize}
-				\item TCP/IP connection
-				\item Listening to given port
-				\item Establishing connection
-		\end{itemize}		
-					
-\end{enumerate}
-
-Stage 1 Deadline 31.03\\
-Communication
-
-Stage 1.1 First meeting 16-17.03 Initial progress
-		Last meeting 23.03 Stage 1.1 final solution
+			{\item \large \bf Stage 1.1: Internal Deadline: 16.03 }
 			
-	
-5) Bartek + Kuba 2h
-	suit msg protocol to send msg's in xml format
-	
-6) All 2h
-	Testing
+			\begin{enumerate}
+			
+					{\bf \item Communication Server. (Lukasz) }
+					\begin{itemize} [label=$\bullet$]
+							\item Registering: computational node,
+							 task manager.
+							\item Updating states of nodes (keeping alive / removal).		
+					\end{itemize}
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+					
+					{\bf \item Computational node, Task manager, Client. (Karol)}
+					\begin{itemize} [label=$\bullet$]
+							\item Scheme of classes.
+							\item Client input mechanism.
+					\end{itemize}		
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Communication protocol. (Jakub)}
+					\begin{itemize} [label=$\bullet$]
+							\item Appropriate API.
+							\item Classes of messages and problems	.
+					\end{itemize}
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Network. (Bartek) }
+					\begin{itemize} [label=$\bullet$]
+							\item TCP/IP connection.
+							\item Listening to given port.
+							\item Establishing connection.
+					\end{itemize}
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Testing. (All) \\}
+					Time Required: 2h \\ 
+					Actual Time Spent: \\
+										
+			\end{enumerate}
+			
+			\newpage
+			
+			{\item \large \bf Stage 1.2: Internal Deadline: 23.03 \\ }
+			\begin{enumerate}
+			
+					{\bf \item Communication Server. (Lukasz) }
+					\begin{itemize} [label=$\bullet$]
+							\item Queueing of Messages.
+							\item Receiving problems from CC.
+							\item Sending problems to TM, CN.
+							\item Receiving solutions from TM, CN	.
+					\end{itemize}
+					Time Required: 12h \\ 
+					Actual Time Spent: \\
+					
+					{\bf \item Computational node, Task manager, Client. (Karol)}
+					\begin{itemize} [label=$\bullet$]
+							\item Registering to server.
+							\item Sending problems/solutions to server.
+					\end{itemize}		
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Communication protocol. (Jakub)}
+					\begin{itemize} [label=$\bullet$]
+							\item Handling messages. Creating Appropriate classes
+					\end{itemize}
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Network. (Bartek) }
+					\begin{itemize} [label=$\bullet$]
+							\item Failures, Closure
+					\end{itemize}
+					Time Required: 8h \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Testing. (All) \\}
+					Time Required: 2h \\ 
+					Actual Time Spent: \\
+										
+			\end{enumerate}
+			
+			\newpage
+			
+			{\item \large \bf Stage 1.3: Internal Deadline: 30.03 \\ }
+			\begin{enumerate}
+			
+					{\bf \item Communication Server. (Lukasz) }
+					\begin{itemize} [label=$\bullet$]
+							\item Any additional tasks
+					\end{itemize}
+					Time Required: \\ 
+					Actual Time Spent: \\
+					
+					{\bf \item Computational node, Task manager, Client. (Karol)}
+					\begin{itemize} [label=$\bullet$]
+							\item Any additional tasks
+					\end{itemize}		
+					Time Required: \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Communication protocol. (Jakub)}
+					\begin{itemize} [label=$\bullet$]
+							\item Any additional tasks
+					\end{itemize}
+					Time Required: \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Network. (Bartek) }
+					\begin{itemize} [label=$\bullet$]
+							\item Any additional tasks
+					\end{itemize}
+					Time Required: \\ 
+					Actual Time Spent: \\
+			
+			
+					{\bf \item Testing. (All) \\}
+					Time Required: 2h \\ 
+					Actual Time Spent: \\
+										
+			\end{enumerate}
+
+	\end{itemize}
+
+	\newpage
+
+{\item \large \bf Stage 2: Algorithm \\ \\
+	Deadline 28.04 \\
+	Progress meetings (within the team) 12.04, 25.03 \\}
 
 
-Stage 1.2
-Progress meeting 29-30.03
-1) CServer Lukasz  12h
-	Queueing of msg, 
-	Receing problems from CC
-	Sending problems to TM, CN
-	Receing solutions from TM, CN
-	Keep tabs on nodes (Status)
-
-2) CN, TM, CC - Karol	6h
-	Registering to Server
-	Sending problems/solutions to Server
-	
-3) Communication protocol - JC
-	Detailed classes for msg'es
-	Reading msgs
-
-4) Network - Bartek
-	Failures, Closure
-		
-5) Testing
-
-Stage 1.3
-1) CServer Lukasz 
-	Failures, Closure, Init
-2) All Testing
-
-Stage 2
-Algorithm
-
-\section{Schedule and assignment of tasks }
-
-\section{Milestones }
+{\item \large \bf Stage 3: Testing All functionalities \\ \\
+	Deadline 02.06 \\
+	Progress meetings (within the team) \\}
 
 
+\end{itemize}
 
 
 \end{document}
