@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Status xmlns="http://www.mini.pw.edu.pl/ucc/"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="Status.xsd">
+  <Id>12</Id>
+  <Threads>
+    <Thread>
+      <State>Idle</State>
+    </Thread>
+    <Thread>
+      <State>Idle</State>
+    </Thread>
+    <Thread>
+      <State>Busy</State>
+      <HowLong>1244656</HowLong>
+      <ProblemInstanceId>1212</ProblemInstanceId>
+      <TaskId>123</TaskId>
+      <ProblemType>TSP</ProblemType>
+    </Thread>
+  </Threads>
+</Status>

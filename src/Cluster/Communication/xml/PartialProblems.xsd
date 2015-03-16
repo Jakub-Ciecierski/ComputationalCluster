@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" 
+           targetNamespace="http://www.mini.pw.edu.pl/ucc/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="SolvePartialProblems">
+  <xs:complexType>
+    <xs:sequence>
+      <!-- the problem type name as given by TaskSolver and Client -->
+      <xs:element name="ProblemType" type="xs:string" />
+      <!-- the ID of the problem instance assigned by the server -->
+      <xs:element name="Id" type="xs:unsignedLong" />
+      <!-- the data to be sent to all Computational Nodes -->
+      <xs:element name="CommonData" type="xs:base64Binary" />
+      <!-- optional time limit – set by Client (in ms) -->
+      <xs:element minOccurs="0" name="SolvingTimeout" type="xs:unsignedLong" />
+      <xs:element name="PartialProblems">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" name="PartialProblem">
+              <xs:complexType>
+                <xs:sequence>
+                  <!-- Id of subproblem given by TaskManager -->
+                  <xs:element name="TaskId" type="xs:unsignedLong" />
+                  <!-- Data specific for the given subproblem -->
+                  <xs:element name="Data" type="xs:base64Binary" />
+                  <!-- the ID of the TM that is dividing the problem -->
+                  <xs:element name="NodeID" type="xs:unsignedLong" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>

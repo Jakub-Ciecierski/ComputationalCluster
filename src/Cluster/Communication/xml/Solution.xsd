@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"  targetNamespace="http://www.mini.pw.edu.pl/ucc/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Solutions">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- the problem type name as given by TaskSolver and Client -->
+        <xs:element name="ProblemType" type="xs:string" />
+        <!-- the ID of the problem instance assigned by the server -->
+        <xs:element name="Id" type="xs:unsignedLong" />
+        <!-- common data which was previously sent to all Computational Nodes (possibly could be stored on server as TaskManagers could have changed) -->
+        <xs:element minOccurs="0" name="CommonData" type="xs:base64Binary" />
+        <xs:element name="Solutions">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="Solution">
+                <xs:complexType>
+                  <xs:sequence>
+                    <!-- Id of subproblem given by TaskManager – no TaskId for final/merged solution -->
+                    <xs:element minOccurs="0" name="TaskId" type="xs:unsignedLong" />
+                    <!-- Indicator that the computations ended because of timeout -->
+                    <xs:element name="TimeoutOccured" type="xs:boolean" />
+                    <!-- Information about the status of result (Partial/Final) or status of computations (Ongoing) -->
+                    <xs:element name="Type">
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:enumeration value="Ongoing" />
+                          <xs:enumeration value="Partial" />
+                          <xs:enumeration value="Final" />
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <!-- Total amount of time used by all threads in system for computing the solution / during the ongoing computations (in ms) -->
+                    <xs:element name="ComputationsTime" type="xs:unsignedLong" />
+                    <!-- Solution data -->
+                    <xs:element name="Data" minOccurs="0" type="xs:base64Binary" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

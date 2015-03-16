@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Register xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.mini.pw.edu.pl/ucc/">
+  <Type>TaskManager</Type>
+  <SolvableProblems>
+    <ProblemName>TSP</ProblemName>
+    <ProblemName>GraphColoring</ProblemName>
+  </SolvableProblems>
+  <ParallelThreads>3</ParallelThreads>
+  <Deregister>true</Deregister>
+  <Id>5</Id>
+</Register>

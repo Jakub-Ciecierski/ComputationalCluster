@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<NoOperation xmlns="http://www.mini.pw.edu.pl/ucc/"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="NoOperation.xsd">
+  <BackupCommunicationServers>
+    <BackupCommunicationServer address="192.168.100.1" port="65535" />
+  </BackupCommunicationServers>
+</NoOperation>

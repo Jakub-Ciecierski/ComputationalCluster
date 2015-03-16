@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cluster", "Cluster\Cluster.csproj", "{EF194A4D-5398-4764-BD92-9515449296C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{1D383821-18EA-4332-9B71-CD3F0B84B6D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCluster", "TestCluster\TestCluster.csproj", "{B6FD3A9F-1A78-430A-B895-D58919F8E81A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF194A4D-5398-4764-BD92-9515449296C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF194A4D-5398-4764-BD92-9515449296C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF194A4D-5398-4764-BD92-9515449296C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF194A4D-5398-4764-BD92-9515449296C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D383821-18EA-4332-9B71-CD3F0B84B6D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D383821-18EA-4332-9B71-CD3F0B84B6D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D383821-18EA-4332-9B71-CD3F0B84B6D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D383821-18EA-4332-9B71-CD3F0B84B6D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FD3A9F-1A78-430A-B895-D58919F8E81A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FD3A9F-1A78-430A-B895-D58919F8E81A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FD3A9F-1A78-430A-B895-D58919F8E81A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FD3A9F-1A78-430A-B895-D58919F8E81A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

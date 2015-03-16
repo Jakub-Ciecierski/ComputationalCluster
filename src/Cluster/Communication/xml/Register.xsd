@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.mini.pw.edu.pl/ucc/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Register">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- defines the type of node (either TM, CN or CS) -->
+        <xs:element name="Type">
+          <xs:simpleType>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="TaskManager" />
+              <xs:enumeration value="ComputationalNode" />
+              <xs:enumeration value="CommunicationServer" />
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:element>
+        <!-- gives the list of names of the problems which could be solved (probably sth like DVRP-[group no.]) -->
+        <xs:element name="SolvableProblems">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element  minOccurs="0" maxOccurs="unbounded" name="ProblemName" 					type="xs:string" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <!-- the number of threads that could be efficiently run in parallel -->
+        <xs:element name="ParallelThreads" type="xs:unsignedByte" />
+        <!-- OPTIONAL when used to inform Backup Server of the need to remove element should be set to true -->
+        <xs:element name="Deregister" type="xs:boolean" minOccurs="0" />
+        <!-- OPTIONAL when used to inform Backup Server of the need
+        to add/remove element should be set to ID given by main server -->
+        <xs:element name="Id" type="xs:unsignedLong" minOccurs="0" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

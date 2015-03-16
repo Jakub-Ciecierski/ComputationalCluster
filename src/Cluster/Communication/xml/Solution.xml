@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Solutions xmlns="http://www.mini.pw.edu.pl/ucc/"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="Solution.xsd">
+  <ProblemType>TSP</ProblemType>
+  <Id>12</Id>
+  <CommonData>
+    SWRlYWx5IHNhIGphayBnd2lhemR5IC0gbmllIG1vem5hIGljaCBvc2lhZ25hYywgYWxlIG1v
+    em5hIHNpZSBuaW1pIGtpZXJvd2FjLg0K
+  </CommonData>
+  <Solutions>
+    <Solution>
+      <TaskId>123</TaskId>
+      <TimeoutOccured>false</TimeoutOccured>
+      <Type>Final</Type>
+      <ComputationsTime>12334</ComputationsTime>
+      <Data>
+        SWRlYWx5IHNhIGphayBnd2lhemR5IC0gbmllIG1vem5hIGljaCBvc2lhZ25hYywgYWxlIG1v
+        em5hIHNpZSBuaW1pIGtpZXJvd2FjLg0K
+      </Data>
+    </Solution>
+  </Solutions>
+  
+</Solutions>

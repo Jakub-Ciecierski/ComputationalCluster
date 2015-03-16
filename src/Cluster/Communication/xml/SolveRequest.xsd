@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"  targetNamespace="http://www.mini.pw.edu.pl/ucc/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:element name="SolveRequest">
+  <xs:complexType>
+    <xs:sequence>
+      <!-- the name of the type as given by TaskSolver -->
+      <xs:element name="ProblemType" type="xs:string" />
+      <!-- the optional time restriction for solving the problem (in ms) -->
+      <xs:element minOccurs="0" name="SolvingTimeout" type="xs:unsignedLong" />
+      <!-- the serialized problem data -->
+      <xs:element name="Data" type="xs:base64Binary" />
+      <!-- the ID of the problem instance assigned by the server -->
+      <xs:element name="Id" type="xs:unsignedLong" minOccurs="0" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+</xs:schema>
