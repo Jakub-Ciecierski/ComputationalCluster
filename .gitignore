@@ -5,3 +5,4 @@
 /src/Cluster/Communication/obj/Debug
 /src/Cluster/TestCluster/bin/Debug
 /src/Cluster/TestCluster/obj/Debug
+/src/Cluster/*.suo
