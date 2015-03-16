@@ -61,7 +61,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="xml_samples\register.xml">
+    <Content Include="xml_samples\DivideProblem.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml_samples\NoOperation.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml_samples\Register.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml_samples\RegisterResponse.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="xml_samples\SolutionRequest.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -12,31 +12,52 @@ namespace Communication
     public abstract class Message
     {
         /// <summary>
-        /// Serializes this message class to xml string with defualt UTF8 encoding
+        /// Serializes this object to xml string with defualt UTF8 encoding
         /// </summary>
         /// <returns> Xml in string </returns>
         public string ToXmlString()
         {
             return serializeToXmlString(Encoding.UTF8);
         }
+
         /// <summary>
-        /// Serializes this message class to xml string with given encoding
+        /// Serializes this object to xml string with given encoding
         /// </summary>
-        /// <param name="encoding">Encoding for the xml file</param>
-        /// <returns> Xml in string</returns>
+        /// <param name="encoding">
+        ///     Encoding for the xml file
+        /// </param>
+        /// <returns> 
+        ///     Xml in string
+        /// </returns>
         public string ToXmlString(Encoding encoding)
         {
             return serializeToXmlString(encoding);
         }
 
-        public void ToXmlFile(string filename)
+        /// <summary>
+        ///     Creates a xml file from this object
+        /// </summary>
+        /// <param name="filepath">
+        ///     The path to the xml file to be created
+        /// </param>
+        public void ToXmlFile(string filepath)
         {
             XmlSerializer serializer = new XmlSerializer(this.GetType());
-            TextWriter textWriter = new StreamWriter(filename);
+            TextWriter textWriter = new StreamWriter(filepath);
             serializer.Serialize(textWriter, this);
             textWriter.Close();
         }
 
+        /// <summary>
+        ///     Serializes this object to xml string.
+        ///     Used in ToXmlString()
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding for the xml
+        /// </param>
+        /// <returns>
+        ///     xml in string
+        /// </returns>
         private string serializeToXmlString(Encoding encoding) 
         {
             XmlSerializer serializer = new XmlSerializer(this.GetType());
