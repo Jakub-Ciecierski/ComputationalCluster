@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SolvePartialProblems xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.mini.pw.edu.pl/ucc/">
+  <ProblemType>TSP</ProblemType>
+  <Id>12</Id>
+  <CommonData>ARcZAgUFBQUCGlc=</CommonData>
+  <SolvingTimeout>1000</SolvingTimeout>
+  <PartialProblems>
+    <PartialProblem>
+      <TaskId>123</TaskId>
+      <Data>GPwGKzlY</Data>
+      <NodeID>1</NodeID>
+    </PartialProblem>
+    <PartialProblem>
+      <TaskId>321</TaskId>
+      <Data>GPwGKzlY</Data>
+      <NodeID>2</NodeID>
+    </PartialProblem>
+  </PartialProblems>
+</SolvePartialProblems>

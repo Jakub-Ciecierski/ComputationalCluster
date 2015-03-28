@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication
+namespace Communication.MessageComponents
 {
     public partial class BackupCommunicationServer
     {
@@ -15,6 +15,13 @@ namespace Communication
             this.address = address;
             this.port = port;
             this.portSpecified = true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            BackupCommunicationServer server = obj as BackupCommunicationServer;
+
+            return (address == server.address && port == server.port);
         }
     }
 }

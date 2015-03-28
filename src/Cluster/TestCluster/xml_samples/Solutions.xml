@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Solutions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.mini.pw.edu.pl/ucc/">
+  <ProblemType>TSP</ProblemType>
+  <Id>12</Id>
+  <CommonData>ARcZAgUFBQUCGlc=</CommonData>
+  <Solutions>
+    <Solution>
+      <TaskId>123</TaskId>
+      <TimeoutOccured>false</TimeoutOccured>
+      <Type>Final</Type>
+      <ComputationsTime>12334</ComputationsTime>
+      <Data>GPwGKzlY</Data>
+    </Solution>
+    <Solution>
+      <TaskId>321</TaskId>
+      <TimeoutOccured>true</TimeoutOccured>
+      <Type>Ongoing</Type>
+      <ComputationsTime>43321</ComputationsTime>
+      <Data>GBkGAwcI</Data>
+    </Solution>
+  </Solutions>
+</Solutions>

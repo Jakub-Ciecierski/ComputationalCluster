@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Communication.Messages
 {
@@ -15,6 +17,9 @@ namespace Communication.Messages
     /// </summary>
     public partial class DivideProblemMessage : Message
     {
+        // Specifies the name of element as presented in xml file
+        public const string ELEMENT_NAME = "DivideProblem";
+
         private DivideProblemMessage() { }
 
         /// <summary>
@@ -42,6 +47,33 @@ namespace Communication.Messages
             Data = data;
             ComputationalNodes = nodesCount;
             NodeID = nodeId;
+        }
+
+
+        /// <summary>
+        ///     Construct an object message from input xml
+        /// </summary>
+        /// <param name="xmlString">
+        ///     xml for which the object should be created
+        /// </param>
+        /// <returns>
+        ///     Deserialized object
+        /// </returns>
+        public static DivideProblemMessage Construct(string xmlString)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(DivideProblemMessage)); ;
+            StringReader strReader = new StringReader(xmlString);
+
+            return (DivideProblemMessage)serializer.Deserialize(strReader);
+        }
+        public override bool Equals(object obj)
+        {
+            DivideProblemMessage message = obj as DivideProblemMessage;
+
+            return (Id == message.Id && ProblemType == message.ProblemType &&
+                             Enumerable.SequenceEqual(Data, message.Data) &&
+                             ComputationalNodes == message.ComputationalNodes &&
+                             NodeID == message.NodeID);
         }
     }
 }

@@ -9,24 +9,24 @@ using System.Xml.Serialization;
 namespace Communication.Messages
 {
     /// <summary>
-    /// Solution Request message is sent from the CC in order to check whether 
-    /// the cluster has successfully computed the solution.
-    /// It allows CC to be shut down and disconnected 
-    /// from server during computations.
+    /// Solve Request Response message is sent by CS to CC 
+    /// as an answer for the Solve Request. It provides CC
+    /// with unique identifier of the problem instance.
     /// </summary>
-    public partial class SolutionRequestMessage
+    public partial class SolveRequestResponseMessage : Message
     {
         // Specifies the name of element as presented in xml file
-        public const string ELEMENT_NAME = "SolutionRequest";
+        public const string ELEMENT_NAME = "SolveRequestResponse";
 
-        private SolutionRequestMessage() { }
+        private SolveRequestResponseMessage() { }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="id">
-        ///     the ID of the problem instance assigned by the server
+        ///     The ID of the problem instance assigned by the server
         /// </param>
-        public  SolutionRequestMessage(ulong id) 
+        public SolveRequestResponseMessage(ulong id) 
         {
             Id = id;
         }
@@ -40,20 +40,18 @@ namespace Communication.Messages
         /// <returns>
         ///     Deserialized object
         /// </returns>
-        public static SolutionRequestMessage Construct(string xmlString)
+        public static SolveRequestResponseMessage Construct(string xmlString)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(SolutionRequestMessage)); ;
+            XmlSerializer serializer = new XmlSerializer(typeof(SolveRequestResponseMessage));;
             StringReader strReader = new StringReader(xmlString);
 
-            return (SolutionRequestMessage)serializer.Deserialize(strReader);
+            return (SolveRequestResponseMessage)serializer.Deserialize(strReader);
         }
 
         public override bool Equals(object obj)
         {
-            SolutionRequestMessage message = obj as SolutionRequestMessage;
-
-
-            return (Id == message.Id);
+            SolveRequestResponseMessage message = obj as SolveRequestResponseMessage;
+            return Id == message.Id;
         }
     }
 }

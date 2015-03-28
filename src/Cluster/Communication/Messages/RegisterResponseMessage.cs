@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Communication.MessageComponents;
+using System.Xml.Serialization;
+using System.IO;
 
 namespace Communication.Messages
 {
@@ -13,6 +16,9 @@ namespace Communication.Messages
     /// </summary>
     public partial class RegisterResponseMessage
     {
+        // Specifies the name of element as presented in xml file
+        public const string ELEMENT_NAME = "RegisterResponse";
+
         private RegisterResponseMessage() { }
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace Communication.Messages
         ///     The communication timeout configured on Communication Server
         /// </param>
         /// <param name="backupServer">
-        ///     Backup servers
+        ///     The list of Backup servers
         /// </param>
         public RegisterResponseMessage(ulong id, uint timeout, BackupCommunicationServer[] backupServers)
         {
@@ -55,6 +61,30 @@ namespace Communication.Messages
             Timeout = timeout;
 
             BackupCommunicationServers = backupServers;
+        }
+
+        /// <summary>
+        ///     Construct an object message from input xml
+        /// </summary>
+        /// <param name="xmlString">
+        ///     xml for which the object should be created
+        /// </param>
+        /// <returns>
+        ///     Deserialized object
+        /// </returns>
+        public static RegisterResponseMessage Construct(string xmlString)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(RegisterResponseMessage)); ;
+            StringReader strReader = new StringReader(xmlString);
+
+            return (RegisterResponseMessage)serializer.Deserialize(strReader);
+        }
+
+        public override bool Equals(object obj)
+        {
+            RegisterResponseMessage message = obj as RegisterResponseMessage;
+
+            return (Id == message.Id && Enumerable.SequenceEqual(BackupCommunicationServers, message.BackupCommunicationServers));
         }
     }
 }

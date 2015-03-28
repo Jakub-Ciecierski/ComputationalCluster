@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Communication.Messages;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,45 @@ namespace Communication
 {
     public abstract class Message
     {
+        /// <summary>
+        ///     Serializes this object to xml string.
+        ///     Used in ToXmlString()
+        /// </summary>
+        /// <param name="encoding">
+        ///     Encoding for the xml
+        /// </param>
+        /// <returns>
+        ///     xml in string
+        /// </returns>
+        private string serializeToXmlString(Encoding encoding)
+        {
+            XmlSerializer serializer = new XmlSerializer(this.GetType());
+
+            // create a MemoryStream here, we are just working
+            // exclusively in memory
+            Stream stream = new MemoryStream();
+
+            // The XmlTextWriter takes a stream and encoding
+            // as one of its constructors
+            XmlTextWriter xtWriter = new XmlTextWriter(stream, encoding);
+
+            serializer.Serialize(xtWriter, this);
+
+            xtWriter.Flush();
+
+            // go back to the beginning of the Stream to read its contents
+            stream.Seek(0, System.IO.SeekOrigin.Begin);
+
+            // read back the contents of the stream and supply the encoding
+            StreamReader reader = new StreamReader(stream, encoding);
+
+            string xmlStr = reader.ReadToEnd();
+
+            xtWriter.Close();
+
+            return xmlStr;
+        }
+
         /// <summary>
         /// Serializes this object to xml string with defualt UTF8 encoding
         /// </summary>
@@ -49,42 +89,23 @@ namespace Communication
         }
 
         /// <summary>
-        ///     Serializes this object to xml string.
-        ///     Used in ToXmlString()
+        ///     Reads xml's header and returns its name (name of the first element)
         /// </summary>
-        /// <param name="encoding">
-        ///     Encoding for the xml
+        /// <param name="xmlString">
+        ///     The xml to be parsed
         /// </param>
         /// <returns>
-        ///     xml in string
+        ///     name of the xml
         /// </returns>
-        private string serializeToXmlString(Encoding encoding) 
+        public static string GetName(string xmlString)
         {
-            XmlSerializer serializer = new XmlSerializer(this.GetType());
+            // Read the first element
+            XmlReader reader = XmlReader.Create(new StringReader(xmlString));
+            while (reader.NodeType != XmlNodeType.Element)
+                reader.Read();
+            string name = reader.Name;
 
-            // create a MemoryStream here, we are just working
-            // exclusively in memory
-            Stream stream = new MemoryStream();
-
-            // The XmlTextWriter takes a stream and encoding
-            // as one of its constructors
-            XmlTextWriter xtWriter = new XmlTextWriter(stream, encoding);
-
-            serializer.Serialize(xtWriter, this);
-
-            xtWriter.Flush();
-
-            // go back to the beginning of the Stream to read its contents
-            stream.Seek(0, System.IO.SeekOrigin.Begin);
-
-            // read back the contents of the stream and supply the encoding
-            StreamReader reader = new StreamReader(stream, encoding);
-
-            string xmlStr = reader.ReadToEnd();
-
-            xtWriter.Close();
-
-            return xmlStr;
+            return name;
         }
     }
 }

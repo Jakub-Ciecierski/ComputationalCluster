@@ -39,27 +39,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackupCommunicationServer.cs" />
-    <Compile Include="BackupCommunicationServer.scheme.cs" />
+    <Compile Include="MessageComponents\BackupCommunicationServer.cs" />
+    <Compile Include="MessageComponents\BackupCommunicationServer.scheme.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Messages\DivideProblemMessage.cs" />
     <Compile Include="Messages\DivideProblemMessage.scheme.cs" />
     <Compile Include="Messages\NoOperationMessage.scheme.cs" />
-    <Compile Include="Messages\NoOperationMessagecs.cs" />
+    <Compile Include="Messages\NoOperationMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.cs" />
     <Compile Include="Messages\SolutionsMessage.cs" />
     <Compile Include="Messages\SolutionRequestMessage.cs" />
+    <Compile Include="Messages\SolvePartialProblemsMessage.cs" />
     <Compile Include="Messages\SolvePartialProblemsMessage.scheme.cs" />
     <Compile Include="Messages\RegisterMessage.scheme.cs" />
     <Compile Include="Messages\RegisterMessage.cs" />
     <Compile Include="Messages\RegisterResponseMessage.scheme.cs" />
     <Compile Include="Messages\SolutionsMessage.scheme.cs" />
     <Compile Include="Messages\SolutionRequestMessage.scheme.cs" />
+    <Compile Include="Messages\SolveRequestMessage.cs" />
     <Compile Include="Messages\SolveRequestMessage.scheme.cs" />
     <Compile Include="Messages\SolveRequestResponseMessage.scheme.cs" />
+    <Compile Include="Messages\StatusMessage.cs" />
     <Compile Include="Messages\StatusMessage.scheme.cs" />
+    <Compile Include="MessageComponents\PartialProblem.cs" />
+    <Compile Include="MessageComponents\PartialProblem.scheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Solution.cs" />
+    <Compile Include="MessageComponents\Solution.cs" />
+    <Compile Include="MessageComponents\Solution.scheme.cs" />
+    <Compile Include="Messages\SolveRequestResponseMessage.cs" />
+    <Compile Include="MessageComponents\StatusThread.cs" />
+    <Compile Include="MessageComponents\StatusThread.scheme.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
