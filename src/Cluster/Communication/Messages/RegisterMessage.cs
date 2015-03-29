@@ -81,8 +81,6 @@ namespace Communication.Messages
             DeregisterSpecified = true;
             IdSpecified = true;
 
-            if (Type == type)
-                ;
         }
 
         /// <summary>
