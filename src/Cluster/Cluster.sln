@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30324.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cluster", "Cluster\Cluster.csproj", "{EF194A4D-5398-4764-BD92-9515449296C9}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Network\Network.csproj", "{4FA31245-FF9C-4216-BB29-A1E612E8530E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer", "CommunicationServer\CommunicationServer.csproj", "{7803A0DA-8639-4BC4-9F96-3486460493AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode", "ComputationalNode\ComputationalNode.csproj", "{2ADF8E1A-5A96-441B-98B1-27644971357A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7803A0DA-8639-4BC4-9F96-3486460493AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7803A0DA-8639-4BC4-9F96-3486460493AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7803A0DA-8639-4BC4-9F96-3486460493AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -107,5 +107,10 @@ namespace Communication.Messages
             return (Deregister = message.Deregister && Id == message.Id &&
                 Enumerable.SequenceEqual(SolvableProblems, message.SolvableProblems) && Type == message.Type);
         }
+
+        public override string ToString()
+        {
+            return "Type: " + Type + "\n" + "Paraller Threads :#" + ParallelThreads + "\n" + SolvableProblems.ToString();
+        }
     }
 }

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Network
 {
-    public class Listener
+    public class NetworkClient
     {
-        private TcpListener listener = null;
+        private TcpClient client = null;
 
         public Socket socket = null;
 
@@ -33,7 +33,7 @@ namespace Network
         }
 
         /// <summary>
-        /// Creates a Tcp Server object
+        /// Creates a tcp client
         /// </summary>
         /// <param name="address">
         ///     Address of the server
@@ -41,45 +41,75 @@ namespace Network
         /// <param name="port">
         ///     Port to listen to
         /// </param>
-        public Listener(IPAddress address, int port)
+        public NetworkClient(IPAddress address, int port)
         {
             this.address = address;
             this.port = port;
         }
 
+        /// <summary>
+        ///     Gets the socket
+        /// </summary>
         public void StartSocket()
         {
-            if(listener == null)
-                throw new NullReferenceException("Open Connection before starting socket");
-            socket = listener.AcceptSocket();
+            if(client == null)
+                throw new NullReferenceException("Connect to server before starting socket");
+            socket = client.Client;
         }
 
+        /// <summary>
+        ///     Closes the socket
+        /// </summary>
         public void CloseSocket()
         {
-            if(socket != null)
+            if (socket != null)
                 socket.Close();
         }
 
         /// <summary>
-        ///     Opens a Tcp Listener
+        ///     TODO Exception handler
+        ///     Connects to server
         /// </summary>
-        public void OpenConnection()
+        public void Connect()
         {
-            listener = new TcpListener(address, port);
-            listener.Start();
+            client = new TcpClient();
+            client.Connect(address, port);
         }
 
         /// <summary>
-        ///     Closes a Tcp Listener
+        ///     Disconnects, closes socket if one was connected
         /// </summary>
-        public void Close()
+        public void Disconnect()
         {
-            if (listener != null)
+            if (client != null)
             {
                 if (socket != null)
                     socket.Close();
-                listener.Stop();
+                client.Close();
             }
+        }
+
+        /// <summary>
+        ///     Receive next message
+        /// </summary>
+        /// <returns>
+        ///     Received message in string
+        /// </returns>
+        public string Receive()
+        {
+            if (client == null || socket == null)
+                throw new NullReferenceException("Connect and Open socket before calling Receive()");
+
+            byte[] sizeReceiveByte = new byte[sizeof(Int32)];
+            socket.Receive(sizeReceiveByte, sizeof(Int32), 0);
+            int sizeReceive = BitConverter.ToInt32(sizeReceiveByte, 0);
+
+            byte[] contentReceive = new byte[sizeReceive];
+            socket.Receive(contentReceive, sizeReceive, SocketFlags.None);
+
+            string message = System.Text.Encoding.UTF8.GetString(contentReceive);
+
+            return message;
         }
 
         public void Send(string message)

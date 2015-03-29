@@ -29,10 +29,10 @@ namespace TestCluster
             IPAddress address = IPAddress.Parse(localhost);
             int port = 5555;
 
-            Listener server = new Listener(address, port);
+            NetworkListener server = new NetworkListener(address, port);
             server.OpenConnection();
             // connect client
-            Client client = new Client(address, port);
+            NetworkClient client = new NetworkClient(address, port);
             client.Connect();
 
             // Create message to send
@@ -40,10 +40,9 @@ namespace TestCluster
             string messageStr = expectedMessage.ToXmlString();
             
             // init sockets
-            server.StartSocket();
+            Socket socket = server.GetAcceptedSocket();
             client.StartSocket();
-
-            server.Send(messageStr);
+            server.Send(socket, messageStr);
 
             string xmlStr = client.Receive();
 
