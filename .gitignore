@@ -6,3 +6,13 @@
 /src/Cluster/TestCluster/bin/Debug
 /src/Cluster/TestCluster/obj/Debug
 /src/Cluster/*.suo
+/src/Cluster/Network/bin/Debug/*.dll
+/src/Cluster/Network/bin/Debug/*.pdb
+/src/Cluster/Network/obj/Debug/*.cache
+/src/Cluster/Network/obj/Debug/*.txt
+/src/Cluster/Network/obj/Debug/*.dll
+/src/Cluster/Network/obj/Debug/*.pdb
+/src/Cluster/Network/obj/Debug/*.cs
+/doc/start_up/Documentation.aux
+/doc/start_up/Documentation.log
+/doc/start_up/Documentation.synctex.gz

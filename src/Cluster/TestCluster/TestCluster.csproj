@@ -52,12 +52,18 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CommunicationTest.cs" />
+    <Compile Include="NetworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Network\Network.csproj">
+      <Project>{4fa31245-ff9c-4216-bb29-a1e612e8530e}</Project>
+      <Name>Network</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
