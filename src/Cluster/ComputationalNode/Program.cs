@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Communication;
 
 namespace ComputationalNode
 {
@@ -41,7 +42,7 @@ namespace ComputationalNode
             Console.Write(">> Client connecting... \n");
             client.Connect();
             Console.Write(">> Starting socket... \n");
-            client.StartSocket();
+            client.OpenSocket();
 
             RegisterMessage registerMessage = node.ToRegisterMessage();
 
@@ -49,7 +50,7 @@ namespace ComputationalNode
             client.Send(registerMessage.ToXmlString());
 
             Console.Write(">> Waiting for response... \n");
-            string response = client.Receive();
+            Message response = client.Receive();
 
             Console.Write(">> The response is: \n" + response);
 

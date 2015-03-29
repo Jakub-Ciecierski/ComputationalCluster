@@ -9,29 +9,9 @@ using System.Threading.Tasks;
 
 namespace Communication.Network.TCP
 {
-    public class NetworkListener
+    public class NetworkListener : NetworkConnection
     {
         private TcpListener listener = null;
-
-        public Socket socket = null;
-
-        private int port;
-        private IPAddress address;
-
-        public Socket Socket
-        {
-            get { return socket; }
-        }
-
-        public IPAddress Address 
-        { 
-            get{return address;}
-        }
-
-        public int Port
-        { 
-            get { return port; }
-        }
 
         /// <summary>
         /// Creates a Tcp Server object
@@ -42,23 +22,9 @@ namespace Communication.Network.TCP
         /// <param name="port">
         ///     Port to listen to
         /// </param>
-        public NetworkListener(IPAddress address, int port)
+        public NetworkListener(IPAddress address, int port) : base(address, port)
         {
-            this.address = address;
-            this.port = port;
-        }
-
-        public void StartSocket()
-        {
-            if(listener == null)
-                throw new NullReferenceException("Open Connection before starting socket");
-            socket = listener.AcceptSocket();
-        }
-
-        public void CloseSocket()
-        {
-            if(socket != null)
-                socket.Close();
+            
         }
 
         /// <summary>
@@ -66,7 +32,7 @@ namespace Communication.Network.TCP
         /// </summary>
         public void OpenConnection()
         {
-            listener = new TcpListener(address, port);
+            listener = new TcpListener(Address, Port);
             listener.Start();
         }
 
@@ -77,13 +43,11 @@ namespace Communication.Network.TCP
         {
             if (listener != null)
             {
-                if (socket != null)
-                    socket.Close();
                 listener.Stop();
             }
         }
 
-        public bool isPending()
+        public bool IsPending()
         {
             return listener.Pending();
         }
@@ -95,59 +59,17 @@ namespace Communication.Network.TCP
 
         public void Send(Socket socket, string message)
         {
-            // set up data to send
-            byte[] content = Encoding.UTF8.GetBytes(message);
-            byte[] sizeSend = BitConverter.GetBytes(content.Length);
-
-            byte[] dataSend = new byte[content.Length + sizeSend.Length];
-            for (int i = 0; i < dataSend.Length; i++)
-            {
-                if (i < sizeSend.Length)
-                    dataSend[i] = sizeSend[i];
-                else
-                    dataSend[i] = content[i - sizeSend.Length];
-            }
-            socket.Send(dataSend, dataSend.Length, SocketFlags.None);
+            base.Send(socket, message);
         }
 
         public void Send(Socket socket, Message message)
         {
-            // set up data to send
-            byte[] content = Encoding.UTF8.GetBytes(message.ToXmlString());
-            byte[] sizeSend = BitConverter.GetBytes(content.Length);
-
-            byte[] dataSend = new byte[content.Length + sizeSend.Length];
-            for (int i = 0; i < dataSend.Length; i++)
-            {
-                if (i < sizeSend.Length)
-                    dataSend[i] = sizeSend[i];
-                else
-                    dataSend[i] = content[i - sizeSend.Length];
-            }
-            socket.Send(dataSend, dataSend.Length, SocketFlags.None);
+            base.Send(socket, message);
         }
 
-        /// <summary>
-        ///     Receive next message
-        /// </summary>
-        /// <returns>
-        ///     Received message in string
-        /// </returns>
-        public string Receive(Socket socket)
+        public Message Receive(Socket socket)
         {
-            if (socket == null)
-                throw new NullReferenceException("Connect and Open socket before calling Receive()");
-
-            byte[] sizeReceiveByte = new byte[sizeof(Int32)];
-            socket.Receive(sizeReceiveByte, sizeof(Int32), 0);
-            int sizeReceive = BitConverter.ToInt32(sizeReceiveByte, 0);
-
-            byte[] contentReceive = new byte[sizeReceive];
-            socket.Receive(contentReceive, sizeReceive, SocketFlags.None);
-
-            string message = System.Text.Encoding.UTF8.GetString(contentReceive);
-
-            return message;
+            return base.Receive(socket);
         }
     }
 }

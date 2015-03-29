@@ -97,7 +97,7 @@ namespace Communication
         /// <returns>
         ///     name of the xml
         /// </returns>
-        public static string GetName(string xmlString)
+        public static string GetMessageName(string xmlString)
         {
             // Read the first element
             XmlReader reader = XmlReader.Create(new StringReader(xmlString));
@@ -106,6 +106,40 @@ namespace Communication
             string name = reader.Name;
 
             return name;
+        }
+
+        /// <summary>
+        ///     Constructs message by given xml string
+        /// </summary>
+        /// <param name="xmlString">
+        ///     xml in string 
+        /// </param>
+        /// <returns>
+        ///     Message constructed by the xml
+        /// </returns>
+        public static Message Construct(string xmlString)
+        {
+            if (GetMessageName(xmlString) == RegisterMessage.ELEMENT_NAME)
+                return RegisterMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == DivideProblemMessage.ELEMENT_NAME)
+                return DivideProblemMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == NoOperationMessage.ELEMENT_NAME)
+                return NoOperationMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == RegisterResponseMessage.ELEMENT_NAME)
+                return RegisterResponseMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == SolutionRequestMessage.ELEMENT_NAME)
+                return SolutionRequestMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == SolutionsMessage.ELEMENT_NAME)
+                return SolutionsMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == SolvePartialProblemsMessage.ELEMENT_NAME)
+                return SolvePartialProblemsMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == SolveRequestMessage.ELEMENT_NAME)
+                return SolveRequestMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == SolveRequestResponseMessage.ELEMENT_NAME)
+                return SolveRequestResponseMessage.Construct(xmlString);
+            if (GetMessageName(xmlString) == StatusMessage.ELEMENT_NAME)
+                return StatusMessage.Construct(xmlString);
+            return null;
         }
     }
 }

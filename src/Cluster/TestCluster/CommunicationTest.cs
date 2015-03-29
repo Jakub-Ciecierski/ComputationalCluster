@@ -290,7 +290,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             StatusMessage actualMessage = null;
 
             if(name == StatusMessage.ELEMENT_NAME)
@@ -326,7 +326,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             SolveRequestResponseMessage actualMessage = null;
 
             if (name == SolveRequestResponseMessage.ELEMENT_NAME)
@@ -350,7 +350,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             SolveRequestMessage actualMessage = null;
 
             if (name == SolveRequestMessage.ELEMENT_NAME)
@@ -379,7 +379,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             SolvePartialProblemsMessage actualMessage = null;
 
             if (name == SolvePartialProblemsMessage.ELEMENT_NAME)
@@ -421,7 +421,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             SolutionsMessage actualMessage = null;
 
             if (name == SolutionsMessage.ELEMENT_NAME)
@@ -467,7 +467,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             SolutionRequestMessage actualMessage = null;
 
             if (name == SolutionRequestMessage.ELEMENT_NAME)
@@ -491,7 +491,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             RegisterResponseMessage actualMessage = null;
 
             if (name == RegisterResponseMessage.ELEMENT_NAME)
@@ -521,7 +521,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             DivideProblemMessage actualMessage = null;
 
             if (name == DivideProblemMessage.ELEMENT_NAME)
@@ -551,7 +551,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             RegisterMessage actualMessage = null;
 
             if (name == RegisterMessage.ELEMENT_NAME)
@@ -579,7 +579,7 @@ namespace TestCluster
             xmlDoc.Load(path);
             string xmlStr = xmlDoc.OuterXml;
 
-            string name = Message.GetName(xmlStr);
+            string name = Message.GetMessageName(xmlStr);
             NoOperationMessage actualMessage = null;
 
             if (name == NoOperationMessage.ELEMENT_NAME)

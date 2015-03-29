@@ -27,7 +27,7 @@ namespace CommunicationServer
 
             while (true)
             {
-                while (!listener.isPending())
+                while (!listener.IsPending())
                 {
                     Console.Write(">> No client wanting to join... \n");
                     Thread.Sleep(3000);
@@ -39,17 +39,15 @@ namespace CommunicationServer
                 Console.Write(">> " + socket.AddressFamily + "\n");
                 listener.Send(socket, "Response message: Gay");
 
-                string messageStr = listener.Receive(socket);
-                if (Message.GetName(messageStr) == RegisterMessage.ELEMENT_NAME)
+                Message message = listener.Receive(socket);
+                if (message.GetType() == typeof(RegisterMessage))
                 {
-                    RegisterMessage message = RegisterMessage.Construct(messageStr);
-
                     Console.Write(">> " + message.ToString() + "\n");
 
                     Console.Write(">> Adding Node to List \n");
                     IPAddress clientAddress = IPAddress.Parse("192.168.1.14");
 
-                    await clientTracker.RegisterElement(message, clientAddress);
+                    //await clientTracker.RegisterElement(message, clientAddress);
 
                     listener.Send(socket, "Response message: Gay");
 

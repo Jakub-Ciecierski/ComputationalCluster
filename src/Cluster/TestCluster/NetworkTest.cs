@@ -41,14 +41,10 @@ namespace TestCluster
             
             // init sockets
             Socket socket = server.GetAcceptedSocket();
-            client.StartSocket();
+            client.OpenSocket();
             server.Send(socket, messageStr);
 
-            string xmlStr = client.Receive();
-
-            RegisterMessage actualMessage = null;
-            if (Message.GetName(xmlStr) == RegisterMessage.ELEMENT_NAME)
-                actualMessage = RegisterMessage.Construct(xmlStr);
+            Message actualMessage = client.Receive();
 
             server.Close();
             client.Disconnect();
