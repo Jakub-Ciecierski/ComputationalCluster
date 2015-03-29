@@ -1,7 +1,7 @@
 ﻿using Communication;
 using Communication.Messages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Network;
+using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;

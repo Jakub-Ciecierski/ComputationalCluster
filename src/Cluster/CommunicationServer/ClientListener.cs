@@ -1,6 +1,6 @@
 ﻿using Communication;
 using Communication.Messages;
-using Network;
+using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +35,9 @@ namespace CommunicationServer
 
                 Console.Write(">> Accepting connected Client... \n");
                 Socket socket = listener.GetAcceptedSocket();
+                
                 Console.Write(">> " + socket.AddressFamily + "\n");
+                listener.Send(socket, "Response message: Gay");
 
                 string messageStr = listener.Receive(socket);
                 if (Message.GetName(messageStr) == RegisterMessage.ELEMENT_NAME)
@@ -49,7 +51,9 @@ namespace CommunicationServer
 
                     await clientTracker.RegisterElement(message, clientAddress);
 
-                    Console.Write("\n");
+                    listener.Send(socket, "Response message: Gay");
+
+                    Thread.Sleep(5000);
                 }
             }
         }

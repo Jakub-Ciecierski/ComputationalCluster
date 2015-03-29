@@ -15,7 +15,6 @@ namespace CommunicationServer
         {
             ClientListener clientListener = new ClientListener();
             clientListener.ListenForClients();
-
         }
     }
 }

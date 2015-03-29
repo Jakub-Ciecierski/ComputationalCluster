@@ -62,10 +62,6 @@
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Network\Network.csproj">
-      <Project>{4fa31245-ff9c-4216-bb29-a1e612e8530e}</Project>
-      <Name>Network</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
