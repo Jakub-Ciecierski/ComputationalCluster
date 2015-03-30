@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClientTracker.cs" />
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="MessageCommunication\MessageHandler.cs" />
     <Compile Include="MessageCommunication\MessagePackage.cs" />

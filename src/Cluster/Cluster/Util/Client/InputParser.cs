@@ -59,9 +59,6 @@ namespace Cluster.Util.Client
 
             addressStr = addressStr.Trim();
 
-            Console.Write("Address: " + addressStr + "\n");
-            Console.Write("Port: " + portStr + "\n");
-
             Address = IPAddress.Parse(addressStr);
 
             Port = Int32.Parse(portStr);
