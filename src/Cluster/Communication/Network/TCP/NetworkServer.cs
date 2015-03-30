@@ -19,11 +19,25 @@ namespace Communication.Network.TCP
     /// </summary>
     public class NetworkServer : NetworkConnection
     {
-        List<Socket> connections = new List<Socket>();
-        Thread clientListener;
+        /******************************************************************/
+        /******************* PROPERTIES, PRIVATE FIELDS *******************/
+        /******************************************************************/
 
+        /// <summary>
+        ///     Thread that listens to the network for new connections
+        ///     TODO move to saparete class
+        /// </summary>
+        private Thread clientListener;
+
+        /// <summary>
+        ///     The tcp Listener
+        /// </summary>
         private TcpListener server = null;
 
+        private List<Socket> connections = new List<Socket>();
+        /// <summary>
+        ///     List of current connections in the server
+        /// </summary>
         public List<Socket> Connections
         {
             get
@@ -36,6 +50,23 @@ namespace Communication.Network.TCP
                 return nc;
             }
         }
+
+        /// <summary>
+        ///     Turning this flag to false will stop network listening thread
+        ///     TODO thread safetly
+        /// </summary>
+        private bool isActive;
+
+        public bool Active
+        {
+            get { return isActive; }
+            set { isActive = value; }
+        }
+
+
+        /******************************************************************/
+        /************************** CONSTRUCTORS **************************/
+        /******************************************************************/
 
         /// <summary>
         /// Creates a Tcp Server object
@@ -51,6 +82,33 @@ namespace Communication.Network.TCP
             
         }
 
+        /******************************************************************/
+        /************************ PRIVATE METHODS *************************/
+        /******************************************************************/
+
+        /// <summary>
+        ///     The logic of StartListeningForClients() method
+        /// </summary>
+        private void listenForClients()
+        {
+            Console.Write(" >> Listening for clients Actived \n\n");
+            while (Active)
+            {
+                Socket socket = server.AcceptSocket();
+                Console.Write(" >> New Client connected: ");
+                Console.Write(SocketRemoteAddressToString(socket) + "\n\n");
+                lock (connections)
+                {
+                    connections.Add(socket);
+                }
+            }
+            Console.Write(" >> Listening for clients Deactived \n");
+        }
+
+        /*******************************************************************/
+        /************************* PUBLIC METHODS **************************/
+        /*******************************************************************/
+
         /// <summary>
         ///     Opens a Tcp Listener
         /// </summary>
@@ -60,8 +118,7 @@ namespace Communication.Network.TCP
             server.Start();
 
             // Start client listener thread
-            clientListener = new Thread(listenForClients);
-            clientListener.Start();
+            StartListeningForClients();
         }
 
         /// <summary>
@@ -75,6 +132,10 @@ namespace Communication.Network.TCP
             }
         }
 
+        /// <summary>
+        ///     Checks if a clients want to connect to the server
+        /// </summary>
+        /// <returns></returns>
         public bool IsPending()
         {
             return server.Pending();
@@ -95,21 +156,25 @@ namespace Communication.Network.TCP
             return base.Receive(socket);
         }
 
-        private void listenForClients()
+        /// <summary>
+        ///     Starts listening for clients in the network
+        /// </summary>
+        public void StartListeningForClients()
         {
-            Console.Write(" >> Starting listening for clients... \n");
-            while (true)
-            {
-                Socket socket = server.AcceptSocket();
-                Console.Write(" >> New Client connected: ");
-                Console.Write(SocketRemoteAddressToString(socket) + "\n\n");
-                lock (connections)
-                {
-                    connections.Add(socket);
-                }
-            }
+            Active = true;
+
+            clientListener = new Thread(listenForClients);
+            clientListener.Start();
         }
 
+        /// <summary>
+        ///     Selects for sockets ready to read, and removed disconnected sockets
+        ///     TODO loose cuple the socket Removal part
+        /// </summary>
+        /// 
+        /// <returns>
+        ///     List of sockets ready to be read
+        /// </returns>
         public ArrayList SelectForRead()
         {
             ArrayList sockets = new ArrayList();
@@ -140,16 +205,34 @@ namespace Communication.Network.TCP
 
             // TODO fix busy waiting
             Socket.Select(sockets, null, null, 1000);
-            //Console.Write(" >> Done selecting \n");
             return sockets;
         }
 
-        static bool IsSocketConnected(Socket s)
+
+        /*******************************************************************/
+        /************************* STATIC METHODS **************************/
+        /*******************************************************************/
+
+        /// <summary>
+        ///     Checks if socket is connected to the network
+        /// </summary>
+        /// <param name="socket">
+        ///     The socket that connections should be checked
+        /// </param>
+        /// <returns>
+        ///     True if socket is connected, false otherwise
+        /// </returns>
+        public static bool IsSocketConnected(Socket socket)
         {
-            return !((s.Poll(1000, SelectMode.SelectRead) && (s.Available == 0)) || !s.Connected);
+            return !((socket.Poll(1000, SelectMode.SelectRead) && (socket.Available == 0)) || !socket.Connected);
         }
 
-        static string SocketRemoteAddressToString(Socket socket)
+        /// <summary>
+        ///     Returns a convenient socket remote location string
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        public static string SocketRemoteAddressToString(Socket socket)
         {
             return (socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port;
         }

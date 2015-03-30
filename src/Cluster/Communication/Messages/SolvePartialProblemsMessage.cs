@@ -10,13 +10,13 @@ using System.IO;
 namespace Communication.Messages
 {
     /// <summary>
-    /// Partial problems message is sent by the TM after dividing 
-    /// the problem into smaller partial problems. 
-    /// The data in it consists of two parts – common 
-    /// for all partial problems and specific for the given task. 
-    /// The same Partial Problems schema is used for the messages 
-    /// sent to be computed by the CN and to relay
-    /// information for synchronizing info with Backup CS.
+    ///     Partial problems message is sent by the TM after dividing 
+    ///     the problem into smaller partial problems. 
+    ///     The data in it consists of two parts – common 
+    ///     for all partial problems and specific for the given task. 
+    ///     The same Partial Problems schema is used for the messages 
+    ///     sent to be computed by the CN and to relay
+    ///     information for synchronizing info with Backup CS.
     /// </summary>
     public partial class SolvePartialProblemsMessage : Message
     {

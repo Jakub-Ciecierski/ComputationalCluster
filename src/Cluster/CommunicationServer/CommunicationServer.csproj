@@ -46,9 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientTracker.cs" />
-    <Compile Include="ClientListener.cs" />
+    <Compile Include="MessageCommunication\MessageHandler.cs" />
+    <Compile Include="MessageCommunication\MessagePackage.cs" />
+    <Compile Include="MessageCommunication\MessageProcessor.cs" />
+    <Compile Include="MessageCommunication\MessageQueue.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
