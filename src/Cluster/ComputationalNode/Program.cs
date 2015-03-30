@@ -30,7 +30,6 @@ namespace ComputationalNode
             foreach(string arg in args)
                 inputLine += arg + " ";
 
-            Console.Write("test: " + inputLine + "\n");
             InputParser inputParser = new InputParser(inputLine);
             inputParser.ParseInput();
 
