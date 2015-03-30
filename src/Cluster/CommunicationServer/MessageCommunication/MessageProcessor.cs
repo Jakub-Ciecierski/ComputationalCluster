@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CommunicationServer.MessageCommunication
@@ -27,6 +28,11 @@ namespace CommunicationServer.MessageCommunication
         ///     Handles all the messages in the queue
         /// </summary>
         private MessageHandler messageHandler;
+
+        /// <summary>
+        ///     The thread for precessing messages
+        /// </summary>
+        private Thread processorThread;
 
         private bool isActive;
         /// <summary>
@@ -84,7 +90,8 @@ namespace CommunicationServer.MessageCommunication
         public void Start()
         {
             Active = true;
-            startMessageProcessor();
+            processorThread = new Thread(startMessageProcessor);
+            processorThread.Start();
         }
     }
 }

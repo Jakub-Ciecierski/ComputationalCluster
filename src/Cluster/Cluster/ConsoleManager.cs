@@ -23,16 +23,15 @@ namespace Cluster
             this.node = node;
         }
 
-        public void PrintHelp()
+        private void printHelp()
         {
             Console.Write("Possible Messages: \n");
             Console.Write("\tstatus - Send status to server\n");
             Console.Write("\tderegister - Deregisters from the server\n");
             Console.Write("\tregister - Registers back to server\n");
-            Console.Write("\tdisconnect - disconnects the connection \n");
-            Console.Write("\tquit - Sends deregister and quits application \n");
+            Console.Write("\tquit - Sends deregister and quits application, will crash \n");
         }
-        public void SendStatusMessage()
+        private void sendStatusMessage()
         {
             Console.Write(" >> Sending status \n\n");
             client.Send(node.ToStatusMessage());
@@ -42,7 +41,7 @@ namespace Cluster
             Console.Write(message.ToString());
         }
 
-        public void DeRegister()
+        private void deRegister()
         {
             Console.Write(" >> Sending DeRegister Message \n\n");
             client.Send(node.ToDeregisterMessage());
@@ -73,7 +72,7 @@ namespace Cluster
             registerToServer();
 
             Console.Write(" >> Send Message \n");
-          
+            printHelp();
             bool _continue = true;
             while (_continue)
             {
@@ -82,25 +81,22 @@ namespace Cluster
                 {
                     case "status":
                         if(isRegistered)
-                            SendStatusMessage();
+                            sendStatusMessage();
                         break;
                     case "deregister":
                         if (isRegistered)
-                            DeRegister();
+                            deRegister();
                         break;
                     case "register":
                         registerToServer();
                         break;
-                    case "disconnect":
-                        client.Disconnect();
-                        break;
                     case "quit":
                         if (isRegistered)
-                            DeRegister();
+                            deRegister();
                         _continue = false;
                         break;
                     default:
-                        PrintHelp();
+                        printHelp();
                         break;
 
                 }

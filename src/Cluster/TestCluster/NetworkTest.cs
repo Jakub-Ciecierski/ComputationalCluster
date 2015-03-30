@@ -30,7 +30,7 @@ namespace TestCluster
             int port = 5555;
 
             NetworkServer server = new NetworkServer(address, port);
-            server.OpenConnection();
+            server.Open();
             // connect client
             NetworkClient client = new NetworkClient(address, port);
             client.Connect();

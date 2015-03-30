@@ -96,7 +96,7 @@ namespace Communication.Network.TCP
             {
                 Socket socket = server.AcceptSocket();
                 Console.Write(" >> New Client connected: ");
-                Console.Write(SocketRemoteAddressToString(socket) + "\n\n");
+                Console.Write(RemoteAddressToString(socket) + "\n\n");
                 lock (connections)
                 {
                     connections.Add(socket);
@@ -110,9 +110,9 @@ namespace Communication.Network.TCP
         /*******************************************************************/
 
         /// <summary>
-        ///     Opens a Tcp Listener
+        ///     Opens a Tcp connection
         /// </summary>
-        public void OpenConnection()
+        public void Open()
         {
             server = new TcpListener(Address, Port);
             server.Start();
@@ -186,7 +186,7 @@ namespace Communication.Network.TCP
                 {
                     if (!IsSocketConnected(socket))
                     {
-                        Console.Write("Client disconnected: " + SocketRemoteAddressToString(socket) + "\n\n");
+                        Console.Write("Client disconnected: " + RemoteAddressToString(socket) + "\n\n");
                         socketsToRemove.Add(socket);
                     }
                     if(socket != null)
@@ -208,6 +208,17 @@ namespace Communication.Network.TCP
             return sockets;
         }
 
+        public string ListAllConnections()
+        {
+            string con = "";
+
+            foreach (Socket socket in connections)
+            {
+                con += RemoteAddressToString(socket) + " \n";
+            }
+
+            return con;
+        }
 
         /*******************************************************************/
         /************************* STATIC METHODS **************************/
@@ -232,7 +243,7 @@ namespace Communication.Network.TCP
         /// </summary>
         /// <param name="socket"></param>
         /// <returns></returns>
-        public static string SocketRemoteAddressToString(Socket socket)
+        public static string RemoteAddressToString(Socket socket)
         {
             return (socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port;
         }

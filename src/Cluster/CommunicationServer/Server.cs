@@ -10,6 +10,7 @@ using CommunicationServer.Communication;
 using Communication.Network.TCP;
 using Communication.MessageComponents;
 using CommunicationServer.MessageCommunication;
+using System.Threading;
 namespace CommunicationServer
 {
     class Server
@@ -25,7 +26,7 @@ namespace CommunicationServer
 
             // Start network connection
             NetworkServer server = new NetworkServer(address, port);
-            server.OpenConnection();
+            server.Open();
 
             // Create messageHandler
             MessageHandler messageHandler = new MessageHandler(systemTracker, server);
@@ -37,6 +38,12 @@ namespace CommunicationServer
             // Start Message processor
             MessageProcessor messageProcessor = new MessageProcessor(messageQueue, messageHandler);
             messageProcessor.Start();
+
+            Thread.Sleep(100);
+
+            // Start console manager
+            ConsoleManager consoleManager = new ConsoleManager(server);
+            consoleManager.Start();
         }
     }
 }
