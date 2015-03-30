@@ -10,7 +10,6 @@ namespace CommunicationServer
 {
     class Server
     {
-
         static void Main(string[] args)
         {
             ClientListener clientListener = new ClientListener();

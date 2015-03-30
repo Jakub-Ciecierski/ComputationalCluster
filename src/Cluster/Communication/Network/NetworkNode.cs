@@ -27,6 +27,8 @@ namespace Communication.Network
 
         private BackupCommunicationServer[] backupServers;
 
+        private StatusThread[] statusThreads;
+
         public byte ParallelThreads
         {
             get { return parallelThreads; }
@@ -62,7 +64,14 @@ namespace Communication.Network
             get { return backupServers; }
             private set { backupServers = value; }
         }
-    
+
+        public StatusThread[] StatusThreads
+        {
+            get { return statusThreads; }
+            set { statusThreads = value; }
+        }
+
+
         /// <summary>
         ///     Creates Network node
         /// </summary>
@@ -74,6 +83,8 @@ namespace Communication.Network
             Type = type;
             ParallelThreads = parallelThreads;
             SolvableProblems = solvableProblems;
+
+            StatusThreads = new StatusThread[ParallelThreads];
         }
 
         /// <summary>
@@ -93,6 +104,11 @@ namespace Communication.Network
         public RegisterMessage ToDeregisterMessage()
         {
             return new RegisterMessage(Type, ParallelThreads, SolvableProblems, true, Id);
+        }
+
+        public StatusMessage ToStatusMessage()
+        {
+            return new StatusMessage(Id, StatusThreads);
         }
 
         /// <summary>

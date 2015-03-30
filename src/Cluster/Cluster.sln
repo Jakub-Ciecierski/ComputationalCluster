@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommunicationServer", "Comm
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalNode", "ComputationalNode\ComputationalNode.csproj", "{2ADF8E1A-5A96-441B-98B1-27644971357A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager", "TaskManager\TaskManager.csproj", "{CBD22081-0767-441C-A0D0-69BC092E9238}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComputationalClient", "ComputationalClient\ComputationalClient.csproj", "{37C2C9FF-9B36-48F8-85DE-2C7711392ACC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ADF8E1A-5A96-441B-98B1-27644971357A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD22081-0767-441C-A0D0-69BC092E9238}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD22081-0767-441C-A0D0-69BC092E9238}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD22081-0767-441C-A0D0-69BC092E9238}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD22081-0767-441C-A0D0-69BC092E9238}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37C2C9FF-9B36-48F8-85DE-2C7711392ACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37C2C9FF-9B36-48F8-85DE-2C7711392ACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37C2C9FF-9B36-48F8-85DE-2C7711392ACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37C2C9FF-9B36-48F8-85DE-2C7711392ACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

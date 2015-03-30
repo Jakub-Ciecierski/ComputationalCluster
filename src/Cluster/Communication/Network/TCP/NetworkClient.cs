@@ -14,9 +14,25 @@ namespace Communication.Network.TCP
 
         public Socket socket = null;
 
+        private IPAddress clientAddress;
+
+        private int clientPort;
+
         public Socket Socket
         {
             get { return socket; }
+        }
+
+        public IPAddress ClientAddress
+        {
+            get { return clientAddress; }
+            set { clientAddress = value; }
+        }
+
+        public int ClientPort
+        {
+            get { return clientPort; }
+            set { clientPort = value; }
         }
 
         /// <summary>
@@ -26,21 +42,27 @@ namespace Communication.Network.TCP
         ///     Address of the server
         /// </param>
         /// <param name="port">
-        ///     Port to listen to
+        ///     Port of the server
         /// </param>
-        public NetworkClient(IPAddress address, int port) : base(address, port)
+        public NetworkClient(IPAddress address, int port) 
+            : base(address, port)
         {
             
         }
 
         /// <summary>
-        ///     Gets the socket
+        ///     Creates a tcp client
         /// </summary>
-        public void OpenSocket()
+        /// <param name="client">
+        ///     Connected tcp client
+        /// </param>
+        public NetworkClient(TcpClient client)
+            : base((client.Client.LocalEndPoint as IPEndPoint).Address, (client.Client.LocalEndPoint as IPEndPoint).Port)
         {
-            if(client == null)
-                throw new NullReferenceException("Connect to server before starting socket");
+            this.client = client;
             socket = client.Client;
+            ClientAddress = (client.Client.RemoteEndPoint as IPEndPoint).Address;
+            ClientPort = (client.Client.RemoteEndPoint as IPEndPoint).Port;
         }
 
         /// <summary>
@@ -60,6 +82,7 @@ namespace Communication.Network.TCP
         {
             client = new TcpClient();
             client.Connect(Address, Port);
+            socket = client.Client;
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputationalNode
+namespace TaskManager
 {
     public class ConsoleManager
     {
@@ -16,7 +16,7 @@ namespace ComputationalNode
         private NetworkNode node;
 
         public ConsoleManager(NetworkClient client, NetworkNode node)
-        { 
+        {
             this.client = client;
             this.node = node;
         }
@@ -30,18 +30,18 @@ namespace ComputationalNode
         }
         public void SendStatusMessage()
         {
-            Console.Write(" >> Sending status \n\n");
+            Console.Write(" >> Sending status \n");
             client.Send(node.ToStatusMessage());
-            Console.Write(" >> Waiting for response \n\n");
+            Console.Write(" >> Waiting for response \n");
             Message message = client.Receive();
-            Console.Write(" >> Message received: \n\n");
-            Console.Write(message.ToString());
+            Console.Write(" >> Message received: \n");
+            Console.Write("\t" + message.ToString());
         }
 
         public void StartConsole()
         {
             Console.Write(" >> Send Message \n");
-          
+
             bool _continue = true;
             while (_continue)
             {

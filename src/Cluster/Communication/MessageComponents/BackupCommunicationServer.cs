@@ -23,5 +23,10 @@ namespace Communication.MessageComponents
 
             return (address == server.address && port == server.port);
         }
+
+        public override string ToString()
+        {
+            return "Address: " + address + ", Port: " + port;
+        }
     }
 }

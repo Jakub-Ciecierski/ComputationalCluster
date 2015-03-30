@@ -86,5 +86,13 @@ namespace Communication.Messages
 
             return (Id == message.Id && Enumerable.SequenceEqual(BackupCommunicationServers, message.BackupCommunicationServers));
         }
+
+        public override string ToString()
+        {
+            string servers = "";
+            foreach (BackupCommunicationServer server in BackupCommunicationServers)
+                servers += server.ToString() + "\n";
+            return "RegisterResponseMessage:\nId: " + Id + ", Timeout: " + Timeout + "\nBackUpServers: " + servers;
+        }
     }
 }

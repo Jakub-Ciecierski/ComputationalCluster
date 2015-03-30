@@ -8,17 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComputationalNode
+namespace ComputationalClient
 {
     public class ConsoleManager
     {
         private NetworkClient client;
-        private NetworkNode node;
 
-        public ConsoleManager(NetworkClient client, NetworkNode node)
-        { 
+        public ConsoleManager(NetworkClient client)
+        {
             this.client = client;
-            this.node = node;
         }
 
         public void PrintHelp()
@@ -28,20 +26,11 @@ namespace ComputationalNode
             Console.Write("De" + RegisterMessage.ELEMENT_NAME + "\n");
             Console.Write("quit \n");
         }
-        public void SendStatusMessage()
-        {
-            Console.Write(" >> Sending status \n\n");
-            client.Send(node.ToStatusMessage());
-            Console.Write(" >> Waiting for response \n\n");
-            Message message = client.Receive();
-            Console.Write(" >> Message received: \n\n");
-            Console.Write(message.ToString());
-        }
 
         public void StartConsole()
         {
             Console.Write(" >> Send Message \n");
-          
+
             bool _continue = true;
             while (_continue)
             {
@@ -49,7 +38,6 @@ namespace ComputationalNode
                 switch (line)
                 {
                     case "Status":
-                        SendStatusMessage();
                         break;
                     case "quit":
                         _continue = false;

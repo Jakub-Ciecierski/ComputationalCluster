@@ -65,7 +65,7 @@
     <Compile Include="MessageComponents\PartialProblem.scheme.cs" />
     <Compile Include="Network\NetworkNode.cs" />
     <Compile Include="Network\TCP\NetworkClient.cs" />
-    <Compile Include="Network\TCP\NetworkListener.cs" />
+    <Compile Include="Network\TCP\NetworkServer.cs" />
     <Compile Include="Network\TCP\NetworkConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MessageComponents\Solution.cs" />

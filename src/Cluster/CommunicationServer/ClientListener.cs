@@ -2,6 +2,7 @@
 using Communication.Messages;
 using Communication.Network.TCP;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,8 @@ namespace CommunicationServer
 {
     public class ClientListener
     {
+        List<Socket> sockets = new List<Socket>();
+
         public async void ListenForClients()
         {
             ClientTracker clientTracker = new ClientTracker();
@@ -22,36 +25,45 @@ namespace CommunicationServer
             IPAddress address = IPAddress.Parse(host);
             int port = 5555;
 
-            NetworkListener listener = new NetworkListener(address, port);
-            listener.OpenConnection();
+            NetworkServer server = new NetworkServer(address, port);
+            server.OpenConnection();
 
             while (true)
             {
-                while (!listener.IsPending())
+                // should hang
+                ArrayList socketsToRead = server.SelectForRead();
+
+                foreach (Socket socket in socketsToRead)
                 {
-                    Console.Write(">> No client wanting to join... \n");
-                    Thread.Sleep(3000);
-                }
+                    Message message = server.Receive(socket);
+                    Console.Write("Message from: ");
+                    Console.Write((socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port + "\n\n");
+                    Console.Write(message.ToString() + "\n\n");
 
-                Console.Write(">> Accepting connected Client... \n");
-                Socket socket = listener.GetAcceptedSocket();
-                
-                Console.Write(">> " + socket.AddressFamily + "\n");
-                listener.Send(socket, "Response message: Gay");
+                    Communication.MessageComponents.BackupCommunicationServer backupServer = new Communication.MessageComponents.BackupCommunicationServer("tcp", 5);
 
-                Message message = listener.Receive(socket);
-                if (message.GetType() == typeof(RegisterMessage))
-                {
-                    Console.Write(">> " + message.ToString() + "\n");
+                    if (message.GetType() == typeof(RegisterMessage))
+                    {
+                        Console.Write(" >> Adding Node to List \n\n");
+                        sockets.Add(socket);
 
-                    Console.Write(">> Adding Node to List \n");
-                    IPAddress clientAddress = IPAddress.Parse("192.168.1.14");
+                        IPAddress clientAddress = IPAddress.Parse("192.168.1.14");
+                        await clientTracker.RegisterElement((RegisterMessage)message, clientAddress);
+                        
+                        ulong id = 1;
+                        uint timeout = 100;
+                        RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, backupServer);
 
-                    //await clientTracker.RegisterElement(message, clientAddress);
+                        server.Send(socket, response);
 
-                    listener.Send(socket, "Response message: Gay");
-
-                    Thread.Sleep(5000);
+                        Console.Write(" >> Sent a response \n\n");
+                    }
+                    else
+                    {
+                        NoOperationMessage response = new NoOperationMessage(backupServer);
+                        server.Send(socket, response);
+                        Console.Write(" >> Sent a NoOperation Message \n");
+                    }
                 }
             }
         }

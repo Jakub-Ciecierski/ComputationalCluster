@@ -110,7 +110,10 @@ namespace Communication.Messages
 
         public override string ToString()
         {
-            return "Type: " + Type + "\n" + "Paraller Threads :#" + ParallelThreads + "\n" + SolvableProblems.ToString();
+            string problems = "";
+            foreach (string problem in SolvableProblems)
+                problems += problem + ", ";
+            return "RegisterMessage:\nType: " + Type + ", Paraller Threads :#" + ParallelThreads + "\n" + "Solvable Problems: " + problems;
         }
     }
 }

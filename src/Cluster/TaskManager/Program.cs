@@ -1,23 +1,22 @@
-﻿using Communication.Network;
+﻿using Communication;
 using Communication.Messages;
+using Communication.Network;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Communication;
 
-namespace ComputationalNode
+namespace TaskManager
 {
     class Program
     {
         static void Main(string[] args)
         {
             /************ Create node object ************/
-            RegisterType type = RegisterType.ComputationalNode;
+            RegisterType type = RegisterType.TaskManager;
             byte parallelThreads = 5;
             string[] problems = { "DVRP", "Graph coloring" };
 
@@ -32,7 +31,6 @@ namespace ComputationalNode
             NetworkClient client = new NetworkClient(address, port);
 
             registerToServer(client, node);
-
 
             ConsoleManager consoleManager = new ConsoleManager(client, node);
             consoleManager.StartConsole();
