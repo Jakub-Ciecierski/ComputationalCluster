@@ -99,6 +99,8 @@ namespace Communication
         /// </returns>
         public static string GetMessageName(string xmlString)
         {
+            if (xmlString.Equals(""))
+                return "";
             // Read the first element
             XmlReader reader = XmlReader.Create(new StringReader(xmlString));
             while (reader.NodeType != XmlNodeType.Element)

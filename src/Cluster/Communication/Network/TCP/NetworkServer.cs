@@ -102,7 +102,7 @@ namespace Communication.Network.TCP
             {
                 Socket socket = server.AcceptSocket();
                 Console.Write(" >> New Client connected: ");
-                Console.Write((socket.RemoteEndPoint as IPEndPoint).Address+ ":" + (socket.RemoteEndPoint as IPEndPoint).Port + "\n\n");
+                Console.Write(SocketRemoteAddressToString(socket) + "\n\n");
                 lock (connections)
                 {
                     connections.Add(socket);
@@ -115,10 +115,23 @@ namespace Communication.Network.TCP
             ArrayList sockets = new ArrayList();
             lock (connections)
             {
+                ArrayList socketsToRemove = new ArrayList();
+
                 foreach (Socket socket in connections)
                 {
+                    if (!IsSocketConnected(socket))
+                    {
+                        Console.Write("Client disconnected: " + SocketRemoteAddressToString(socket) + "\n\n");
+                        socketsToRemove.Add(socket);
+                    }
                     if(socket != null)
                         sockets.Add(socket);
+                }
+
+                foreach (Socket socket in socketsToRemove)
+                {
+                    connections.Remove(socket);
+                    //socket.Close();
                 }
             }
 
@@ -129,6 +142,16 @@ namespace Communication.Network.TCP
             Socket.Select(sockets, null, null, 1000);
             //Console.Write(" >> Done selecting \n");
             return sockets;
+        }
+
+        static bool IsSocketConnected(Socket s)
+        {
+            return !((s.Poll(1000, SelectMode.SelectRead) && (s.Available == 0)) || !s.Connected);
+        }
+
+        static string SocketRemoteAddressToString(Socket socket)
+        {
+            return (socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port;
         }
     }
 }

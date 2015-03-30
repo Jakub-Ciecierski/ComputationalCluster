@@ -36,33 +36,45 @@ namespace CommunicationServer
                 foreach (Socket socket in socketsToRead)
                 {
                     Message message = server.Receive(socket);
-                    Console.Write("Message from: ");
-                    Console.Write((socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port + "\n\n");
-                    Console.Write(message.ToString() + "\n\n");
-
-                    Communication.MessageComponents.BackupCommunicationServer backupServer = new Communication.MessageComponents.BackupCommunicationServer("tcp", 5);
-
-                    if (message.GetType() == typeof(RegisterMessage))
+                    if (message != null)
                     {
-                        Console.Write(" >> Adding Node to List \n\n");
-                        sockets.Add(socket);
+                        Console.Write("Message from: ");
+                        Console.Write((socket.RemoteEndPoint as IPEndPoint).Address + ":" + (socket.RemoteEndPoint as IPEndPoint).Port + "\n\n");
+                        Console.Write(message.ToString() + "\n\n");
 
-                        IPAddress clientAddress = IPAddress.Parse("192.168.1.14");
-                        await clientTracker.RegisterElement((RegisterMessage)message, clientAddress);
-                        
-                        ulong id = 1;
-                        uint timeout = 100;
-                        RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, backupServer);
+                        Communication.MessageComponents.BackupCommunicationServer backupServer = new Communication.MessageComponents.BackupCommunicationServer("tcp", 5);
 
-                        server.Send(socket, response);
+                        if (message.GetType() == typeof(RegisterMessage))
+                        {
+                            RegisterMessage regMsg = (RegisterMessage)message;
+                            if (!regMsg.Deregister)
+                            {
+                                Console.Write(" >> Adding Node to List \n\n");
+                                sockets.Add(socket);
 
-                        Console.Write(" >> Sent a response \n\n");
-                    }
-                    else
-                    {
-                        NoOperationMessage response = new NoOperationMessage(backupServer);
-                        server.Send(socket, response);
-                        Console.Write(" >> Sent a NoOperation Message \n");
+                                IPAddress clientAddress = IPAddress.Parse("192.168.1.14");
+                                await clientTracker.RegisterElement((RegisterMessage)message, clientAddress);
+
+                                ulong id = 1;
+                                uint timeout = 100;
+                                RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, backupServer);
+
+                                server.Send(socket, response);
+
+                                Console.Write(" >> Sent a response \n\n");
+                            }
+                            else
+                            {
+                                Console.Write(" >> Deregister received, removing client... \n\n");
+                                socket.Disconnect(false);
+                            }
+                        }
+                        else
+                        {
+                            NoOperationMessage response = new NoOperationMessage(backupServer);
+                            server.Send(socket, response);
+                            Console.Write(" >> Sent a NoOperation Message \n");
+                        }
                     }
                 }
             }

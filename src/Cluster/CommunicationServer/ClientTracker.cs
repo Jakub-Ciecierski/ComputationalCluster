@@ -1,4 +1,5 @@
 ﻿using Communication.Messages;
+using Communication.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +13,16 @@ namespace CommunicationServer
     {
         ID id;
 
-        private Dictionary<int, BackupCommunicationServer> backupCommunicationSeverList;
-        private Dictionary<int, ComputationalNode> computationalNodeList;
-        private Dictionary<int, TaskManager> taskManagerList;
+        private Dictionary<int, NetworkNode> backupCommunicationSeverList;
+        private Dictionary<int, NetworkNode> computationalNodeList;
+        private Dictionary<int, NetworkNode> taskManagerList;
 
         public ClientTracker()
         {
             id = new ID();
-            backupCommunicationSeverList = new Dictionary<int, BackupCommunicationServer>();
-            computationalNodeList = new Dictionary<int, ComputationalNode>();
-            taskManagerList = new Dictionary<int, TaskManager>();
+            backupCommunicationSeverList = new Dictionary<int, NetworkNode>();
+            computationalNodeList = new Dictionary<int, NetworkNode>();
+            taskManagerList = new Dictionary<int, NetworkNode>();
         }
 
         /// <summary>
@@ -39,13 +40,14 @@ namespace CommunicationServer
                      case RegisterType.CommunicationServer:
                          lock (backupCommunicationSeverList)
                          {
-                             var values = backupCommunicationSeverList.Select(x => x.Value).Cast<Module>().ToList();
+                             var values = backupCommunicationSeverList.Select(x => x.Value).Cast<NetworkNode>().ToList();
                              if(!CheckIP(values,ipAddress)){
                                  Console.WriteLine("Module was already added");
                              }
                              else
                              {
-                                 BackupCommunicationServer backupCommunicationServer = new BackupCommunicationServer(registerMessage.SolvableProblems,registerMessage.ParallelThreads,ipAddress);
+                                 NetworkNode backupCommunicationServer = new NetworkNode(RegisterType.CommunicationServer,
+                                                                registerMessage.ParallelThreads, registerMessage.SolvableProblems);
                                  lock (id)
                                  {
                                      id.Id++;
@@ -59,14 +61,15 @@ namespace CommunicationServer
                      case RegisterType.ComputationalNode:
                          lock (computationalNodeList)
                          {
-                             var values = computationalNodeList.Select(x => x.Value).Cast<Module>().ToList();
+                             var values = computationalNodeList.Select(x => x.Value).Cast<NetworkNode>().ToList();
                              if (!CheckIP(values, ipAddress))
                              {
                                  Console.WriteLine("Module was already added");
                              }
                              else
                              {
-                                 ComputationalNode computationalNode = new ComputationalNode(registerMessage.SolvableProblems, registerMessage.ParallelThreads, ipAddress);
+                                 NetworkNode computationalNode = new NetworkNode(RegisterType.ComputationalNode,
+                                                        registerMessage.ParallelThreads, registerMessage.SolvableProblems);
                                  lock (id)
                                  {
                                      id.Id++;
@@ -79,14 +82,15 @@ namespace CommunicationServer
                      case RegisterType.TaskManager:
                          lock (taskManagerList)
                          {
-                             var values = taskManagerList.Select(x => x.Value).Cast<Module>().ToList();
+                             var values = taskManagerList.Select(x => x.Value).Cast<NetworkNode>().ToList();
                              if (!CheckIP(values, ipAddress))
                              {
                                  Console.WriteLine("Module was already added");
                              }
                              else
                              {
-                                 TaskManager taskManager = new TaskManager(registerMessage.SolvableProblems, registerMessage.ParallelThreads, ipAddress);
+                                 NetworkNode taskManager = new NetworkNode(RegisterType.TaskManager, 
+                                                        registerMessage.ParallelThreads, registerMessage.SolvableProblems);
                                  lock (id)
                                  {
                                      id.Id++;
@@ -131,6 +135,7 @@ namespace CommunicationServer
                 });
         }
 
+        /*
         public async Task UpdateElementStatus(StatusMessage statusMessage)
         {
             await Task.Run(() =>
@@ -169,6 +174,7 @@ namespace CommunicationServer
                     }
                 });
         }
+         */
         
         /// <summary>
         /// Check if by any chance node/module is already in the system
@@ -176,15 +182,16 @@ namespace CommunicationServer
         /// <param name="modulesList"></param>
         /// <param name="ipAddress"></param>
         /// <returns></returns>
-        private bool CheckIP(List<Module> modulesList,IPAddress ipAddress)
+        private bool CheckIP(List<NetworkNode> modulesList, IPAddress ipAddress)
         {
+            /*
             foreach (var obj in modulesList)
             {
                 if (obj.IpAddress == ipAddress)
                 {
                     return false;
                 }
-            }
+            }*/
             return true;
         }
 

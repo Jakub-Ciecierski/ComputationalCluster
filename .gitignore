@@ -83,3 +83,7 @@
 /src/Cluster/ComputationalClient/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
 /src/Cluster/CommunicationServer/bin/Debug/CommunicationServer.vshost.exe.manifest
 /src/Cluster/CommunicationServer/obj/Debug/DesignTimeResolveAssemblyReferences.cache
+/src/Cluster/ComputationalNode/bin/Debug/Cluster.dll
+/src/Cluster/ComputationalNode/bin/Debug/Cluster.pdb
+/src/Cluster/TaskManager/bin/Debug/Cluster.dll
+/src/Cluster/TaskManager/bin/Debug/Cluster.pdb
