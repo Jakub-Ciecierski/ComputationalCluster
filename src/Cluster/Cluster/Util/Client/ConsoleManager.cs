@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster
+namespace Cluster.Util.Client
 {
     public class ConsoleManager
     {

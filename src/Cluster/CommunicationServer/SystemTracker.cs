@@ -13,6 +13,8 @@ namespace CommunicationServer
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
+        private ulong nextId;
+
         private BackupCommunicationServer[] backupServers;
 
         public BackupCommunicationServer[] BackupServers
@@ -32,6 +34,8 @@ namespace CommunicationServer
             BackupCommunicationServer[] backupServers = { backupServer };
 
             BackupServers = backupServers;
+
+            nextId = 1;
         }
         /*******************************************************************/
         /************************ PRIVATE METHODS **************************/
@@ -40,5 +44,18 @@ namespace CommunicationServer
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+
+        /*******************************************************************/
+        /************************* STATIC METHODS **************************/
+        /*******************************************************************/
+
+        /// <summary>
+        ///     Returns unique Id
+        /// </summary>
+        /// <returns></returns>
+        public ulong GetNextID()
+        {
+            return nextId++;
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace CommunicationServer.MessageCommunication
             Socket socket = messagePackage.Socket;
 
             // Place holder, have to fetch info from the System.
-            ulong id = 1;
+            ulong id = systemTracker.GetNextID();
             uint timeout = 100;
 
             if (!regMsg.Deregister)

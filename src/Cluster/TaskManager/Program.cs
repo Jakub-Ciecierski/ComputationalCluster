@@ -2,7 +2,7 @@
 using Communication.Messages;
 using Communication.Network;
 using Communication.Network.TCP;
-using Cluster;
+using Cluster.Util.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +24,15 @@ namespace TaskManager
             NetworkNode node = new NetworkNode(type, parallelThreads, problems);
 
             /************ Setup connection ************/
-            string host = "192.168.1.14";
-            IPAddress address = IPAddress.Parse(host);
-            int port = 5555;
+            string inputLine = "";
+            foreach (string arg in args)
+                inputLine += arg + " ";
+
+            InputParser inputParser = new InputParser(inputLine);
+            inputParser.ParseInput();
+
+            IPAddress address = inputParser.Address;
+            int port = inputParser.Port;
 
             Console.Write("I'm a " + node.Type + "\n\n");
             NetworkClient client = new NetworkClient(address, port);

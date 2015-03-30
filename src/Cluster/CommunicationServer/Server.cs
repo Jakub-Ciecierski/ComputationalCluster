@@ -17,9 +17,11 @@ namespace CommunicationServer
     {
         static void Main(string[] args)
         {
-            string host = "192.168.1.14";
-            IPAddress address = IPAddress.Parse(host);
+            IPAddress address = getIPAddress();
             int port = 5555;
+
+            Console.Write(" >> Starting server... \n\n");
+            Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");
 
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
@@ -44,6 +46,21 @@ namespace CommunicationServer
             // Start console manager
             ConsoleManager consoleManager = new ConsoleManager(server);
             consoleManager.Start();
+        }
+
+        private static IPAddress getIPAddress()
+        {
+            IPHostEntry host;
+            string localIP = "?";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily.ToString() == "InterNetwork")
+                {
+                    localIP = ip.ToString();
+                }
+            }
+            return IPAddress.Parse(localIP);
         }
     }
 }

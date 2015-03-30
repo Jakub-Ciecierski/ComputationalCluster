@@ -141,16 +141,31 @@ namespace Communication.Network.TCP
             return server.Pending();
         }
 
+        /// <summary>
+        ///     Sends a string message to the socket
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="message"></param>
         public void Send(Socket socket, string message)
         {
             base.Send(socket, message);
         }
 
+        /// <summary>
+        ///     Sends a message to the socket
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <param name="message"></param>
         public void Send(Socket socket, Message message)
         {
             base.Send(socket, message);
         }
 
+        /// <summary>
+        ///     Receives a message
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
         public Message Receive(Socket socket)
         {
             return base.Receive(socket);
@@ -208,6 +223,10 @@ namespace Communication.Network.TCP
             return sockets;
         }
 
+        /// <summary>
+        ///     Returns all connections as a string
+        /// </summary>
+        /// <returns></returns>
         public string ListAllConnections()
         {
             string con = "";

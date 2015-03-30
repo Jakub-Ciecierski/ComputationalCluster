@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace TestCluster
 {
@@ -25,25 +26,30 @@ namespace TestCluster
                 if(ip.AddressFamily.ToString() == "InterNetwork")
                     localhost = ip.ToString();
 
+            // Create message to send
+            RegisterMessage expectedMessage = TestHelper.CreateRegisterMessage();
+            string messageStr = expectedMessage.ToXmlString();
+
             // Create server
             IPAddress address = IPAddress.Parse(localhost);
             int port = 5555;
 
             NetworkServer server = new NetworkServer(address, port);
             server.Open();
+            server.StartListeningForClients();
+            
             // connect client
             NetworkClient client = new NetworkClient(address, port);
             client.Connect();
 
-            // Create message to send
-            RegisterMessage expectedMessage = TestHelper.CreateRegisterMessage();
-            string messageStr = expectedMessage.ToXmlString();
-            
-            // init sockets
+            client.Send(expectedMessage);
 
-            server.Send(client.Socket, expectedMessage);
+            ArrayList sockets = new ArrayList();
 
-            Message actualMessage = client.Receive();
+            while ((sockets = server.SelectForRead()).Count == 0) ;
+
+            Socket socket = (Socket)sockets[0];
+            Message actualMessage = server.Receive(socket);
 
             server.Close();
             client.Disconnect();

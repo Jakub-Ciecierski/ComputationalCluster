@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Communication;
-using Cluster;
+using Cluster.Util.Client;
 
 namespace ComputationalNode
 {
@@ -17,6 +17,7 @@ namespace ComputationalNode
     {
         static void Main(string[] args)
         {
+            
             /************ Create node object ************/
             RegisterType type = RegisterType.ComputationalNode;
             byte parallelThreads = 5;
@@ -25,9 +26,16 @@ namespace ComputationalNode
             NetworkNode node = new NetworkNode(type, parallelThreads, problems);
 
             /************ Setup connection ************/
-            string host = "192.168.1.14";
-            IPAddress address = IPAddress.Parse(host);
-            int port = 5555;
+            string inputLine = "";
+            foreach(string arg in args)
+                inputLine += arg + " ";
+
+            Console.Write("test: " + inputLine + "\n");
+            InputParser inputParser = new InputParser(inputLine);
+            inputParser.ParseInput();
+
+            IPAddress address = inputParser.Address;
+            int port = inputParser.Port;
 
             Console.Write("I'm a " + node.Type + "\n\n");
             NetworkClient client = new NetworkClient(address, port);
