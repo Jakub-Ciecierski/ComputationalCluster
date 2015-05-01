@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UCCTaskSolver</name>
+    </assembly>
+    <members>
+        <member name="T:UCCTaskSolver.TaskSolver">
+            <summary>
+            The class representing the algorithms for solving, dividing and merging problems
+            </summary>
+        </member>
+        <member name="F:UCCTaskSolver.TaskSolver._problemData">
+            <summary>
+            The field for storing serialized problem data
+            </summary>
+        </member>
+        <member name="M:UCCTaskSolver.TaskSolver.#ctor(System.Byte[])">
+            <summary>
+            The TaskSolver objects should be constructed from the data
+            </summary>
+            <param name="problemData"></param>
+        </member>
+        <member name="M:UCCTaskSolver.TaskSolver.Solve(System.Byte[],System.TimeSpan)">
+            <summary>
+            Finds optimal solution (or suboptimal but in the given time) for a provided problem
+            </summary>
+            <param name="partialData">Partial data part - definition of subspace/partial solution to be checked</param>
+            <param name="timeout">Limit of time for computations</param>
+        </member>
+        <member name="M:UCCTaskSolver.TaskSolver.DivideProblem(System.Int32)">
+            <summary>
+            Divides problem into partial problems
+            </summary>
+            <param name="threadCount">Number of threads in the whole cluster</param>
+        </member>
+        <member name="M:UCCTaskSolver.TaskSolver.MergeSolution(System.Byte[][])">
+            <summary>
+            Merges/chooses the best solution from the set of solutions
+            </summary>
+            <param name="solutions">Partial solutions / suboptimal solutions</param>
+        </member>
+        <member name="P:UCCTaskSolver.TaskSolver.Name">
+            <summary>
+            The name of the class of problems that could be solved (unique name for each team)
+            </summary>
+        </member>
+        <member name="P:UCCTaskSolver.TaskSolver.Exception">
+            <summary>
+            The exception (if any occured)
+            </summary>
+        </member>
+        <member name="P:UCCTaskSolver.TaskSolver.State">
+            <summary>
+            The state of the TaskSolver
+            </summary>
+        </member>
+        <member name="T:UCCTaskSolver.TaskSolver.TaskSolverState">
+            <summary>
+            The enum defining the possible states of the TaskSolver
+            </summary>
+        </member>
+        <member name="F:UCCTaskSolver.TaskSolver.TaskSolverState.OK">
+            <summary>
+            OK
+            </summary>
+        </member>
+        <member name="F:UCCTaskSolver.TaskSolver.TaskSolverState.Error">
+            <summary>
+            If exception occured during the computations
+            </summary>
+        </member>
+        <member name="F:UCCTaskSolver.TaskSolver.TaskSolverState.Timeout">
+            <summary>
+            If timeout reached
+            </summary>
+        </member>
+        <member name="T:UCCTaskSolver.TaskSolverCreator">
+            <summary>
+            Class for creating instances of TaskSolver where parameterless constructor is necessary
+            </summary>
+        </member>
+        <member name="M:UCCTaskSolver.TaskSolverCreator.CreateTaskSolverInstance(System.Byte[])">
+            <summary>
+            The method creating an instance of TaskSolver
+            </summary>
+            <param name="problemData">The data for initializing TaskSolver</param>
+            <returns>Task solver of proper type</returns>
+        </member>
+    </members>
+</doc>

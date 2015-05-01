@@ -1,6 +1,6 @@
 ﻿using Communication;
 using Communication.Messages;
-using Communication.Network;
+using Communication.Network.Client;
 using Communication.Network.TCP;
 using Cluster.Util.Client;
 using System;
@@ -9,6 +9,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using TaskManager.MessageCommunication;
+using System.Threading;
+using Communication.Network.Client.MessageCommunication;
 
 namespace TaskManager
 {
@@ -19,7 +22,7 @@ namespace TaskManager
             /************ Create node object ************/
             RegisterType type = RegisterType.TaskManager;
             byte parallelThreads = 5;
-            string[] problems = { "DVRP", "Graph coloring" };
+            string[] problems = { "DVRP"};
 
             NetworkNode node = new NetworkNode(type, parallelThreads, problems);
 
@@ -37,8 +40,36 @@ namespace TaskManager
             Console.Write("I'm a " + node.Type + "\n\n");
             NetworkClient client = new NetworkClient(address, port);
 
-            ConsoleManager consoleManager = new ConsoleManager(client, node);
-            consoleManager.StartConsole();   
+            /************ Setup Logic modules ************/
+
+            // system tracker
+            SystemTracker systemTracker = new SystemTracker(node);
+
+            MessageHandler messageHandler = new MessageHandler(systemTracker, client);
+
+            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
+
+
+            /************ Init all threads ************/
+            // TODO
+
+            /************ Register ************/
+            client.Connect();
+            Console.Write(" >> Sending Register message... \n\n");
+            messageProcessor.Communicate(node.ToRegisterMessage());
+
+            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+            /************ Start Logic modules ************/
+            keepAliveTimer.Start();
+
+            Object mutex = new Object();
+            // TODO Thread pool waiting
+
+            lock (mutex)
+            {
+                Monitor.Wait(mutex);
+            }
+            
         }
     }
 }

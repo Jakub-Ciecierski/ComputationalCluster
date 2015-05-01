@@ -17,6 +17,7 @@ namespace CommunicationServer
     {
         static void Main(string[] args)
         {
+            // TODO read from config file manager
             IPAddress address = getIPAddress();
             int port = 5555;
 
@@ -26,12 +27,15 @@ namespace CommunicationServer
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
 
+            // Create list of all clients
+            ClientTracker clientTracker = new ClientTracker();
+
             // Start network connection
             NetworkServer server = new NetworkServer(address, port);
             server.Open();
 
             // Create messageHandler
-            MessageHandler messageHandler = new MessageHandler(systemTracker, server);
+            MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, server);
 
             // Start message queue
             MessageQueue messageQueue = new MessageQueue(server);
@@ -61,6 +65,11 @@ namespace CommunicationServer
                 }
             }
             return IPAddress.Parse(localIP);
+        }
+
+        private static void consoleInput()
+        {
+
         }
     }
 }

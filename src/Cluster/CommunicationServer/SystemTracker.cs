@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,6 +24,33 @@ namespace CommunicationServer
             set { backupServers = value; }
         }
 
+        /// <summary>
+        ///     Checks if server is in backup or primary mode
+        /// </summary>
+        private bool backup;
+
+        public bool Backup
+        {
+            get { return backup; }
+            set { backup = value; }
+        }
+
+        private int port;
+
+        public int Port
+        {
+            get { return port; }
+            set { port = value; }
+        }
+
+        private IPAddress address;
+
+        public IPAddress Address
+        {
+            get { return address; }
+            set { address = value; }
+        }
+
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -41,12 +69,10 @@ namespace CommunicationServer
         /************************ PRIVATE METHODS **************************/
         /*******************************************************************/
 
-        /*******************************************************************/
-        /************************* PUBLIC METHODS **************************/
-        /*******************************************************************/
+
 
         /*******************************************************************/
-        /************************* STATIC METHODS **************************/
+        /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
         /// <summary>
@@ -57,5 +83,6 @@ namespace CommunicationServer
         {
             return nextId++;
         }
+
     }
 }

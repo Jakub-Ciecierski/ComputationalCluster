@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication.Network
+namespace Communication.Network.Client
 {
     /// <summary>
     ///     NetworkNode encapsulates a network node in the cluster,
@@ -17,23 +17,13 @@ namespace Communication.Network
     {
         private byte parallelThreads;
 
-        private RegisterType type;
-
-        private string[] solvableProblems;
-
-        private uint timeout;
-
-        private ulong id;
-
-        private BackupCommunicationServer[] backupServers;
-
-        private StatusThread[] statusThreads;
-
         public byte ParallelThreads
         {
             get { return parallelThreads; }
             private set { parallelThreads = value; }
         }
+
+        private RegisterType type;
 
         public RegisterType Type
         {
@@ -41,29 +31,39 @@ namespace Communication.Network
             private set { type = value; }
         }
 
+        private string[] solvableProblems;
+
         public string[] SolvableProblems
         {
             get { return solvableProblems; }
             private set { solvableProblems = value; }
         }
 
+        private ulong id;
+
         public ulong Id
         {
             get { return id; }
-            private set { id = value; }
+            set { id = value; }
         }
+
+        private uint timeout;
 
         public uint Timeout
         {
             get { return timeout; }
-            private set { timeout = value; }
+            set { timeout = value; }
         }
+
+        private BackupCommunicationServer[] backupServers;
 
         public BackupCommunicationServer[] BackupServers
         {
             get { return backupServers; }
-            private set { backupServers = value; }
+            set { backupServers = value; }
         }
+
+        private StatusThread[] statusThreads;
 
         public StatusThread[] StatusThreads
         {
@@ -87,6 +87,19 @@ namespace Communication.Network
             StatusThreads = new StatusThread[ParallelThreads];
         }
 
+        public NetworkNode(RegisterType type, byte parallelThreads, string[] solvableProblems, ulong id, uint timeout, BackupCommunicationServer[] backupServers)
+        {
+            Type = type;
+            ParallelThreads = parallelThreads;
+            SolvableProblems = solvableProblems;
+
+            Id = id;
+            Timeout = timeout;
+            BackupServers = backupServers;
+
+            StatusThreads = new StatusThread[ParallelThreads];
+        }
+
         /// <summary>
         ///     Returns RegisterMessage based on this node
         /// </summary>
@@ -106,23 +119,14 @@ namespace Communication.Network
             return new RegisterMessage(Type, ParallelThreads, SolvableProblems, true, Id);
         }
 
+        /// <summary>
+        ///     Returns a status message based on this object
+        /// </summary>
+        /// <returns></returns>
         public StatusMessage ToStatusMessage()
         {
             return new StatusMessage(Id, StatusThreads);
         }
 
-        /// <summary>
-        ///     Handles the RegisaterResponse message by setting up
-        ///     the properties
-        /// </summary>
-        /// <param name="message">
-        ///     RegisterResponse Message to be handled
-        /// </param>
-        public void RegisterResponseHandler(RegisterResponseMessage message)
-        {
-            Id = message.Id;
-            Timeout = message.Timeout;
-            BackupServers = message.BackupCommunicationServers;
-        }
     }
 }

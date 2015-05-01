@@ -63,7 +63,11 @@
     <Compile Include="Messages\StatusMessage.scheme.cs" />
     <Compile Include="MessageComponents\PartialProblem.cs" />
     <Compile Include="MessageComponents\PartialProblem.scheme.cs" />
-    <Compile Include="Network\NetworkNode.cs" />
+    <Compile Include="Network\Client\MessageCommunication\KeepAliveTimer.cs" />
+    <Compile Include="Network\Client\MessageCommunication\ClientMessageHandler.cs" />
+    <Compile Include="Network\Client\MessageCommunication\MessageProcessor.cs" />
+    <Compile Include="Network\Client\NetworkNode.cs" />
+    <Compile Include="Network\Client\ClientSystemTracker.cs" />
     <Compile Include="Network\TCP\NetworkClient.cs" />
     <Compile Include="Network\TCP\NetworkServer.cs" />
     <Compile Include="Network\TCP\NetworkConnection.cs" />
@@ -74,7 +78,9 @@
     <Compile Include="MessageComponents\StatusThread.cs" />
     <Compile Include="MessageComponents\StatusThread.scheme.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Network\Client\ThreadPool\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

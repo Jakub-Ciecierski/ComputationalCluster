@@ -1,6 +1,7 @@
 ﻿using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
+using Communication.Network.Client;
 using Communication.Network.TCP;
 using CommunicationServer.Communication;
 using System;
@@ -31,6 +32,11 @@ namespace CommunicationServer.MessageCommunication
         private SystemTracker systemTracker;
 
         /// <summary>
+        ///     A list of all clients
+        /// </summary>
+        private ClientTracker clientTracker;
+
+        /// <summary>
         ///     TODO might be fetched from systemTracker
         /// </summary>
         private NetworkServer server;
@@ -39,9 +45,10 @@ namespace CommunicationServer.MessageCommunication
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public MessageHandler(SystemTracker systemTracker, NetworkServer server)
+        public MessageHandler(SystemTracker systemTracker, ClientTracker clientTracker ,NetworkServer server)
         {
             this.systemTracker = systemTracker;
+            this.clientTracker = clientTracker;
             this.server = server;
         }
 
@@ -56,27 +63,35 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleRegisterMessage(MessagePackage messagePackage)
         {
-            RegisterMessage regMsg = (RegisterMessage)messagePackage.Message;
+            RegisterMessage message = (RegisterMessage)messagePackage.Message;
             Socket socket = messagePackage.Socket;
 
-            // Place holder, have to fetch info from the System.
-            ulong id = systemTracker.GetNextID();
-            uint timeout = 100;
-
-            if (!regMsg.Deregister)
+            if (message.Deregister)
             {
+                Console.Write(" >> Deregister received, removing client... \n\n");
+                socket.Disconnect(false);
+                clientTracker.RemoveNode(message.Id, message.Type);
+            }
+            else
+            {
+                // Place holder, have to fetch info from the System.
+                ulong id = systemTracker.GetNextID();
+                uint timeout = 4;
+
                 Console.Write(" >> Adding Node to List \n\n");
 
                 RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, systemTracker.BackupServers);
 
+                // Create NetworkNode instance
+                NetworkNode node = new NetworkNode(message.Type, message.ParallelThreads, message.SolvableProblems, 
+                                                    response.Id, response.Timeout, response.BackupCommunicationServers);
+
+                // Add the node to system
+                clientTracker.AddNode(node);
+
                 server.Send(socket, response);
 
                 Console.Write(" >> Sent a response \n\n");
-            }
-            else
-            {
-                Console.Write(" >> Deregister received, removing client... \n\n");
-                socket.Disconnect(false);
             }
         }
 

@@ -54,6 +54,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemTracker.cs" />
+    <Compile Include="TaskModule\Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -10,6 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Communication;
 using Cluster.Util.Client;
+using ComputationalNode.MessageCommunication;
+using Communication.Network.Client;
+using Communication.Network.Client.MessageCommunication;
 
 namespace ComputationalNode
 {
@@ -21,7 +24,7 @@ namespace ComputationalNode
             /************ Create node object ************/
             RegisterType type = RegisterType.ComputationalNode;
             byte parallelThreads = 5;
-            string[] problems = { "DVRP", "Graph coloring" };
+            string[] problems = { "DVRP" };
 
             NetworkNode node = new NetworkNode(type, parallelThreads, problems);
 
@@ -39,9 +42,37 @@ namespace ComputationalNode
             Console.Write("I'm a " + node.Type + "\n\n");
             NetworkClient client = new NetworkClient(address, port);
 
-            ConsoleManager consoleManager = new ConsoleManager(client, node);
-            consoleManager.StartConsole();
-        }
+            /************ Setup Logic modules ************/
 
+            // system tracker
+            SystemTracker systemTracker = new SystemTracker(node);
+
+            MessageHandler messageHandler = new MessageHandler(systemTracker, client);
+
+            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
+
+
+            /************ Init all threads ************/
+            // TODO
+
+            /************ Register ************/
+            client.Connect();
+            Console.Write(" >> Sending Register message... \n\n");
+            messageProcessor.Communicate(node.ToRegisterMessage());
+
+            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+            /************ Start Logic modules ************/
+            keepAliveTimer.Start();
+
+            Object mutex = new Object();
+            //for (; ; ) ;
+            // TODO Thread pool waiting
+            
+            lock (mutex)
+            {
+                Monitor.Wait(mutex);
+            }
+            
+        }
     }
 }
