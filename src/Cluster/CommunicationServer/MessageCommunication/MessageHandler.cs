@@ -109,6 +109,11 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleStatusMessage(MessagePackage messagePackage)
         {
+            StatusMessage message = (StatusMessage)messagePackage.Message;
+            // check what node
+            // check if any task is avaible
+            //message.
+
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
