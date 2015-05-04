@@ -1,3 +1,5 @@
+/doc/DVRP/benchmarks/montemanni/example1_vt.txt
+/doc/DVRP/benchmarks/montemanni/example2_vt.txt
 /local_papers
 /src/Cluster/Cluster/bin/Debug
 /src/Cluster/Cluster/obj/Debug
@@ -92,3 +94,10 @@
 /src/Cluster/TaskManager/TaskManager.csproj.user
 /src/Cluster/TaskManager/bin/Debug/UCCTaskSolver.dll
 /src/Cluster/TaskManager/bin/Debug/UCCTaskSolver.xml
+
+/doc/DVRP/benchmarks/montemanni/vrpplus_sol.txt
+/doc/DVRP/benchmarks/montemanni/~$rmat specification for routing problem instances.doc
+/doc/Universal Computational Cluster.v.2.2.pdf
+/src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.dll
+/src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.xml
+/doc/*
