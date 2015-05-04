@@ -4,7 +4,7 @@ using Communication.Messages;
 using Communication.Network.Client;
 using Communication.Network.TCP;
 using CommunicationServer.Communication;
-using CommunicationServer.TaskModule;
+using Communication.TaskModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -69,6 +69,7 @@
     <Compile Include="Network\Client\MessageCommunication\MessageProcessor.cs" />
     <Compile Include="Network\Client\NetworkNode.cs" />
     <Compile Include="Network\Client\ClientSystemTracker.cs" />
+    <Compile Include="Network\Client\ThreadPool\ThreadTracker.cs" />
     <Compile Include="Network\TCP\NetworkClient.cs" />
     <Compile Include="Network\TCP\NetworkServer.cs" />
     <Compile Include="Network\TCP\NetworkConnection.cs" />
@@ -78,10 +79,11 @@
     <Compile Include="Messages\SolveRequestResponseMessage.cs" />
     <Compile Include="MessageComponents\StatusThread.cs" />
     <Compile Include="MessageComponents\StatusThread.scheme.cs" />
+    <Compile Include="TaskModule\Task.cs" />
+    <Compile Include="TaskModule\TaskStatus.cs" />
+    <Compile Include="TaskModule\TaskTracker.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Network\Client\ThreadPool\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

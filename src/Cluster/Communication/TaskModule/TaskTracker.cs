@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommunicationServer.TaskModule
+namespace Communication.TaskModule
 {
     public class TaskTracker
     {
