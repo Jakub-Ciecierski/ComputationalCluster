@@ -4,12 +4,12 @@ using Communication.Messages;
 using Communication.Network.Client;
 using Communication.Network.TCP;
 using CommunicationServer.Communication;
+using CommunicationServer.TaskModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CommunicationServer.MessageCommunication
 {
@@ -37,6 +37,11 @@ namespace CommunicationServer.MessageCommunication
         private ClientTracker clientTracker;
 
         /// <summary>
+        ///     Trask all tasks
+        /// </summary>
+        private TaskTracker taskTracker;
+
+        /// <summary>
         ///     TODO might be fetched from systemTracker
         /// </summary>
         private NetworkServer server;
@@ -45,10 +50,13 @@ namespace CommunicationServer.MessageCommunication
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public MessageHandler(SystemTracker systemTracker, ClientTracker clientTracker ,NetworkServer server)
+        public MessageHandler(SystemTracker systemTracker, ClientTracker clientTracker , 
+                            TaskTracker taskTracker, NetworkServer server)
         {
             this.systemTracker = systemTracker;
             this.clientTracker = clientTracker;
+            this.taskTracker = taskTracker;
+
             this.server = server;
         }
 
@@ -151,7 +159,9 @@ namespace CommunicationServer.MessageCommunication
             // if the cluster can solve this problem
             if (clientTracker.CanSolveProblem(message.ProblemType))
             {
-                //Task
+                Task task = new Task(systemTracker.GetNextTaskID(), message.ProblemType,
+                                        message.Data);
+                taskTracker.AddTask(task);
             }
 
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);

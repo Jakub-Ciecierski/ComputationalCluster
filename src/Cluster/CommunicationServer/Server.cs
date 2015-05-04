@@ -11,6 +11,7 @@ using Communication.Network.TCP;
 using Communication.MessageComponents;
 using CommunicationServer.MessageCommunication;
 using System.Threading;
+using CommunicationServer.TaskModule;
 namespace CommunicationServer
 {
     class Server
@@ -30,12 +31,15 @@ namespace CommunicationServer
             // Create list of all clients
             ClientTracker clientTracker = new ClientTracker();
 
+            // Task Tracker
+            TaskTracker taskTracker = new TaskTracker();
+
             // Start network connection
             NetworkServer server = new NetworkServer(address, port);
             server.Open();
 
             // Create messageHandler
-            MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, server);
+            MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, taskTracker, server);
 
             // Start message queue
             MessageQueue messageQueue = new MessageQueue(server);
