@@ -6,65 +6,24 @@ using System.Threading.Tasks;
 
 namespace CommunicationServer.TaskModule
 {
-    public class Task
+    public class TaskTracker
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        private ulong id;
-
-        public ulong ID
-        {
-            get { return id; }
-            private set { id = value; }
-        }
-
         /// <summary>
-        ///     Current status
+        ///     List of tasks
         /// </summary>
-        private TaskStatus status;
-
-        public TaskStatus Status
-        {
-            get { return status; }
-            set { status = value; }
-        }
-
-        /// <summary>
-        ///     Type of the task
-        /// </summary>
-        private string type;
-
-        public string Type
-        {
-            get { return type; }
-            set { type = value; }
-        }
-
-        /// <summary>
-        ///     Actual data of the problem
-        /// </summary>
-        private byte[] data;
-
-        public byte[] Data
-        {
-            get { return data; }
-            private set { data = value; }
-        }
-
+        private List<Task> tasks = new List<Task>();
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public Task(ulong id, string type, byte[] data)
+        public TaskTracker()
         {
-            ID = id;
-            Data = data;
-            Type = type;
 
-            Status = TaskStatus.New;
         }
 
         /*******************************************************************/
@@ -74,5 +33,10 @@ namespace CommunicationServer.TaskModule
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+
+        public void AddTask(Task task)
+        {
+            tasks.Add(task);
+        }
     }
 }
