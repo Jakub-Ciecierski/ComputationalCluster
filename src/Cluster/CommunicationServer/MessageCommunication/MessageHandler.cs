@@ -162,12 +162,14 @@ namespace CommunicationServer.MessageCommunication
                 Task task = new Task(systemTracker.GetNextTaskID(), message.ProblemType,
                                         message.Data);
                 taskTracker.AddTask(task);
+                SolveRequestResponseMessage response = new SolveRequestResponseMessage(task.ID);
+                server.Send(messagePackage.Socket, response);
             }
+            //SolveRequestResponseMessage response = new SolveRequestResponseMessage(task)
+           // NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
 
-            NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
-
-            server.Send(messagePackage.Socket, response);
-            Console.Write(" >> Sent a NoOperation Message \n");
+            //server.Send(messagePackage.Socket, response);
+            Console.Write(" >> Sent a SolveRequest Message \n");
         }
 
         /*******************************************************************/
