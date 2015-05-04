@@ -25,7 +25,7 @@ namespace ComputationalClient
             SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
 
 
-            NetworkNode node = new NetworkNode(type, parallelThreads, problems);
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
             /************ Setup connection ************/
             string host = "192.168.1.11";
             IPAddress address = IPAddress.Parse(host);
@@ -51,9 +51,10 @@ namespace ComputationalClient
             Console.Write(" >> Sending Solve Request message... \n\n");
             messageProcessor.Communicate(solveRequestMessage);
 
-            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker,solveRequestMessage.Id);
+           //KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
             /************ Start Logic modules ************/
-            keepAliveTimer.Start();
+            clientComputationsCheckTimer.Start();
 
             Object mutex = new Object();
             // TODO Thread pool waiting

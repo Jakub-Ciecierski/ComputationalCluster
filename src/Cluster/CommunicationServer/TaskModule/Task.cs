@@ -57,7 +57,7 @@ namespace CommunicationServer.TaskModule
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
-
+        public Task() { }
         public Task(ulong id, string type, byte[] data)
         {
             ID = id;

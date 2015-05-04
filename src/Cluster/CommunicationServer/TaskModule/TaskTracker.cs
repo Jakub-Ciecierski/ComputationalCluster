@@ -38,5 +38,18 @@ namespace CommunicationServer.TaskModule
         {
             tasks.Add(task);
         }
+        public Task GetTask(int id)
+        {
+            Task tmp = new Task();
+            foreach(Task task in tasks)
+            {
+                if ((int)task.ID == id)
+                {
+                    tmp = task;
+                    break;
+                }
+            }
+            return tmp;
+        }
     }
 }

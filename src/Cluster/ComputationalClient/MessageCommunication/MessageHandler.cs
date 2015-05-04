@@ -1,4 +1,5 @@
 ﻿using Communication;
+using Communication.MessageComponents;
 using Communication.Messages;
 using Communication.Network.Client.MessageCommunication;
 using Communication.Network.TCP;
@@ -38,12 +39,21 @@ namespace ComputationalClient.MessageCommunication
 
         private void handleSolutionsMessage(SolutionsMessage solutionsMessage)
         {
-            throw new NotImplementedException();
+            if (solutionsMessage.Solutions[0].Type == SolutionsSolutionType.Ongoing)
+            {
+                Console.WriteLine("Ongoing computations. Waiting for full solution");
+            }
+            else
+            {
+                Console.WriteLine("Complete solution has been received");
+            }
         }
 
         private void handleSolverRequestResponseMessage(SolveRequestResponseMessage solveRequestResponseMessage)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Solve request respone message has been received");
+            systemTracker.Node.Id = solveRequestResponseMessage.Id;
+
         }
     }
 }

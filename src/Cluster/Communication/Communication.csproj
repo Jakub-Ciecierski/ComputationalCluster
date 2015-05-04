@@ -63,6 +63,7 @@
     <Compile Include="Messages\StatusMessage.scheme.cs" />
     <Compile Include="MessageComponents\PartialProblem.cs" />
     <Compile Include="MessageComponents\PartialProblem.scheme.cs" />
+    <Compile Include="Network\Client\MessageCommunication\ClientCompuatationsCheckTimer.cs" />
     <Compile Include="Network\Client\MessageCommunication\KeepAliveTimer.cs" />
     <Compile Include="Network\Client\MessageCommunication\ClientMessageHandler.cs" />
     <Compile Include="Network\Client\MessageCommunication\MessageProcessor.cs" />
