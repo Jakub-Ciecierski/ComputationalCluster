@@ -20,7 +20,7 @@ namespace Communication.Messages
         // Specifies the name of element as presented in xml file
         public const string ELEMENT_NAME = "SolveRequest";
 
-        private SolveRequestMessage() { }
+        public SolveRequestMessage() { }
 
         /// <summary>
         /// 

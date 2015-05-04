@@ -22,11 +22,9 @@ namespace ComputationalClient
             RegisterType type = RegisterType.CompuationalClient;
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
-            SolveRequestMessage solveRequestMessage;
-            string problemType="";
-            byte[] data = new byte[1];
-            ulong solvingTimeout;
-            ulong id;
+            SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
+
+
             NetworkNode node = new NetworkNode(type, parallelThreads, problems);
             /************ Setup connection ************/
             string host = "192.168.1.11";
@@ -39,9 +37,8 @@ namespace ComputationalClient
             /*************** Register *****************/
             Console.Write(" >>Type in a file path:\n");
             String filePath = Console.ReadLine();
-            loadDataFromDisc(filePath,problemType,data);
+            solveRequestMessage = loadDataFromDisc(filePath);
 
-            solveRequestMessage = new SolveRequestMessage(problemType, data);
             /******  setup logic modules *****************/
             SystemTracker systemTracker = new SystemTracker(node);
 
@@ -70,10 +67,13 @@ namespace ComputationalClient
 
         }
 
-        private static void loadDataFromDisc(String filePath, string problemType, byte[] data)
+        private static SolveRequestMessage loadDataFromDisc(String filePath)
         {
+            SolveRequestMessage solveRequestMessage;
             StreamReader streamReader = new StreamReader(filePath);
             string text = streamReader.ReadToEnd();
+            string problemType="";
+            byte[] data;
             streamReader.Close();
 
             String extension = Path.GetExtension(filePath);
@@ -85,11 +85,13 @@ namespace ComputationalClient
             else
             {
                 Console.WriteLine(">> Unsupported problem type. Please load a problem with one of the following problem types: \n *DVRP");
+                return null;
             }
 
             data = GetBytes(filePath);
+            solveRequestMessage = new SolveRequestMessage(problemType, data);
             Console.WriteLine(">>success");
-            
+            return solveRequestMessage;
         }
 
         private static void registerToServer(NetworkClient client, NetworkNode node)
