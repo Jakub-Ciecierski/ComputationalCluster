@@ -142,5 +142,8 @@ namespace Communication.Messages
 
         /// <remarks/>
         CommunicationServer,
+
+        ///<remarks/>
+        CompuationalClient
     }
 }

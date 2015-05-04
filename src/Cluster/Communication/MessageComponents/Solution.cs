@@ -43,6 +43,11 @@ namespace Communication.MessageComponents
 
         }
 
+        public Solution(SolutionsSolutionType type)
+        {
+            Type = type;
+        }
+
         public override bool Equals(object obj)
         {
             Solution solution = obj as Solution;

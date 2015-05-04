@@ -136,9 +136,18 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolutionRequestMessage(MessagePackage messagePackage)
         {
-            NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
-            server.Send(messagePackage.Socket, response);
-            Console.Write(" >> Sent a NoOperation Message \n");
+            SolutionRequestMessage message = (SolutionRequestMessage)messagePackage.Message;
+            Task task = taskTracker.GetTask((int)message.Id);
+            if(task.Status != TaskStatus.Done){
+                Solution[] solution = {new Solution(SolutionsSolutionType.Ongoing)};
+                SolutionsMessage response = new SolutionsMessage(task.Type,task.ID,null,solution);
+                server.Send(messagePackage.Socket, response);
+                Console.Write(" >> Solution status message \n");
+            }
+            else
+            {
+                Console.Write(" >> Final solution has been sent\n");
+            }
         }
 
         /// <summary>
@@ -167,12 +176,18 @@ namespace CommunicationServer.MessageCommunication
                 Task task = new Task(systemTracker.GetNextTaskID(), message.ProblemType,
                                         message.Data);
                 taskTracker.AddTask(task);
+                SolveRequestResponseMessage response = new SolveRequestResponseMessage(task.ID);
+                server.Send(messagePackage.Socket, response);
+
+
+                Console.Write(" >> Sent a SolveRequestResponse Message \n");
             }
+            else
+            {
+                //TODO RESPONSE MESSAGE
 
-            NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
-
-            server.Send(messagePackage.Socket, response);
-            Console.Write(" >> Sent a NoOperation Message \n");
+                Console.Write(" >> TM ERROR\n");
+            }
         }
 
         /*******************************************************************/
