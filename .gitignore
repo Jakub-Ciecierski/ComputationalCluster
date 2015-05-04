@@ -90,3 +90,5 @@
 /src/Cluster/ComputationalNode/ComputationalNode.csproj.user
 /src/Cluster/ComputationalNode/obj/Debug/DesignTimeResolveAssemblyReferences.cache
 /src/Cluster/TaskManager/TaskManager.csproj.user
+/src/Cluster/TaskManager/bin/Debug/UCCTaskSolver.dll
+/src/Cluster/TaskManager/bin/Debug/UCCTaskSolver.xml
