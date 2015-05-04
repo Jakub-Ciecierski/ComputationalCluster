@@ -22,14 +22,16 @@ namespace ComputationalClient
         public void PrintHelp()
         {
             Console.Write(" >> Possible Messages: \n");
-            Console.Write(StatusMessage.ELEMENT_NAME + "\n");
-            Console.Write("De" + RegisterMessage.ELEMENT_NAME + "\n");
+            Console.Write(SolveRequestMessage.ELEMENT_NAME + "\n");
+            Console.Write(SolutionRequestMessage.ELEMENT_NAME + "\n");
             Console.Write("quit \n");
         }
 
         public void StartConsole()
         {
-            Console.Write(" >> Send Message \n");
+            Console.Write(" >> Type in a file path \n");
+
+
 
             bool _continue = true;
             while (_continue)

@@ -90,3 +90,6 @@
 /src/Cluster/ComputationalNode/ComputationalNode.csproj.user
 /src/Cluster/ComputationalNode/obj/Debug/DesignTimeResolveAssemblyReferences.cache
 /src/Cluster/TaskManager/TaskManager.csproj.user
+/src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe
+/src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe.config
+/src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe.manifest
