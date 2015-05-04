@@ -1,0 +1,16 @@
+1) Client Tracker
+      1.1) usuwanie componentow z ClientTrackera
+      1.2) command line parameters
+      1.3) timeout
+
+2) Implementacje handlerow w MessageHandler ze strony Servera, i ich odpowiedniki ze strony node'ow
+      2.1) Broadcast do Backupserverow
+      2.2) Sprawdzanie czy Main Server padl -> przejscie na nastepny Backup server
+
+3) Obczaic Input data algorytmu DVRP, tak zeby Client node mogl wysylac zapytanie
+
+4) Interface TaskSolvera
+
+5) Implementacja problemu DVRP
+
+6) Poprawki communikacji, expections, standariztion (EOF instead of size of the msg) etc

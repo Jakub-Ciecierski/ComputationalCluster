@@ -1,0 +1,110 @@
+VRPTEST okul17a
+COMMENT: 
+COMMENT: Best known objective: 1089.36
+NAME: okul17a
+NUM_DEPOTS: 1
+NUM_CAPACITIES: 1
+NUM_VISITS: 17
+NUM_LOCATIONS: 18
+NUM_VEHICLES: 17
+CAPACITIES: 100
+DATA_SECTION
+DEPOTS
+  0
+DEMAND_SECTION
+  1 -18
+  2 -31
+  3 -14
+  4 -35
+  5 -49
+  6 -26
+  7 -32
+  8 -29
+  9 -15
+  10 -33
+  11 -24
+  12 -10
+  13 -28
+  14 -26
+  15 -33
+  16 -35
+  17 -20
+LOCATION_COORD_SECTION
+  0 0 0
+  1 -55 79
+  2 80 -13
+  3 32 -54
+  4 93 -50
+  5 68 -43
+  6 76 -26
+  7 -57 87
+  8 -3 -85
+  9 -97 70
+  10 57 -3
+  11 -96 79
+  12 -44 -70
+  13 74 -49
+  14 -29 -98
+  15 13 -70
+  16 82 -26
+  17 64 -21
+DEPOT_LOCATION_SECTION
+  0 0
+VISIT_LOCATION_SECTION
+  1 1
+  2 2
+  3 3
+  4 4
+  5 5
+  6 6
+  7 7
+  8 8
+  9 9
+  10 10
+  11 11
+  12 12
+  13 13
+  14 14
+  15 15
+  16 16
+  17 17
+DURATION_SECTION
+  1 20
+  2 20
+  3 20
+  4 20
+  5 20
+  6 20
+  7 20
+  8 20
+  9 20
+  10 20
+  11 20
+  12 20
+  13 20
+  14 20
+  15 20
+  16 20
+  17 20
+DEPOT_TIME_WINDOW_SECTION
+  0 0 740
+COMMENT: TIMESTEP: 7
+TIME_AVAIL_SECTION
+  1 299
+  2 429
+  3 382
+  4 135
+  5 23
+  6 101
+  7 296
+  8 174
+  9 483
+  10 624
+  11 195
+  12 726
+  13 193
+  14 125
+  15 599
+  16 524
+  17 485
+EOF
