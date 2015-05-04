@@ -96,3 +96,5 @@
 /src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe
 /src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe.config
 /src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe.manifest
+/src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.dll
+/src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.xml
