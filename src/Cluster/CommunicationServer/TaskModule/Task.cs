@@ -12,9 +12,30 @@ namespace CommunicationServer.TaskModule
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
+        private int id;
+
+        public int ID
+        {
+            get { return id; }
+            private set { id = value; }
+        }
+
+        private TaskStatus status;
+
+        public TaskStatus Status
+        {
+            get { return status; }
+            set { status = value; }
+        }
+
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
+
+        public Task(int id)
+        {
+            ID = id;
+        }
 
         /*******************************************************************/
         /************************ PRIVATE METHODS **************************/

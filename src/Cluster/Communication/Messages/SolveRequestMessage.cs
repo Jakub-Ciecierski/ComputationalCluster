@@ -51,6 +51,48 @@ namespace Communication.Messages
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="problemType">
+        ///     The name of the type as given by TaskSolver
+        /// </param>
+        /// <param name="data">
+        ///     The serialized problem data
+        /// </param>
+        /// <param name="solvingTimeout">
+        ///     The optional time restriction for solving the problem (in ms)
+        /// </param>
+        public SolveRequestMessage(string problemType, byte[] data,
+                            ulong solvingTimeout)
+        {
+            ProblemType = problemType;
+            Data = data;
+
+            SolvingTimeout = solvingTimeout;
+            SolvingTimeoutSpecified = true;
+
+            IdSpecified = false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="problemType">
+        ///     The name of the type as given by TaskSolver
+        /// </param>
+        /// <param name="data">
+        ///     The serialized problem data
+        /// </param>
+        public SolveRequestMessage(string problemType, byte[] data)
+        {
+            ProblemType = problemType;
+            Data = data;
+            SolvingTimeoutSpecified = false;
+
+            IdSpecified = false;
+        }
+
+        /// <summary>
         ///     Construct an object message from input xml
         /// </summary>
         /// <param name="xmlString">

@@ -40,13 +40,16 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UCCTaskSolver">
+      <HintPath>..\..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageCommunication\MessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SystemTracker.cs" />
-    <Compile Include="TaskSolver\DVRPSolver.cs" />
+    <Compile Include="TaskSolvers\DVRP\DVRPSolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

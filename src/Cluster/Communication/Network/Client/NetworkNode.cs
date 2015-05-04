@@ -71,7 +71,6 @@ namespace Communication.Network.Client
             set { statusThreads = value; }
         }
 
-
         /// <summary>
         ///     Creates Network node
         /// </summary>
@@ -98,6 +97,21 @@ namespace Communication.Network.Client
             BackupServers = backupServers;
 
             StatusThreads = new StatusThread[ParallelThreads];
+        }
+
+        /// <summary>
+        ///     Check if this node can solve a given problem
+        /// </summary>
+        /// <param name="problem"></param>
+        /// <returns></returns>
+        public bool CanSolveProblem(string problem)
+        {
+            for (int i = 0; i < SolvableProblems.Count(); i++)
+            {
+                if (SolvableProblems[i].Equals(problem))
+                    return true;
+            }
+            return false;
         }
 
         /// <summary>

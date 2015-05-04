@@ -1,13 +1,16 @@
 ﻿using Communication;
 using Communication.Messages;
 using Communication.Network.Client;
+using Communication.Network.Client.MessageCommunication;
 using Communication.Network.TCP;
+using ComputationalClient.MessageCommunication;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ComputationalClient
@@ -16,11 +19,15 @@ namespace ComputationalClient
     {
         static void Main(string[] args)
         {
+            RegisterType type = RegisterType.CompuationalClient;
+            byte parallelThreads = 5;
+            string[] problems = { "DVRP" };
             SolveRequestMessage solveRequestMessage;
             string problemType="";
             byte[] data = new byte[1];
-            ulong solvingTimeout = 0;
-            ulong id=0;
+            ulong solvingTimeout;
+            ulong id;
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems);
             /************ Setup connection ************/
             string host = "192.168.1.11";
             IPAddress address = IPAddress.Parse(host);
@@ -32,20 +39,46 @@ namespace ComputationalClient
             /*************** Register *****************/
             Console.Write(" >>Type in a file path:\n");
             String filePath = Console.ReadLine();
-            loadDataFromDisc(filePath,problemType,data,solvingTimeout,id);
+            loadDataFromDisc(filePath,problemType,data);
 
-        //      ConsoleManager consoleManager = new ConsoleManager(client);
-        //    consoleManager.StartConsole();
+            solveRequestMessage = new SolveRequestMessage(problemType, data);
+            /******  setup logic modules *****************/
+            SystemTracker systemTracker = new SystemTracker(node);
+
+            MessageHandler messageHandler = new MessageHandler(systemTracker, client);
+            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
+
+
+            /************ send solve request *****************/
+            client.Connect();
+            Console.Write(" >> Sending Solve Request message... \n\n");
+            messageProcessor.Communicate(solveRequestMessage);
+
+            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+            /************ Start Logic modules ************/
+            keepAliveTimer.Start();
+
+            Object mutex = new Object();
+            // TODO Thread pool waiting
+
+            lock (mutex)
+            {
+                Monitor.Wait(mutex);
+            }
+            //ConsoleManager consoleManager = new ConsoleManager(client);
+            //consoleManager.StartConsole();
 
         }
 
-        private static void loadDataFromDisc(String filePath, string problemType, byte[] data, ulong solvingTimeout, ulong id)
+        private static void loadDataFromDisc(String filePath, string problemType, byte[] data)
         {
             StreamReader streamReader = new StreamReader(filePath);
             string text = streamReader.ReadToEnd();
             streamReader.Close();
 
-            if (Path.GetExtension(filePath) == "vrp")
+            String extension = Path.GetExtension(filePath);
+
+            if (extension == ".vrp")
             {
                 problemType = "DVRP";
             }
@@ -53,10 +86,9 @@ namespace ComputationalClient
             {
                 Console.WriteLine(">> Unsupported problem type. Please load a problem with one of the following problem types: \n *DVRP");
             }
-            
-            data = Convert.ToByte(
 
-
+            data = GetBytes(filePath);
+            Console.WriteLine(">>success");
             
         }
 

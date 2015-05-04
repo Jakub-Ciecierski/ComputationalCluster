@@ -75,7 +75,7 @@ namespace CommunicationServer.MessageCommunication
             else
             {
                 // Place holder, have to fetch info from the System.
-                ulong id = systemTracker.GetNextID();
+                ulong id = systemTracker.GetNextClientID();
                 uint timeout = 4;
 
                 Console.Write(" >> Adding Node to List \n\n");
@@ -146,7 +146,16 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolveRequestMessage(MessagePackage messagePackage)
         {
+            SolveRequestMessage message = (SolveRequestMessage)messagePackage.Message;
+
+            // if the cluster can solve this problem
+            if (clientTracker.CanSolveProblem(message.ProblemType))
+            {
+                //Task
+            }
+
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
         }

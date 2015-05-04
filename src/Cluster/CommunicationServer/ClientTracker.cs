@@ -86,6 +86,39 @@ namespace CommunicationServer
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+        /// <summary>
+        ///     Checks if the cluster has nodes with given
+        ///     problem solver
+        /// </summary>
+        /// <param name="problem"></param>
+        /// <returns></returns>
+        public bool CanSolveProblem(string problem)
+        {
+            bool tmSolve = false;
+            bool cnSolve = false;
+
+            foreach(NetworkNode tm in taskManagers)
+            {
+                if(tm.CanSolveProblem(problem))
+                    tmSolve = true;
+            }
+            foreach(NetworkNode cn in compNodes)
+            {
+                if(cn.CanSolveProblem(problem))
+                    cnSolve = true;
+            }
+
+            return (tmSolve && cnSolve);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public int GetComputationalNodeCount()
+        {
+            return compNodes.Count;
+        }
 
         /// <summary>
         ///     Adds a network node to the list of clients
