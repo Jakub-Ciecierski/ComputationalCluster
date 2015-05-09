@@ -1,36 +1,29 @@
-﻿using Communication.Network;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication.Network.Client
+namespace Cluster.Client
 {
-    public abstract class ClientSystemTracker
+    public class TaskTracker
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
         /// <summary>
-        ///     Networknode describing this system
+        ///     List of tasks
         /// </summary>
-        private NetworkNode node;
-
-        public NetworkNode Node
-        {
-            get { return node; }
-            private set { node = value; }
-        }
+        private List<Task> tasks = new List<Task>();
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public ClientSystemTracker(NetworkNode node)
+        public TaskTracker()
         {
-            this.Node = node;
+
         }
 
         /*******************************************************************/
@@ -40,5 +33,22 @@ namespace Communication.Network.Client
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+
+        public void AddTask(Task task)
+        {
+            tasks.Add(task);
+        }
+
+        public Task GetTask(int id)
+        {
+            foreach(Task task in tasks)
+            {
+                if (task.ID == id)
+                {
+                    return task;
+                }
+            }
+            return null;
+        }
     }
 }

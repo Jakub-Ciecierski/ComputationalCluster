@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication.Network.Client.MessageCommunication
+namespace Cluster.Client.Messaging
 {
     /// <summary>
     ///     Handles the communication with the server

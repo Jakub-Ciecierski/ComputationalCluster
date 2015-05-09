@@ -1,4 +1,4 @@
-﻿using Communication.Network.TCP;
+﻿using Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,13 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Communication.Network.Client.MessageCommunication
+namespace Cluster.Client.Messaging
 {
     /// <summary>
-    ///     Makes sure that keep alive messages are sent within the timout
-    ///     and uses the MessageHandler to handle the requests.
+    /// Sends client solutionRequest messages.
     /// </summary>
-    public class KeepAliveTimer
+    public class ClientCompuatationsCheckTimer
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
@@ -22,10 +21,12 @@ namespace Communication.Network.Client.MessageCommunication
 
         private ClientSystemTracker systemTracker;
 
+        private SolutionRequestMessage solutionRequestMessage;
+
         /// <summary>
         ///     Timer for sending messages
         /// </summary>
-        private System.Timers.Timer timer;
+        private Timer timer;
 
         private bool isActive;
 
@@ -38,7 +39,7 @@ namespace Communication.Network.Client.MessageCommunication
             set { isActive = value; }
         }
 
-        /******************************************************************/
+          /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
@@ -47,8 +48,10 @@ namespace Communication.Network.Client.MessageCommunication
         /// </summary>
         /// <param name="messageProcessor"></param>
         /// /// <param name="systemTracker"></param>
-        public KeepAliveTimer(MessageProcessor messageProcessor, ClientSystemTracker systemTracker)
+        public ClientCompuatationsCheckTimer(MessageProcessor messageProcessor, ClientSystemTracker systemTracker, ulong id)
         {
+            solutionRequestMessage = new SolutionRequestMessage(id);
+
             this.messageProcessor = messageProcessor;
             this.systemTracker = systemTracker;
 
@@ -66,10 +69,9 @@ namespace Communication.Network.Client.MessageCommunication
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
             Console.Write(" >> Sending Status message... \n\n");
-            messageProcessor.Communicate(systemTracker.Node.ToStatusMessage());
+            
+            messageProcessor.Communicate(solutionRequestMessage);
         }
-
-
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/

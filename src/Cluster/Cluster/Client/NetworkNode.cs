@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication.Network.Client
+namespace Cluster.Client
 {
     /// <summary>
     ///     NetworkNode encapsulates a network node in the cluster,
@@ -15,6 +15,10 @@ namespace Communication.Network.Client
     /// </summary>
     public class NetworkNode
     {
+        /******************************************************************/
+        /******************* PROPERTIES, PRIVATE FIELDS *******************/
+        /******************************************************************/
+
         private byte parallelThreads;
 
         public byte ParallelThreads
@@ -63,12 +67,25 @@ namespace Communication.Network.Client
             set { backupServers = value; }
         }
 
-        private StatusThread[] statusThreads;
+        private TaskThread[] taskThreads;
 
-        public StatusThread[] StatusThreads
+        public TaskThread[] TaskThreads
         {
-            get { return statusThreads; }
-            set { statusThreads = value; }
+            get { return taskThreads; }
+            private set { taskThreads = value; }
+        }
+
+
+        /******************************************************************/
+        /************************** CONSTRUCTORS **************************/
+        /******************************************************************/
+
+        /// <summary>
+        ///     TODO
+        /// </summary>
+        public NetworkNode()
+        {
+
         }
 
         /// <summary>
@@ -77,26 +94,49 @@ namespace Communication.Network.Client
         /// <param name="type"></param>
         /// <param name="parallelThreads"></param>
         /// <param name="solvableProblems"></param>
-        public NetworkNode(RegisterType type, byte parallelThreads, string[] solvableProblems)
+        public NetworkNode(RegisterType type, TaskThread[] taskThreads)
         {
             Type = type;
-            ParallelThreads = parallelThreads;
-            SolvableProblems = solvableProblems;
 
-            StatusThreads = new StatusThread[ParallelThreads];
+            TaskThreads = taskThreads;
+            ParallelThreads = (byte)TaskThreads.Count();
         }
 
-        public NetworkNode(RegisterType type, byte parallelThreads, string[] solvableProblems, ulong id, uint timeout, BackupCommunicationServer[] backupServers)
+        public NetworkNode(RegisterType type, ulong id, uint timeout, TaskThread[] taskThreads)
         {
             Type = type;
-            ParallelThreads = parallelThreads;
-            SolvableProblems = solvableProblems;
 
             Id = id;
             Timeout = timeout;
-            BackupServers = backupServers;
 
-            StatusThreads = new StatusThread[ParallelThreads];
+            TaskThreads = taskThreads;
+            ParallelThreads = (byte)TaskThreads.Count();
+        }
+
+        /*******************************************************************/
+        /************************ PRIVATE METHODS **************************/
+        /*******************************************************************/
+
+        private string[] getSolvableProblems()
+        {
+            string[] problems = new string[ParallelThreads];
+            for(int i =0;i<ParallelThreads;i++){
+                problems[i] = TaskThreads[i].SolvableProblem;
+            }
+            return problems;
+        }
+
+        /*******************************************************************/
+        /************************* PUBLIC METHODS **************************/
+        /*******************************************************************/
+
+        /// <summary>
+        ///     Adds a thread to the network node
+        /// </summary>
+        /// <param name="taskThread"></param>
+        public void AddThread(TaskThread taskThread)
+        {
+            // TODO
         }
 
         /// <summary>
@@ -106,11 +146,12 @@ namespace Communication.Network.Client
         /// <returns></returns>
         public bool CanSolveProblem(string problem)
         {
-            for (int i = 0; i < SolvableProblems.Count(); i++)
+            foreach (TaskThread taskThread in TaskThreads)
             {
-                if (SolvableProblems[i].Equals(problem))
+                if (taskThread.SolvableProblem.Equals(problem))
                     return true;
             }
+
             return false;
         }
 
@@ -120,7 +161,7 @@ namespace Communication.Network.Client
         /// <returns></returns>
         public RegisterMessage ToRegisterMessage()
         {
-            return new RegisterMessage(Type, ParallelThreads, SolvableProblems);
+            return new RegisterMessage(Type, ParallelThreads, getSolvableProblems());
         }
 
         /// <summary>
@@ -139,7 +180,12 @@ namespace Communication.Network.Client
         /// <returns></returns>
         public StatusMessage ToStatusMessage()
         {
-            return new StatusMessage(Id, StatusThreads);
+            StatusThread[] statusThreads = new StatusThread[ParallelThreads];
+            for (int i = 0; i < ParallelThreads; i++)
+            {
+                statusThreads[i] = TaskThreads[i].StatusThread;
+            }
+            return new StatusMessage(Id, statusThreads);
         }
 
     }

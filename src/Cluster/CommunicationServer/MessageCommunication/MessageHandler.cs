@@ -1,10 +1,9 @@
-﻿using Communication;
+﻿using Cluster.Client;
+using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
-using Communication.Network.Client;
 using Communication.Network.TCP;
 using CommunicationServer.Communication;
-using Communication.TaskModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,10 +88,13 @@ namespace CommunicationServer.MessageCommunication
                 Console.Write(" >> Adding Node to List \n\n");
 
                 RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, systemTracker.BackupServers);
-
+                
                 // Create NetworkNode instance
+                /* TODO
                 NetworkNode node = new NetworkNode(message.Type, message.ParallelThreads, message.SolvableProblems, 
                                                     response.Id, response.Timeout, response.BackupCommunicationServers);
+                 */
+                NetworkNode node = new NetworkNode();
 
                 // Add the node to system
                 clientTracker.AddNode(node);
@@ -112,6 +114,7 @@ namespace CommunicationServer.MessageCommunication
             StatusMessage message = (StatusMessage)messagePackage.Message;
             // check what node
             // check if any task is avaible
+
             //message.
 
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
@@ -137,17 +140,7 @@ namespace CommunicationServer.MessageCommunication
         private void handleSolutionRequestMessage(MessagePackage messagePackage)
         {
             SolutionRequestMessage message = (SolutionRequestMessage)messagePackage.Message;
-            Task task = taskTracker.GetTask((int)message.Id);
-            if(task.Status != TaskStatus.Done){
-                Solution[] solution = {new Solution(SolutionsSolutionType.Ongoing)};
-                SolutionsMessage response = new SolutionsMessage(task.Type,task.ID,null,solution);
-                server.Send(messagePackage.Socket, response);
-                Console.Write(" >> Solution status message \n");
-            }
-            else
-            {
-                Console.Write(" >> Final solution has been sent\n");
-            }
+
         }
 
         /// <summary>
@@ -170,6 +163,7 @@ namespace CommunicationServer.MessageCommunication
         {
             SolveRequestMessage message = (SolveRequestMessage)messagePackage.Message;
 
+            /*
             // if the cluster can solve this problem
             if (clientTracker.CanSolveProblem(message.ProblemType))
             {
@@ -187,7 +181,7 @@ namespace CommunicationServer.MessageCommunication
                 //TODO RESPONSE MESSAGE
 
                 Console.Write(" >> TM ERROR\n");
-            }
+            }*/
         }
 
         /*******************************************************************/

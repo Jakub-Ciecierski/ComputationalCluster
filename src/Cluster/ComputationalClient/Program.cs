@@ -1,7 +1,7 @@
-﻿using Communication;
+﻿using Cluster.Client;
+using Cluster.Client.Messaging;
+using Communication;
 using Communication.Messages;
-using Communication.Network.Client;
-using Communication.Network.Client.MessageCommunication;
 using Communication.Network.TCP;
 using ComputationalClient.MessageCommunication;
 using System;
@@ -25,7 +25,8 @@ namespace ComputationalClient
             SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
 
 
-            NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
+            //NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
+            NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
             string host = "192.168.1.11";
             IPAddress address = IPAddress.Parse(host);

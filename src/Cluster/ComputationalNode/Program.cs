@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 using Communication;
 using Cluster.Util.Client;
 using ComputationalNode.MessageCommunication;
-using Communication.Network.Client;
-using Communication.Network.Client.MessageCommunication;
+using Cluster.Client.Messaging;
+using Cluster.Client;
 
 namespace ComputationalNode
 {
@@ -26,7 +26,8 @@ namespace ComputationalNode
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
 
-            NetworkNode node = new NetworkNode(type, parallelThreads, problems);
+            //NetworkNode node = new NetworkNode(type, parallelThreads, problems);
+            NetworkNode node = new NetworkNode();
 
             /************ Setup connection ************/
             string inputLine = "";

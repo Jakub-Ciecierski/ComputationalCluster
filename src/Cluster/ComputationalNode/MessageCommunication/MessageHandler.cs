@@ -1,6 +1,6 @@
-﻿using Communication;
+﻿using Cluster.Client.Messaging;
+using Communication;
 using Communication.Messages;
-using Communication.Network.Client.MessageCommunication;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Communication.Network.Client.MessageCommunication
+namespace Cluster.Client.Messaging
 {
     /// <summary>
     ///     Used to send a given message and wait response.

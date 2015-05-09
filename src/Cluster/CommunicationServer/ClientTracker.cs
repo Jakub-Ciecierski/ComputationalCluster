@@ -1,5 +1,5 @@
-﻿using Communication.Messages;
-using Communication.Network.Client;
+﻿using Cluster.Client;
+using Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +86,22 @@ namespace CommunicationServer
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+
+        public NetworkNode GetNodeByID(ulong id)
+        {
+            foreach (NetworkNode tm in taskManagers)
+            {
+                if (tm.Id == id)
+                    return tm;
+            }
+            foreach (NetworkNode cn in compNodes)
+            {
+                if (cn.Id == id)
+                    return cn;
+            }
+            return null;
+        }
+
         /// <summary>
         ///     Checks if the cluster has nodes with given
         ///     problem solver

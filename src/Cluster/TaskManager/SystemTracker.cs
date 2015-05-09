@@ -1,5 +1,5 @@
-﻿using Communication.Network;
-using Communication.Network.Client;
+﻿using Cluster.Client;
+using Communication.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;

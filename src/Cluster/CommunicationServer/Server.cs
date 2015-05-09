@@ -11,7 +11,7 @@ using Communication.Network.TCP;
 using Communication.MessageComponents;
 using CommunicationServer.MessageCommunication;
 using System.Threading;
-using Communication.TaskModule;
+using Cluster.Client;
 namespace CommunicationServer
 {
     class Server

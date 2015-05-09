@@ -37,8 +37,21 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="UCCTaskSolver">
+      <HintPath>..\..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Client\ClientSystemTracker.cs" />
+    <Compile Include="Client\Messaging\ClientCompuatationsCheckTimer.cs" />
+    <Compile Include="Client\Messaging\ClientMessageHandler.cs" />
+    <Compile Include="Client\Messaging\KeepAliveTimer.cs" />
+    <Compile Include="Client\Messaging\MessageProcessor.cs" />
+    <Compile Include="Client\NetworkNode.cs" />
+    <Compile Include="TaskModule\Task.cs" />
+    <Compile Include="TaskModule\TaskStatus.cs" />
+    <Compile Include="Client\TaskThread.cs" />
+    <Compile Include="TaskModule\TaskTracker.cs" />
     <Compile Include="Util\Client\InputParser.cs" />
     <Compile Include="Util\Client\ConsoleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -52,6 +52,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cluster\Cluster.csproj">
+      <Project>{ef194a4d-5398-4764-bd92-9515449296c9}</Project>
+      <Name>Cluster</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>

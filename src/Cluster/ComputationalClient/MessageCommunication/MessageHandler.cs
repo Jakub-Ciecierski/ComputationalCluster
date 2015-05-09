@@ -1,7 +1,7 @@
-﻿using Communication;
+﻿using Cluster.Client.Messaging;
+using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
-using Communication.Network.Client.MessageCommunication;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ComputationalClient.MessageCommunication
 {
-    class MessageHandler:ClientMessageHandler
+    class MessageHandler : ClientMessageHandler
     {
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/

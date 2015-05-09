@@ -1,29 +1,36 @@
-﻿using System;
+﻿using Communication.Network;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Communication.TaskModule
+namespace Cluster.Client
 {
-    public class TaskTracker
+    public abstract class ClientSystemTracker
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
         /// <summary>
-        ///     List of tasks
+        ///     Networknode describing this system
         /// </summary>
-        private List<Task> tasks = new List<Task>();
+        private NetworkNode node;
+
+        public NetworkNode Node
+        {
+            get { return node; }
+            private set { node = value; }
+        }
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public TaskTracker()
+        public ClientSystemTracker(NetworkNode node)
         {
-
+            this.Node = node;
         }
 
         /*******************************************************************/
@@ -33,23 +40,5 @@ namespace Communication.TaskModule
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
-
-        public void AddTask(Task task)
-        {
-            tasks.Add(task);
-        }
-        public Task GetTask(int id)
-        {
-            Task tmp = new Task();
-            foreach(Task task in tasks)
-            {
-                if ((int)task.ID == id)
-                {
-                    tmp = task;
-                    break;
-                }
-            }
-            return tmp;
-        }
     }
 }

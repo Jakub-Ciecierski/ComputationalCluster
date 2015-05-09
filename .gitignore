@@ -112,3 +112,11 @@
 =======
 /doc/*
 >>>>>>> .theirs
+/src/Cluster/CommunicationServer/bin/Debug/Cluster.dll
+/src/Cluster/CommunicationServer/bin/Debug/Cluster.pdb
+/src/Cluster/CommunicationServer/bin/Debug/UCCTaskSolver.dll
+/src/Cluster/CommunicationServer/bin/Debug/UCCTaskSolver.xml
+/src/Cluster/ComputationalClient/bin/Debug/Cluster.dll
+/src/Cluster/ComputationalClient/bin/Debug/Cluster.pdb
+/src/Cluster/ComputationalClient/bin/Debug/UCCTaskSolver.dll
+/src/Cluster/ComputationalClient/bin/Debug/UCCTaskSolver.xml
