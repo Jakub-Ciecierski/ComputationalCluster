@@ -100,18 +100,12 @@
 /src/Cluster/ComputationalClient/bin/Debug/ComputationalClient.vshost.exe.manifest
 /src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.dll
 /src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.xml
-
+/doc/
 /doc/DVRP/benchmarks/montemanni/vrpplus_sol.txt
 /doc/DVRP/benchmarks/montemanni/~$rmat specification for routing problem instances.doc
 /doc/Universal Computational Cluster.v.2.2.pdf
 /src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.dll
 /src/Cluster/ComputationalNode/bin/Debug/UCCTaskSolver.xml
-/doc/*
-<<<<<<< .mine
-
-=======
-/doc/*
->>>>>>> .theirs
 /src/Cluster/CommunicationServer/bin/Debug/Cluster.dll
 /src/Cluster/CommunicationServer/bin/Debug/Cluster.pdb
 /src/Cluster/CommunicationServer/bin/Debug/UCCTaskSolver.dll
