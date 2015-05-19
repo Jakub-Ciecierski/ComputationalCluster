@@ -91,5 +91,33 @@ namespace Cluster.Math
             }
             return System.Math.Sqrt(distance);
         }
+
+        public static Point mean(List<Point> points)
+        {
+            List<int> mean_coords = new List<int>(points[0].Size());
+            for(int i=0;i<mean_coords.Count;i++)
+            {
+                mean_coords[i] = 0;
+            }
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                Point point = points[i];
+
+                for (int j = 0; j < point.Size(); j++) 
+                {
+                    mean_coords[j] += point.ElementAt(j);
+                }
+                
+            }
+
+            for (int i = 0; i < mean_coords.Count; i++)
+            {
+                mean_coords[i] /= mean_coords.Count;
+            }
+
+            return new Point(mean_coords);
+        }
+        
     }
 }
