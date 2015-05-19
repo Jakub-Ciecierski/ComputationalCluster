@@ -1,12 +1,13 @@
 ﻿using Cluster.Client.Messaging;
 using Communication;
+using Communication.MessageComponents;
 using Communication.Messages;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
 namespace TaskManager.MessageCommunication
 {
@@ -46,6 +47,18 @@ namespace TaskManager.MessageCommunication
 
         private void handleDivideProblemMessage(DivideProblemMessage message)
         {
+
+            for (int i = 0; i < systemTracker.Node.ParallelThreads; i++)
+            {
+                if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
+                {
+                    systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
+                    systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, message.Data) {Status = Cluster.TaskStatus.Dividing};
+                    systemTracker.Node.TaskThreads[i].Start();
+                    break;
+                }
+            }
+            ///WE SHOULD CHECK HERE WHETHER THERE WAS IDLE THREAD AVALIABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
             // start computations
         }

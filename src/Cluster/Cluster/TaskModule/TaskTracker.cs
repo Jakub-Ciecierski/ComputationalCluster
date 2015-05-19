@@ -17,6 +17,12 @@ namespace Cluster.Client
         /// </summary>
         private List<Task> tasks = new List<Task>();
 
+        public List<Task> Tasks
+        {
+            get { return tasks; }
+            private set { tasks = value; }
+        }
+
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/

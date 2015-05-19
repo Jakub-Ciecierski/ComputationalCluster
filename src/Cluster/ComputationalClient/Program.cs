@@ -25,10 +25,10 @@ namespace ComputationalClient
             SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
 
 
-            //NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
-            NetworkNode node = new NetworkNode();
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
+            //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
-            string host = "192.168.1.11";
+            string host = "192.168.111.194";
             IPAddress address = IPAddress.Parse(host);
             int port = 5555;
 
@@ -46,6 +46,7 @@ namespace ComputationalClient
             MessageHandler messageHandler = new MessageHandler(systemTracker, client);
             MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
 
+            node.MessageProcessor = messageProcessor;
 
             /************ send solve request *****************/
             client.Connect();

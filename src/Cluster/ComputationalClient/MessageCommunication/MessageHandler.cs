@@ -39,12 +39,27 @@ namespace ComputationalClient.MessageCommunication
 
         private void handleSolutionsMessage(SolutionsMessage solutionsMessage)
         {
-            if (solutionsMessage.Solutions[0].Type == SolutionsSolutionType.Ongoing)
+            bool isOnGoing = false;
+
+            if (solutionsMessage.Solutions == null)
             {
                 Console.WriteLine("Ongoing computations. Waiting for full solution");
             }
             else
             {
+                for (int i = 0; i < solutionsMessage.Solutions.Count(); i++)
+                {
+                    if (solutionsMessage.Solutions[i].Type == SolutionsSolutionType.Ongoing)
+                    {
+                        isOnGoing = true;
+                        break;
+                    }
+                }
+                if (isOnGoing)
+                {
+                    Console.WriteLine("Ongoing computations. Waiting for full solution");
+                }
+                else
                 Console.WriteLine("Complete solution has been received");
             }
         }

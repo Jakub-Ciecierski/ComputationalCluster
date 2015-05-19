@@ -68,7 +68,7 @@ namespace Cluster.Client.Messaging
 
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
-            Console.Write(" >> Sending Status message... \n\n");
+            Console.Write(" >> Sending Solution Request message... \n\n");
             
             messageProcessor.Communicate(solutionRequestMessage);
         }

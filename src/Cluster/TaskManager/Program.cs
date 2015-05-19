@@ -24,8 +24,8 @@ namespace TaskManager
             byte parallelThreads = 5;
             string[] problems = { "DVRP"};
 
-            //NetworkNode node = new NetworkNode(type, parallelThreads, problems);
-            NetworkNode node = new NetworkNode();
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems);
+            //NetworkNode node = new NetworkNode();
 
             /************ Setup connection ************/
             string inputLine = "";
@@ -50,6 +50,7 @@ namespace TaskManager
 
             MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
 
+            node.MessageProcessor = messageProcessor;
 
             /************ Init all threads ************/
             // TODO

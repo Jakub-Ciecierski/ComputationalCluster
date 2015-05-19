@@ -1,4 +1,6 @@
-﻿using Communication.MessageComponents;
+﻿using Cluster.Client.Messaging;
+using Communication.MessageComponents;
+using Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +28,15 @@ namespace Cluster
         public int ID
         {
             get { return id; }
-            private set { id = value; }
+            private set { id = value; } 
+        }
+
+        private int nodeID;
+
+        public int NodeID
+        {
+            get { return nodeID; }
+            set { nodeID = value; }
         }
 
 
@@ -105,16 +115,27 @@ namespace Cluster
             get { return thread; }
             private set { thread = value; }
         }
-        
 
+        private MessageProcessor messageProcessor;
+
+        public MessageProcessor MessageProcessor
+        {
+            get { return messageProcessor; }
+            set { messageProcessor = value; }
+        }
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public TaskThread(int id, UCCTaskSolver.TaskSolver taskSolver, string solvableProblem)
+        public TaskThread(int id, string solvableProblem, MessageProcessor messageProcessor, int nodeID)
         {
+
+            NodeID = nodeID;
             ID = id;
+            //UCCTaskSolver.TaskSolver taskSolver = UCCTaskSolver.TaskSolverCreator();
             TaskSolver = taskSolver;
+            StatusThread = new StatusThread(StatusThreadState.Idle);
+            MessageProcessor = messageProcessor;
 
             SolvableProblem = solvableProblem;
         }
@@ -129,6 +150,35 @@ namespace Cluster
 
         public void Start()
         {
+            switch (currentTask.Status)
+            {
+                case TaskStatus.Dividing:
+
+                    byte[][] dividedProblems =  taskSolver.DivideProblem(4);
+
+                    PartialProblem[] partialProblems = new PartialProblem[dividedProblems.Count()];
+                    for (int i = 0; i < dividedProblems.Count(); i++)
+                    {
+                        partialProblems[i] = new PartialProblem((ulong)currentTask.ID, dividedProblems[i], (ulong)NodeID);
+                    }
+                    SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(currentTask.Type, (ulong) currentTask.ID, currentTask.CommonData, (ulong)4, partialProblems);
+
+                    messageProcessor.Communicate(solvePartialProblemsMessage);
+                        break;
+                    
+                case TaskStatus.Solving:
+
+                    byte[] solvedPartialProblem = taskSolver.Solve(currentTask.BaseData, new TimeSpan(0, 0, 5));
+
+                    break;
+
+                case TaskStatus.Merging:
+
+                    byte[] mergedSolution = taskSolver.Solve(currentTask.BaseData, new TimeSpan(0, 0, 5));
+                    
+                    break;
+                
+            }
             // Implement in private methods:
             // Depending on what has to be computed
             // run a task solver method.

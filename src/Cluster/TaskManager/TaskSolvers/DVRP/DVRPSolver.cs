@@ -16,7 +16,13 @@ namespace TaskManager.TaskSolvers.DVRP
 
         public override byte[][] DivideProblem(int threadCount)
         {
-            throw new NotImplementedException();
+            byte[][] temporarySolution = new byte[5][];
+            for (int i = 0; i < 5; i++)
+            {
+                temporarySolution[i] = new byte[1];
+            }
+
+            return temporarySolution;
         }
 
         public override byte[] MergeSolution(byte[][] solutions)
