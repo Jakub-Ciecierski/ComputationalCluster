@@ -31,11 +31,10 @@ namespace TaskManager.TaskSolvers.DVRP
 
         }
 
-        public void FullSolveTest() 
+        public static void FullSolveTest(VRPParser benchmark) 
         {
             /******************* DIVIDE *************************/
-            // Static problem data
-            VRPParser benchmark = TestCases.Test1();
+
 
             // Combine coords (x, y) and time_avail (z)
             List<Point> data = new List<Point>();
@@ -49,7 +48,7 @@ namespace TaskManager.TaskSolvers.DVRP
                 point_coords.Add(benchmark.Location_Coord[loc_index][0]);
                 point_coords.Add(benchmark.Location_Coord[loc_index][1]);
 
-                point_coords.Add(benchmark.Time_Avail[loc_index - 1]);
+                point_coords.Add(benchmark.Time_Avail[loc_index - 1] + benchmark.Duration[loc_index - 1]);
 
                 data.Add(new Point(point_coords));
             }
@@ -64,27 +63,71 @@ namespace TaskManager.TaskSolvers.DVRP
             clusters.Compute();
 
             // create k benchmarks for k solvers
+            VRPParser[] partial_benchmarks = new VRPParser[k];
             for (int i = 0; i < k; i++) 
             {
                 int num_depots = benchmark.Num_Depots;
                 VRPParser partial_benchmark = benchmark; // remind your self of references
 
-                int num_visits = clusters.GetCluterIndecies(k).Count;
-                int num_locations = clusters.GetCluterIndecies(k).Count + num_depots;
+                List<int> clustes_indecies = clusters.GetCluterIndecies(k);
+                int num_visits = clustes_indecies.Count;
 
+                /************ LOCATION_COORD ****************/
+                int num_locations = clustes_indecies.Count + num_depots;
                 int[][] location_coord = new int[num_locations][];
-                location_coord[0] = new int[2];
-                location_coord[0][0] = benchmark.Location_Coord[0][0];
-                location_coord[0][1] = benchmark.Location_Coord[0][1];
-
-                for (int j = num_depots; j < num_locations; j++) 
+                // get all depots locations
+                for (int j = 0; j < num_depots; j++)
                 {
-
+                    location_coord[j] = new int[2];
+                    location_coord[j][0] = benchmark.Location_Coord[j][0];
+                    location_coord[j][1] = benchmark.Location_Coord[j][1];
                 }
 
+                // get all partial clients locations
+                for (int j = num_depots; j < num_locations; j++) 
+                {
+                    location_coord[j][0] = benchmark.Location_Coord[clustes_indecies[j]][0];
+                    location_coord[j][1] = benchmark.Location_Coord[clustes_indecies[j]][1];
+                }
+                partial_benchmark.Location_Coord = location_coord;
+
+                /************ DEMAND ****************/
+                int[] demands = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    demands[j] = benchmark.Demands[clustes_indecies[j]];
+                }
+                partial_benchmark.Demands = demands;
+
+                /************ VISIT_LOCATION ****************/
+                int[] visit_location = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    visit_location[j] = j;//benchmark.Visit_Location[clustes_indecies[j]];
+                }
+                partial_benchmark.Visit_Location = visit_location;
+
+                /************ DURATION ****************/
+                int[] duration = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    duration[j] = benchmark.Duration[clustes_indecies[j]];
+                }
+                partial_benchmark.Duration = duration;
+
+                /************ TIME_AVAIL ****************/
+                int[] time_avail = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    time_avail[j] = benchmark.Time_Avail[clustes_indecies[j]];
+                }
+                partial_benchmark.Time_Avail = time_avail;
+
+                partial_benchmarks[i] = partial_benchmark;
             }
 
             /******************* SOLVE *************************/
+            // TSP ...
 
             /******************* MERGE *************************/
         }

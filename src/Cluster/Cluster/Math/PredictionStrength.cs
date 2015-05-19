@@ -82,7 +82,7 @@ namespace Cluster.Math
             for(int i = 0;i<k;i++)
             {
                 // Get cluster points from indecies
-                List<int> cluster_indicies = testingCluster.GetCluterIndecies(k);
+                List<int> cluster_indicies = testingCluster.GetCluterIndecies(i);
                 List<Point> testingClusterPoints = new List<Point>();
 
                 for(int j=0;j<cluster_indicies.Count;j++)
@@ -101,7 +101,7 @@ namespace Cluster.Math
                         sum += m[j][l];
                     }
                 }
-                strenghs[k] = sum / testingClusterPoints.Count;
+                strenghs[i] = sum / testingClusterPoints.Count;
             }
 
             // return the min strength of all testing clusters

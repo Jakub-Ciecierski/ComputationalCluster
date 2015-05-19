@@ -99,7 +99,7 @@ namespace Cluster.Math
                     {
                         cluster_points.Add(data[cluster[i]]);
                     }
-                    centroids[j] = Point.mean(cluster_points);
+                    centroids[j] = Point.mean(cluster_points); // TODO cluster had no points
                 }
 
                 // 2)

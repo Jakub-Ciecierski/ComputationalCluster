@@ -37,6 +37,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.XML" />
+    <Reference Include="UCCTaskSolver, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\lib\UCCTaskSolver.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -52,6 +56,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CommunicationTest.cs" />
+    <Compile Include="DVRPTest.cs" />
     <Compile Include="InputParserTest.cs" />
     <Compile Include="NetworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,6 +70,10 @@
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskManager\TaskManager.csproj">
+      <Project>{cbd22081-0767-441c-a0d0-69bc092e9238}</Project>
+      <Name>TaskManager</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

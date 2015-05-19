@@ -94,10 +94,10 @@ namespace Cluster.Math
 
         public static Point mean(List<Point> points)
         {
-            List<int> mean_coords = new List<int>(points[0].Size());
-            for(int i=0;i<mean_coords.Count;i++)
+            List<int> mean_coords = new List<int>();
+            for(int i=0;i<points[0].Size();i++)
             {
-                mean_coords[i] = 0;
+                mean_coords.Add(0);
             }
 
             for (int i = 0; i < points.Count; i++)
