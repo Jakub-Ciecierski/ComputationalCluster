@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Cluster.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.Clustering
 {
     public class KMeans
     {
@@ -30,6 +31,8 @@ namespace Cluster.Math
 
         private int max_iter;
 
+        private int current_iter;
+
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
@@ -40,14 +43,11 @@ namespace Cluster.Math
             this.k = k;
 
             this.max_iter = max_iter;
+            this.current_iter = 0;
 
             this.distance_tolerance = distance_tolerance;
 
-            for (int i = 0; i < k; i++)
-            {
-                List<int> row = new List<int>();
-                cluster_indices.Add(row);
-            }
+            this.cluster_indices = refreshIndicesList();
 
             centroids = new Point[k];
         }
@@ -67,8 +67,6 @@ namespace Cluster.Math
         /// </summary>
         private void kmeansLogic()
         {
-            int iter = 0;
-
             // 1) randomly select k centers
             initCentroids();
 
@@ -76,7 +74,7 @@ namespace Cluster.Math
             updateClusters();
 
             // 4) repeat 2) and 3) untill convergence
-            while (iter++ < max_iter)
+            while (current_iter++ < max_iter)
             {
                 // 3) update centroids by computing mean
                 Point[] prevCentroids = centroids;
@@ -99,7 +97,8 @@ namespace Cluster.Math
         {
             for (int i = 0; i < k; i++)
             {
-                centroids[i] = data[i]; // TODO
+                int dataIndex = i % data.Count;
+                centroids[i] = data[dataIndex]; // TODO
             }
         }
 
@@ -130,7 +129,7 @@ namespace Cluster.Math
         /// </summary>
         private void updateClusters()
         {
-            cluster_indices = getNewList();
+            cluster_indices = refreshIndicesList();
             for (int i = 0; i < data.Count; i++)
             {
                 Point point = data[i];
@@ -193,7 +192,7 @@ namespace Cluster.Math
         ///     used to update cluster indicies
         /// </summary>
         /// <returns></returns>
-        private List<List<int>> getNewList()
+        private List<List<int>> refreshIndicesList()
         {
             List<List<int>> indices = new List<List<int>>();
 
@@ -209,9 +208,21 @@ namespace Cluster.Math
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
-        public void Compute()
+        public bool Compute()
         {
+            SmartConsole.PrintHeader("K-MEANS");
+            if (data.Count < k) {
+                SmartConsole.PrintLine("Cluster count is too big for data set, returning false");
+                return false;
+            }
+            
+            SmartConsole.PrintLine("The configurations:");
+            SmartConsole.PrintLine("k = " + k);
+            SmartConsole.PrintLine("max_iter = " + max_iter);
+            SmartConsole.PrintLine("distance_tolerance = " + distance_tolerance);
             kmeansLogic();
+            SmartConsole.PrintLine("K-means finished after " + current_iter + " iterations");
+            return true;
         }
 
         public bool IndexBelongs(int clusterIndex, int pointIndex)

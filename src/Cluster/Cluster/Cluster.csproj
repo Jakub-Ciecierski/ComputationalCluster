@@ -50,10 +50,11 @@
     <Compile Include="Client\Messaging\KeepAliveTimer.cs" />
     <Compile Include="Client\Messaging\MessageProcessor.cs" />
     <Compile Include="Client\NetworkNode.cs" />
-    <Compile Include="Math\KMeans.cs" />
+    <Compile Include="Math\Clustering\ClusterEvaluation.cs" />
+    <Compile Include="Math\Clustering\KMeans.cs" />
     <Compile Include="Math\Point.cs" />
     <Compile Include="Math\PointMeasures.cs" />
-    <Compile Include="Math\PredictionStrength.cs" />
+    <Compile Include="Math\Clustering\PredictionStrength.cs" />
     <Compile Include="TaskModule\Task.cs" />
     <Compile Include="TaskModule\TaskStatus.cs" />
     <Compile Include="Client\TaskThread.cs" />

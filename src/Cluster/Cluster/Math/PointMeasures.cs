@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Cluster.Math
 {
+    /// <summary>
+    ///     Static methods for point measures.
+    /// </summary>
     public class PointMeasures
     {
         private PointMeasures() { }

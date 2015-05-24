@@ -4,45 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Util
+namespace Cluster.Math.Clustering
 {
-    /// <summary>
-    ///     Static methods for output
-    /// </summary>
-    public class SmartConsole
+    public class ClusterEvaluation
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        const string linePrefix = " << ";
-
-        const string headerPrefix = "****************************";
-        const string headerSuffix = "****************************";
-
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        private SmartConsole() { }
-
-
         /*******************************************************************/
-        /******************** PUBLIC / STATIC METHODS **********************/
+        /************************ PRIVATE METHODS **************************/
         /*******************************************************************/
 
         /*******************************************************************/
-        /************************* STATIC METHODS **************************/
+        /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
-
-        public static void PrintHeader(string header) 
-        {
-            Console.Write("\n" + headerPrefix + header + headerSuffix + "\n");
-        }
-
-        public static void PrintLine(string line) 
-        {
-            Console.Write(linePrefix + line + "\n");
-        }
     }
 }
