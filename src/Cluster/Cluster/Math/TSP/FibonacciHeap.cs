@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.TSP
 {
     class FibonacciHeap
     {
         public FibonacciNode min = null;
         public int n = 0;
-        public DoublyLinkedList roots = new DoublyLinkedList();
+        public List<FibonacciNode> roots = new List<FibonacciNode>();
 
         /**
          * Based on passed graph, heap is created.
@@ -30,12 +30,12 @@ namespace Cluster.Math
         {
             if (this.min == null)
             {
-                roots.insert(x);
+                roots.Add(x);
                 this.min = x;
             }
             else
             {
-                roots.insert(x);
+                roots.Add(x);
                 if (x.key < this.min.key) this.min = x;
             }
             this.n++;
@@ -53,22 +53,25 @@ namespace Cluster.Math
             if (z != null)
             {
                 /*  To avoid NullPointerException. */
-                if (z.children == null) z.children = new DoublyLinkedList();
+                //if (z.children == null) z.children = new DoublyLinkedList();
 
-                for (int i = 0; i < z.children.elements; i++)
+
+
+                for (int i = 0; i < z.children.Count; i++)
                 {
-                    FibonacciNode x = z.children.extractFirst();
+                    FibonacciNode x = z.children.First();
                     x.p = null;
-
-                    roots.insert(x);
+                    z.children.RemoveAt(0);
+                    roots.Add(x);
                 }
-                roots.delete(z);
+                roots.Remove(z);
+
                 /* Heap without z is empty. */
-                if (z == z.getNext()) this.min = null;
+                if (roots.Count == 0) this.min = null;
                 /* Or... */
                 else
                 {
-                    this.min = z.getNext();
+                    this.min = roots.First();
                     consolidate();
                 }
                 this.n--;
@@ -81,35 +84,33 @@ namespace Cluster.Math
          */
         private void consolidate()
         {
-            int upperBound = upperBoundForDegree(this.n + 1);
+            //int upperBound = upperBoundForDegree(this.n + 1);
             FibonacciNode[] A = new FibonacciNode[500];
 
             for (int i = 0; i < A.Length; i++) A[i] = null;
 
-            FibonacciNode aux = roots.guard.next;
-            for (int i = 0; i < roots.elements; i++)
+            for(int i = 0; i < roots.Count; i++)
             {
-                FibonacciNode x = aux;
-                int d = x.degree;
+                FibonacciNode node = roots.ElementAt(i);
+                int d = node.degree;
                 while (A[d] != null)
                 {
                     /* Another node with the same degree as x. */
                     FibonacciNode y = A[d];
                     /* Swap x with y. */
-                    if (x.key > y.key)
+                    if (node.key > y.key)
                     {
-                        swap(x, y);
+                        swap(node, y);
                     }
-                    link(y, x);
+                    link(y, node);
                     A[d] = null;
                     d++;
                 }
-                A[d] = x;
-                /* Iteration. */
-                aux = aux.next;
+                A[d] = node;
             }
+
             this.min = null;
-            for (int i = 0; i < upperBound; i++)
+            for (int i = 0; i < 500; i++)
             {
                 if (A[i] != null)
                 {
@@ -119,7 +120,7 @@ namespace Cluster.Math
                     }
                     else
                     {
-                        roots.insert(A[i]);
+                        roots.Add(A[i]);
                         if (A[i].key < this.min.key) this.min = A[i];
                     }
                 }
@@ -158,9 +159,9 @@ namespace Cluster.Math
          */
         private void link(FibonacciNode y, FibonacciNode x)
         {
-            roots.delete(y);
-            if (x.children == null) x.children = new DoublyLinkedList();
-            x.children.insert(y);
+            roots.Remove(y);
+            //if (x.children == null) x.children = new DoublyLinkedList();
+            x.children.Add(y);
             x.degree++;
             y.p = x;
             y.mark = false;
@@ -203,9 +204,9 @@ namespace Cluster.Math
 
         private void cut(FibonacciNode x, FibonacciNode y)
         {
-            y.children.delete(x);
+            y.children.Remove(x);
             y.degree--;
-            roots.insert(x);
+            roots.Add(x);
             x.p = null;
             x.mark = false;
         }
@@ -229,7 +230,7 @@ namespace Cluster.Math
          * Prints only roots;
          */
         public void print() {
-        roots.print();
+        //roots.print();
        // System.out.println("min: " + min.key);
     }
 

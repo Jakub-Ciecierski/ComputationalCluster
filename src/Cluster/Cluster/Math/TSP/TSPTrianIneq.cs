@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.TSP
 {
     public class TSPTrianIneq
     {
+        
+
         public static int[] calculate(Point[] points)
         {
             /* Convert points into a graph. */
@@ -30,15 +32,14 @@ namespace Cluster.Math
 
         private static int[] preorderWalk(Graph graph, int root)
         {
-            int[] route = new int[graph.n_v + 1];
+            List<int> route = new List<int>();
             traverse(graph, graph.v[root], route, 0);
-            route[graph.n_v] = root;
-            return route;
+            route.Add(root);
+            return route.ToArray();
         }
-        private static void traverse(Graph graph, FibonacciNode node, int[] route, int index)
+        private static void traverse(Graph graph, FibonacciNode node, List<int> route, int index)
         {
-            //System.out.print(node.index + " -> ");
-            route[index] = node.index;
+            route.Add(node.index);
             for (int i = 0; i < graph.v.Length; i++)
             {
                 if (graph.v[i].parent == node.index) traverse(graph, graph.v[i], route, ++index);

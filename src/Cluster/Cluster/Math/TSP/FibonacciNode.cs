@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.TSP
 {
     class FibonacciNode
     {
@@ -48,7 +48,7 @@ namespace Cluster.Math
         /**
          * List of children nodes for Fibonacci heap.
          */
-        public DoublyLinkedList children = null;
+        public List<FibonacciNode> children = new List<FibonacciNode>();
         /**
          * List of children for preorder walk.
          */

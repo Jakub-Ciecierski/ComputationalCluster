@@ -19,6 +19,13 @@ namespace TestCluster
     public class DRVPTest
     {
         [TestMethod]
+        public void DVRP_TSP_Test()
+        {
+            //VRPParser benchmark = TestCases.Test1();
+            TaskManager.TaskSolvers.DVRP.DVRPSolver.TSPTest();
+        }
+
+        [TestMethod]
         public void DRVP_TestCase1()
         {
             VRPParser benchmark = TestCases.Test1();
@@ -28,12 +35,7 @@ namespace TestCluster
 
         }
 
-        [TestMethod]
-        public void DVRP_TSP_Test()
-        {
-            VRPParser benchmark = TestCases.Test1();
-            TaskManager.TaskSolvers.DVRP.DVRPSolver.TSPTest(benchmark);
-        }
+       
     }
 
 

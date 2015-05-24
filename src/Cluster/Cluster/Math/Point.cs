@@ -12,7 +12,8 @@ namespace Cluster.Math
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        private List<double> coords = new List<double>();
+       // private List<double> coords = new List<double>();
+        private double[] coords = new double[3];
 
         public double X
         {
@@ -38,6 +39,7 @@ namespace Cluster.Math
 
         public Point(double x, double y)
         {
+           
             X = x;
             Y = y;
             Z = 0;
@@ -52,7 +54,7 @@ namespace Cluster.Math
 
         public Point(List<double> coords)
         {
-            this.coords = coords;
+           // this.coords = coords;
         }
 
         /*******************************************************************/
@@ -70,7 +72,7 @@ namespace Cluster.Math
 
         public int DimSize()
         {
-            return coords.Count;
+            return coords.Length;
         }
     }
 }

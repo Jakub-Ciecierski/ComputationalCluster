@@ -62,6 +62,7 @@
     <Compile Include="Math\TSP\Graph.cs" />
     <Compile Include="Math\TSP\LinkedList.cs" />
     <Compile Include="Math\TSP\LinkedListNode.cs" />
+    <Compile Include="Math\TSP\NaiveProrityQueue.cs" />
     <Compile Include="Math\TSP\PrimAlgorithm.cs" />
     <Compile Include="Math\TSP\TSPTrianIneq.cs" />
     <Compile Include="TaskModule\Task.cs" />

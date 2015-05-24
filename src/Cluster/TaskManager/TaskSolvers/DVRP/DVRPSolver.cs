@@ -1,6 +1,8 @@
 ﻿using Cluster.Benchmarks;
+using Cluster.Math.TSP;
 using Cluster.Math;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,9 +34,20 @@ namespace TaskManager.TaskSolvers.DVRP
 
         }
 
-        public static void TSPTest(VRPParser benchmark)
+        public static void TSPTest()
         {
-
+            Random rnd = new Random();
+            int numberOfPoints = 16;
+            Point[] points = new Point[numberOfPoints];
+            for (int i = 0; i < numberOfPoints; i++)
+            {
+                points[i] = new Point(rnd.Next(0,100), rnd.Next(0,100));
+            }
+            var watch = Stopwatch.StartNew();
+            int[] route = TSPTrianIneq.calculate(points);
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.Write("");
         }
 
         public static void FullSolveTest(VRPParser benchmark) 
