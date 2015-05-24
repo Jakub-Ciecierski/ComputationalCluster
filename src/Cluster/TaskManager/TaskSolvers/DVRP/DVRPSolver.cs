@@ -48,7 +48,6 @@ namespace TaskManager.TaskSolvers.DVRP
 
                 point_coords.Add(benchmark.Location_Coord[loc_index][0]);
                 point_coords.Add(benchmark.Location_Coord[loc_index][1]);
-
                 point_coords.Add(benchmark.Time_Avail[loc_index - 1] + benchmark.Duration[loc_index - 1]);
 
                 data.Add(new Point(point_coords));
@@ -67,14 +66,27 @@ namespace TaskManager.TaskSolvers.DVRP
             VRPParser[] partial_benchmarks = new VRPParser[k];
             for (int i = 0; i < k; i++) 
             {
-                int num_depots = benchmark.Num_Depots;
-                VRPParser partial_benchmark = benchmark; // remind your self of references
+                VRPParser partial_benchmark = new VRPParser();
+                List<int> cluster_indecies = clusters.GetCluterIndecies(i);
 
-                List<int> clustes_indecies = clusters.GetCluterIndecies(k);
-                int num_visits = clustes_indecies.Count;
+                /************ COMMON ****************/
+                int num_depots = benchmark.Num_Depots;
+                int num_visits = cluster_indecies.Count;
+                int num_locations = cluster_indecies.Count + num_depots;
+
+                partial_benchmark.Num_Visits = num_visits;
+                partial_benchmark.Num_Depots = num_depots;
+                partial_benchmark.Name = benchmark.Name;
+                partial_benchmark.Num_Capacities = benchmark.Num_Capacities;
+                partial_benchmark.Num_Vehicles = 1;
+                partial_benchmark.Capacites = benchmark.Capacites;
+                partial_benchmark.Depots_IDs = benchmark.Depots_IDs;
+                partial_benchmark.Depot_Location = benchmark.Depot_Location;
+                partial_benchmark.Depot_Time_Window = benchmark.Depot_Time_Window;
 
                 /************ LOCATION_COORD ****************/
-                int num_locations = clustes_indecies.Count + num_depots;
+                partial_benchmark.Num_Locations = num_locations;
+
                 int[][] location_coord = new int[num_locations][];
                 // get all depots locations
                 for (int j = 0; j < num_depots; j++)
@@ -87,8 +99,11 @@ namespace TaskManager.TaskSolvers.DVRP
                 // get all partial clients locations
                 for (int j = num_depots; j < num_locations; j++) 
                 {
-                    location_coord[j][0] = benchmark.Location_Coord[clustes_indecies[j]][0];
-                    location_coord[j][1] = benchmark.Location_Coord[clustes_indecies[j]][1];
+                    location_coord[j] = new int[2];
+                    int clientNodeIndex = benchmark.Visit_Location[cluster_indecies[j - num_depots]];
+
+                    location_coord[j][0] = benchmark.Location_Coord[clientNodeIndex - num_depots][0];
+                    location_coord[j][1] = benchmark.Location_Coord[clientNodeIndex - num_depots][1];
                 }
                 partial_benchmark.Location_Coord = location_coord;
 
@@ -96,7 +111,8 @@ namespace TaskManager.TaskSolvers.DVRP
                 int[] demands = new int[num_visits];
                 for (int j = 0; j < num_visits; j++)
                 {
-                    demands[j] = benchmark.Demands[clustes_indecies[j]];
+                    int clientNodeIndex = benchmark.Visit_Location[cluster_indecies[j]];
+                    demands[j] = benchmark.Demands[clientNodeIndex - num_depots];
                 }
                 partial_benchmark.Demands = demands;
 
@@ -104,7 +120,7 @@ namespace TaskManager.TaskSolvers.DVRP
                 int[] visit_location = new int[num_visits];
                 for (int j = 0; j < num_visits; j++)
                 {
-                    visit_location[j] = j;//benchmark.Visit_Location[clustes_indecies[j]];
+                    visit_location[j] = j + num_depots;
                 }
                 partial_benchmark.Visit_Location = visit_location;
 
@@ -112,7 +128,8 @@ namespace TaskManager.TaskSolvers.DVRP
                 int[] duration = new int[num_visits];
                 for (int j = 0; j < num_visits; j++)
                 {
-                    duration[j] = benchmark.Duration[clustes_indecies[j]];
+                    int clientNodeIndex = benchmark.Visit_Location[cluster_indecies[j]];
+                    duration[j] = benchmark.Duration[clientNodeIndex - num_depots];
                 }
                 partial_benchmark.Duration = duration;
 
@@ -120,7 +137,8 @@ namespace TaskManager.TaskSolvers.DVRP
                 int[] time_avail = new int[num_visits];
                 for (int j = 0; j < num_visits; j++)
                 {
-                    time_avail[j] = benchmark.Time_Avail[clustes_indecies[j]];
+                    int clientNodeIndex = benchmark.Visit_Location[cluster_indecies[j]];
+                    time_avail[j] = benchmark.Time_Avail[clientNodeIndex - num_depots];
                 }
                 partial_benchmark.Time_Avail = time_avail;
 
