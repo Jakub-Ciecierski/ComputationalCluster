@@ -27,5 +27,15 @@ namespace TestCluster
             //Assert.AreEqual(expectedMessage, actualMessage);
 
         }
+
+        [TestMethod]
+        public void DVRP_TSP_Test()
+        {
+            VRPParser benchmark = TestCases.Test1();
+            TaskManager.TaskSolvers.DVRP.DVRPSolver.TSPTest(benchmark);
+        }
     }
+
+
+
 }
