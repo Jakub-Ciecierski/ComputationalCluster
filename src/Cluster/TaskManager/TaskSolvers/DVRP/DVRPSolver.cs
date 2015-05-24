@@ -32,6 +32,11 @@ namespace TaskManager.TaskSolvers.DVRP
 
         }
 
+        public static void TSPTest(VRPParser benchmark)
+        {
+
+        }
+
         public static void FullSolveTest(VRPParser benchmark) 
         {
             /******************* DIVIDE *************************/

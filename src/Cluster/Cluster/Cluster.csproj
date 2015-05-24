@@ -55,6 +55,15 @@
     <Compile Include="Math\Point.cs" />
     <Compile Include="Math\PointMeasures.cs" />
     <Compile Include="Math\Clustering\PredictionStrength.cs" />
+    <Compile Include="Math\TSP\AdjacencyList.cs" />
+    <Compile Include="Math\TSP\DoublyLinkedList.cs" />
+    <Compile Include="Math\TSP\FibonacciHeap.cs" />
+    <Compile Include="Math\TSP\FibonacciNode.cs" />
+    <Compile Include="Math\TSP\Graph.cs" />
+    <Compile Include="Math\TSP\LinkedList.cs" />
+    <Compile Include="Math\TSP\LinkedListNode.cs" />
+    <Compile Include="Math\TSP\PrimAlgorithm.cs" />
+    <Compile Include="Math\TSP\TSPTrianIneq.cs" />
     <Compile Include="TaskModule\Task.cs" />
     <Compile Include="TaskModule\TaskStatus.cs" />
     <Compile Include="Client\TaskThread.cs" />
