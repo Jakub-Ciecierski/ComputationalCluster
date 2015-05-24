@@ -58,6 +58,7 @@
     <Compile Include="CommunicationTest.cs" />
     <Compile Include="DVRPTest.cs" />
     <Compile Include="InputParserTest.cs" />
+    <Compile Include="MathTest.cs" />
     <Compile Include="NetworkTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />

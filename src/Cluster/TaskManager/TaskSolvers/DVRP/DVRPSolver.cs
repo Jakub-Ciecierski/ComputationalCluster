@@ -60,7 +60,7 @@ namespace TaskManager.TaskSolvers.DVRP
 
             // get optimal number of clusters
             PredictionStrength ps = new PredictionStrength(data);
-            ps.Compute();
+            ps.Compute(true);
             int k = ps.BestK;
 
             // compute clusters
