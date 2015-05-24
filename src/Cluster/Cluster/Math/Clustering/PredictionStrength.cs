@@ -36,6 +36,13 @@ namespace Cluster.Math.Clustering
         /******************************************************************/
 
         /// <summary>
+        ///     Author of Prediction strength stated that
+        ///     that any k for which ps has value around 0.8 - 0.9 
+        ///     is good enough to be called an optimal
+        /// </summary>
+        const double STRENGTH_TOL = 0.85;
+
+        /// <summary>
         ///     Number of points in each cloud.
         /// </summary>
         const int CLOUD_SIZE = 200;
@@ -107,7 +114,7 @@ namespace Cluster.Math.Clustering
                     max_strength = strength;
                     best_k = k;
                 }
-                else if (max_strength < strength)
+                else if (STRENGTH_TOL < strength)
                 {
                     max_strength = strength;
                     best_k = k;
@@ -196,28 +203,27 @@ namespace Cluster.Math.Clustering
         {
             int len = testingClusterPoints.Count;
             int[][] m = new int[len][];
-            for(int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
             {
                 m[i] = new int[len];
             }
 
-            for (int i = 0; i < len; i++) 
+            for (int i = 0; i < len; i++)
             {
                 for (int j = 0; j < len; j++)
                 {
-                    if (i != j) 
+                    if (i != j)
                     {
-                        for (int k = 0; k < learningCluster.K; k++) 
+                        for (int k = 0; k < learningCluster.K; k++)
                         {
-                            bool i_belongs = false;
-                            bool j_belongs = false;
+                            int i_centroid = learningCluster.GetClosestCentroid(testingClusterPoints[i]);
 
-                            i_belongs = learningCluster.IndexBelongs(k, i);
+                            int j_centroid = learningCluster.GetClosestCentroid(testingClusterPoints[j]);
 
-                            j_belongs = learningCluster.IndexBelongs(k, j);
-
-                            if (i_belongs && j_belongs)
+                            if (i_centroid == j_centroid){
                                 m[i][j] = 1;
+                                break;
+                            }
                             else
                                 m[i][j] = 0;
                         }
