@@ -1,4 +1,5 @@
-﻿using Cluster.Client.Messaging;
+﻿using Cluster;
+using Cluster.Client.Messaging;
 using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
@@ -68,6 +69,30 @@ namespace TaskManager.MessageCommunication
             // start computations
         }
 
+        private void handleSolutionMessage(SolutionsMessage message)
+        {
+            for (int i = 0; i < systemTracker.Node.ParallelThreads; i++)
+            {
+                if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
+                {
+                    /// HOW DO I GET DVRP SOLVER HERE?
+                    DVRPSolver dvrpSolver = new DVRPSolver(message.Solutions[0].Data);// TEMPORARY
+                    systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
+                    systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, new byte[1]) { Status = Cluster.TaskStatus.Merging };
+
+                    //saving solutions to subTasks
+                    for (int j = 0; j < message.Solutions.Count(); j++)
+                    {
+                        systemTracker.Node.TaskThreads[i].CurrentTask.subTasks.Add(new Task((int)message.Id, message.ProblemType, message.Solutions[j].Data));
+                    }
+                    systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
+                    systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
+                    systemTracker.Node.TaskThreads[i].Thread.Start();
+                    break;
+                }
+            }
+        }
+
         protected override void handle(Message message)
         {
             if (message.GetType() == typeof(NoOperationMessage))
@@ -78,6 +103,8 @@ namespace TaskManager.MessageCommunication
 
             else if (message.GetType() == typeof(DivideProblemMessage))
                 handleDivideProblemMessage((DivideProblemMessage)message);
+            else if (message.GetType() == typeof(SolutionsMessage))
+                handleSolutionMessage((SolutionsMessage)message);
 
             else
                 Console.Write(" >> Unknow message type, can't handle it... \n\n");

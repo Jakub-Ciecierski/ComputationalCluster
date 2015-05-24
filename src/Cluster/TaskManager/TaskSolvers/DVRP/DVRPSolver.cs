@@ -147,7 +147,22 @@ namespace TaskManager.TaskSolvers.DVRP
 
         public override byte[] MergeSolution(byte[][] solutions)
         {
-            throw new NotImplementedException();
+            int size = 0;
+            for (int i = 0; i < solutions.Count(); i++)
+            {
+                size += solutions[i].Count();
+            }
+            byte[] tmpMergedSolution = new byte[size];
+            int counter = 0;
+            for (int i = 0; i < solutions.Count(); i++)
+            {
+                for (int j = 0; j < solutions[i].Count(); j++)
+                {
+                    tmpMergedSolution[counter] = solutions[i][j];
+                    counter++;
+                }
+            }
+            return tmpMergedSolution;
         }
 
         public override string Name

@@ -165,19 +165,37 @@ namespace Cluster
                     SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(currentTask.Type, (ulong) currentTask.ID, currentTask.CommonData, (ulong)4, partialProblems);
 
                     messageProcessor.Communicate(solvePartialProblemsMessage);
+                    this.statusThread.State = StatusThreadState.Idle;
+                    this.currentTask = null;
                     
                         break;
                     
                 case TaskStatus.Solving:
 
                     byte[] solvedPartialProblem = taskSolver.Solve(currentTask.BaseData, new TimeSpan(0, 0, 5));
+                    Solution[] solutions = new Solution[1];
+                    //TODO subTask id, timeout checking , computations time
+                    solutions[0] = new Solution((ulong)currentTask.ID, false, SolutionsSolutionType.Partial, 4000, solvedPartialProblem);
+
+                    SolutionsMessage solutionMessage = new SolutionsMessage(currentTask.Type, (ulong)currentTask.ID, currentTask.CommonData, solutions);
+                    messageProcessor.Communicate(solutionMessage);
 
                     break;
 
                 case TaskStatus.Merging:
+                    byte[][] partialSolutions = new byte[currentTask.subTasks.Count()][];
+                    for(int i=0;i<currentTask.subTasks.Count();i++){
+                        partialSolutions[i] = currentTask.subTasks[i].BaseData;
+                    }
+                    byte[] mergedSolution = taskSolver.MergeSolution(partialSolutions);
 
-                    byte[] mergedSolution = taskSolver.Solve(currentTask.BaseData, new TimeSpan(0, 0, 5));
-                    
+                    Solution[] solution = new Solution[1];
+                    //TODO subTask id, timeout checking , computations time
+                    solution[0] = new Solution((ulong)currentTask.ID, false, SolutionsSolutionType.Final, 4000, mergedSolution);
+                    SolutionsMessage finalSolutionMessage = new SolutionsMessage(currentTask.Type, (ulong)currentTask.ID, currentTask.CommonData, solution);
+                    messageProcessor.Communicate(finalSolutionMessage);
+                    this.statusThread.State = StatusThreadState.Idle;
+                    this.currentTask = null;
                     break;
                 
             }
