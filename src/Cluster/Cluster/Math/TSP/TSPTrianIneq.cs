@@ -8,8 +8,6 @@ namespace Cluster.Math.TSP
 {
     public class TSPTrianIneq
     {
-        
-
         public static int[] calculate(Point[] points)
         {
             /* Convert points into a graph. */
@@ -27,7 +25,7 @@ namespace Cluster.Math.TSP
 
         private static float euclidDistance(Point p1, Point p2)
         {
-            return (float)System.Math.Sqrt(System.Math.Pow(p1.X - p2.X, 2) + System.Math.Pow(p1.Y - p2.Y, 2));
+            return (float)System.Math.Sqrt(System.Math.Pow(p1.X - p2.X, 2) + System.Math.Pow(p1.Y - p2.Y, 2) + System.Math.Pow(p1.Z - p2.Z, 2));
         }
 
         private static int[] preorderWalk(Graph graph, int root)

@@ -24,12 +24,26 @@ namespace Cluster.Math.Clustering
     ///     4) Compute strength of each Test cluster and 
     ///     find the minimum value.
     ///
+    ///     Data boosting:
+    ///     Sometimes data might be boosted, i.e. the sample is increased.
+    ///     For each point in original data set, a cloud of points of size CLOUD_SIZE 
+    ///     is generated around it. Normal distribution is used.
     /// </summary>
     public class PredictionStrength
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
+
+        /// <summary>
+        ///     Number of points in each cloud.
+        /// </summary>
+        const int CLOUD_SIZE = 200;
+
+        /// <summary>
+        ///     Standard deviation which is used in Normal distribution
+        /// </summary>
+        const double STD_DEV = 0.2;
 
         /// <summary>
         ///     The training data set
@@ -126,7 +140,7 @@ namespace Cluster.Math.Clustering
 
             if(!learningCluster.Compute())
                 return 0.0;
-            if(!testingCluster.Compute())
+            if (!testingCluster.Compute())
                 return 0.0;
 
             // 3) Computes the co-membership of each Test cluster
@@ -237,13 +251,58 @@ namespace Cluster.Math.Clustering
             }
         }
 
+        /// <summary>
+        ///     For each point add a cloud of points using Normal distribution
+        /// </summary>
+        private void boostData()
+        {
+            RNG.SetSeedFromSystemTime();
+
+            int originalDataCount = data.Count;
+
+            // for each point generate a cloud
+            for (int i = 0; i < originalDataCount; i++)
+            {
+                Point point = data[i];
+                // Add CLOUD_SIZE points
+                for (int j = 0; j < CLOUD_SIZE; j++)
+                {
+                    Point newPoint = point.Copy();
+
+                    // Add some random value to each dimension.
+                    for (int l = 0; l < newPoint.DimSize(); l++)
+                    {
+                        double value = RNG.GetNormal(0, STD_DEV);
+                        newPoint.SetDimValue(l, value + point.GetDimValue(l));
+                    }
+
+                    // Add this point to data set.
+                    data.Add(newPoint);
+                }
+            }
+        }
+
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
-        public void Compute() 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="runBoostData">
+        ///     Whether the data should be boosted:
+        ///     We increate amount of observations in order to
+        ///     have a more reliable data set.
+        /// </param>
+        public void Compute(bool runBoostData = false) 
         {
             SmartConsole.PrintHeader("PREDICTION STRENGTH");
+
+            if (runBoostData) {
+                SmartConsole.PrintLine("Running Data Boost ... ");
+                boostData();
+            }
+            
             psLogic();
             SmartConsole.PrintLine("The best k = " + best_k);
         }

@@ -7,14 +7,33 @@ using System.Threading.Tasks;
 
 namespace Cluster.Math.Clustering
 {
+    /// <summary>
+    ///     K-means:
+    ///
+    ///     1) Randomly select k centers
+    ///     2) Group points to their closest centroids
+    ///     3) Update centroids by computing mean
+    ///     4) Repeat 2. and 3. untill convergence
+    ///
+    ///     Data boosting:
+    ///     Sometimes data might be boosted, i.e. the sample is increased.
+    ///     For each point in original data set, a cloud of points of size CLOUD_SIZE 
+    ///     is generated around it. Normal distribution is used.
+    /// </summary>
     public class KMeans
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
+        /// <summary>
+        ///     Data to be clustered
+        /// </summary>
         private List<Point> data;
 
+        /// <summary>
+        ///     Number of clusters
+        /// </summary>
         private int k;
 
         public int K
@@ -23,14 +42,29 @@ namespace Cluster.Math.Clustering
             private set { k = value; }
         }
 
+        /// <summary>
+        ///     The distance limit before converging
+        /// </summary>
         private double distance_tolerance;
 
+        /// <summary>
+        ///     Clusters
+        /// </summary>
         public List<List<int>> cluster_indices = new List<List<int>>();
 
+        /// <summary>
+        ///     centers of each cluster
+        /// </summary>
         public Point[] centroids;
 
+        /// <summary>
+        ///     The algorithm will not iterate more than max_iter
+        /// </summary>
         private int max_iter;
 
+        /// <summary>
+        ///     Current iterations index
+        /// </summary>
         private int current_iter;
 
         /******************************************************************/
@@ -100,6 +134,8 @@ namespace Cluster.Math.Clustering
                 int dataIndex = i % data.Count;
                 centroids[i] = data[dataIndex]; // TODO
             }
+            centroids[0] = data[0];
+            centroids[1] = data[10];
         }
 
         /// <summary>
@@ -208,6 +244,10 @@ namespace Cluster.Math.Clustering
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
+        /// <summary>
+        ///     Computes the k-means
+        /// </summary>
+        /// <returns></returns>
         public bool Compute()
         {
             SmartConsole.PrintHeader("K-MEANS");
@@ -215,7 +255,7 @@ namespace Cluster.Math.Clustering
                 SmartConsole.PrintLine("Cluster count is too big for data set, returning false");
                 return false;
             }
-            
+
             SmartConsole.PrintLine("The configurations:");
             SmartConsole.PrintLine("k = " + k);
             SmartConsole.PrintLine("max_iter = " + max_iter);
@@ -225,6 +265,12 @@ namespace Cluster.Math.Clustering
             return true;
         }
 
+        /// <summary>
+        ///     Checks if a given point belongs to the cluster
+        /// </summary>
+        /// <param name="clusterIndex"></param>
+        /// <param name="pointIndex"></param>
+        /// <returns></returns>
         public bool IndexBelongs(int clusterIndex, int pointIndex)
         {
             for (int i = 0; i < cluster_indices[clusterIndex].Count; i++)
@@ -235,6 +281,11 @@ namespace Cluster.Math.Clustering
             return false;
         }
 
+        /// <summary>
+        ///     Get a cluster
+        /// </summary>
+        /// <param name="cluster_index"></param>
+        /// <returns></returns>
         public List<int> GetCluterIndecies(int cluster_index) 
         {
             return cluster_indices[cluster_index];

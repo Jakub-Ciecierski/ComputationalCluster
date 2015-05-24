@@ -34,18 +34,28 @@ namespace TaskManager.TaskSolvers.DVRP
 
         }
 
-        public static void TSPTest()
+        public static void TSPTest(VRPParser benchmark) 
         {
-            Random rnd = new Random();
-            int numberOfPoints = 16;
-            Point[] points = new Point[numberOfPoints];
-            for (int i = 0; i < numberOfPoints; i++)
+            int k = 1;
+            Point[] points = new Point[benchmark.Num_Locations];
+
+            for (int i = 0; i <= benchmark.Num_Visits; i++)
             {
-                points[i] = new Point(rnd.Next(0,100), rnd.Next(0,100));
+                List<double> point_coords = new List<double>();
+
+                point_coords.Add(benchmark.Location_Coord[i][0]);
+                point_coords.Add(benchmark.Location_Coord[i][1]);
+
+                if (i == 0) point_coords.Add(0);
+                else point_coords.Add(benchmark.Time_Avail[i - 1] + benchmark.Duration[i - 1]);
+
+                points[i] = new Point(point_coords);
             }
+
             var watch = Stopwatch.StartNew();
             int[] route = TSPTrianIneq.calculate(points);
             watch.Stop();
+
             var elapsedMs = watch.ElapsedMilliseconds;
             Console.Write("");
         }
@@ -73,7 +83,7 @@ namespace TaskManager.TaskSolvers.DVRP
 
             // get optimal number of clusters
             PredictionStrength ps = new PredictionStrength(data);
-            ps.Compute();
+            ps.Compute(true);
             int k = ps.BestK;
 
             // compute clusters

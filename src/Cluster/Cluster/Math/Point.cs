@@ -11,26 +11,58 @@ namespace Cluster.Math
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
+        const int xIndex = 0;
+        const int yIndex = 1;
+        const int zIndex = 2;
 
-       // private List<double> coords = new List<double>();
-        private double[] coords = new double[3];
+        private List<double> coords = new List<double>();
 
         public double X
         {
-            get { return coords[0]; }
-            set { coords[0] = value; }
+            get
+            {
+                if (xIndex < coords.Count)
+                    return coords[xIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (xIndex < coords.Count)
+                    coords[xIndex] = value;
+            }
         }
 
         public double Y
         {
-            get { return coords[1]; }
-            set { coords[1] = value; }
+            get
+            {
+                if (yIndex < coords.Count)
+                    return coords[yIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (yIndex < coords.Count)
+                    coords[yIndex] = value;
+            }
         }
 
         public double Z
         {
-            get { return coords[2]; }
-            set { coords[2] = value; }
+            get 
+            {
+                if (zIndex < coords.Count)
+                    return coords[zIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (zIndex < coords.Count)
+                    coords[zIndex] = value; 
+            }
         }
 
         /******************************************************************/
@@ -39,22 +71,20 @@ namespace Cluster.Math
 
         public Point(double x, double y)
         {
-           
-            X = x;
-            Y = y;
-            Z = 0;
+            coords.Add(x);
+            coords.Add(y);
         }
 
         public Point(double x, double y, double z)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            coords.Add(x);
+            coords.Add(y);
+            coords.Add(z);
         }
 
         public Point(List<double> coords)
         {
-           // this.coords = coords;
+            this.coords = coords;
         }
 
         /*******************************************************************/
@@ -70,9 +100,26 @@ namespace Cluster.Math
             return coords[i];
         }
 
+        public void SetDimValue(int i, double value)
+        {
+            coords[i] = value;
+        }
+
         public int DimSize()
         {
-            return coords.Length;
+            return coords.Count;
+        }
+
+        public Point Copy()
+        {
+            List<double> newCoords = new List<double>();
+            for (int i = 0; i < coords.Count;i++ )
+            {
+                newCoords.Add(this.coords[i]);
+            }
+
+            Point point = new Point(newCoords);
+            return point;
         }
     }
 }
