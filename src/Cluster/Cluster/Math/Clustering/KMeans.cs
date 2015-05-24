@@ -111,7 +111,9 @@ namespace Cluster.Math.Clustering
             while (current_iter++ < max_iter)
             {
                 // 3) update centroids by computing mean
-                Point[] prevCentroids = centroids;
+                Point[] prevCentroids = new Point[k];
+                for (int i = 0; i < k; i++)
+                    prevCentroids[i] = centroids[i];
 
                 updateCentroids();
 
@@ -134,8 +136,8 @@ namespace Cluster.Math.Clustering
                 int dataIndex = i % data.Count;
                 centroids[i] = data[dataIndex]; // TODO
             }
-            centroids[0] = data[0];
-            centroids[1] = data[10];
+            //centroids[0] = data[0];
+            //centroids[1] = data[10];
         }
 
         /// <summary>
@@ -143,8 +145,6 @@ namespace Cluster.Math.Clustering
         /// </summary>
         private void updateCentroids()
         {
-            Point[] last_mean = new Point[k];
-
             // 3) 
             for (int j = 0; j < k; j++)
             {
@@ -155,8 +155,8 @@ namespace Cluster.Math.Clustering
                 {
                     cluster_points.Add(data[cluster[i]]);
                 }
-                centroids[j] = PointMeasures.Mean(cluster_points); // TODO cluster had no points
-                last_mean[j] = centroids[j];
+                if(cluster_points.Count > 0)
+                    centroids[j] = PointMeasures.Mean(cluster_points); // TODO cluster had no points
             }
         }
 
@@ -176,7 +176,7 @@ namespace Cluster.Math.Clustering
                 for (int j = 0; j < k; j++)
                 {
                     double distance = PointMeasures.Distance(point, centroids[j]);
-                    if (min > distance)
+                    if (min >= distance)
                     {
                         min = distance;
                         min_index = j;
@@ -216,9 +216,9 @@ namespace Cluster.Math.Clustering
             int flagSum = 0;
             for (int i = 0; i < size; i++)
             {
-                flag[i] += flagSum;
+                flagSum += flag[i];
             }
-            if (flagSum == size)
+            if (flagSum == size && current_iter > 1)
                 return true;
             else
                 return false;
@@ -289,6 +289,23 @@ namespace Cluster.Math.Clustering
         public List<int> GetCluterIndecies(int cluster_index) 
         {
             return cluster_indices[cluster_index];
+        }
+
+        public int GetClosestCentroid(Point point) 
+        {
+            int minIndex = 0;
+            double minDistance = PointMeasures.Distance(point, centroids[minIndex]);
+
+            for (int i = 0; i < centroids.Length; i++) 
+            {
+                double distance = PointMeasures.Distance(point, centroids[i]);
+                if (minDistance > distance)
+                {
+                    minIndex = i;
+                    minDistance = distance;
+                }
+            }
+            return minIndex;
         }
     }
 }

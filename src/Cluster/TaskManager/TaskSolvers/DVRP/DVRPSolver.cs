@@ -108,9 +108,19 @@ namespace TaskManager.TaskSolvers.DVRP
                 partial_benchmark.Num_Capacities = benchmark.Num_Capacities;
                 partial_benchmark.Num_Vehicles = 1;
                 partial_benchmark.Capacites = benchmark.Capacites;
-                partial_benchmark.Depots_IDs = benchmark.Depots_IDs;
-                partial_benchmark.Depot_Location = benchmark.Depot_Location;
-                partial_benchmark.Depot_Time_Window = benchmark.Depot_Time_Window;
+
+                partial_benchmark.Depots_IDs = new int[benchmark.Depots_IDs.Length];
+                benchmark.Depots_IDs.CopyTo(partial_benchmark.Depots_IDs, 0);
+
+                partial_benchmark.Depot_Location = new int[benchmark.Depot_Location.Length];
+                benchmark.Depot_Location.CopyTo(partial_benchmark.Depot_Location, 0);
+
+                partial_benchmark.Depot_Time_Window = new int[benchmark.Depot_Time_Window.Length][];
+                for (int p = 0; p < partial_benchmark.Depot_Time_Window.Length; p++) 
+                {
+                    partial_benchmark.Depot_Time_Window[p] = new int[benchmark.Depot_Time_Window[p].Length];
+                    benchmark.Depot_Time_Window[p].CopyTo(partial_benchmark.Depot_Time_Window[p], 0);
+                }
 
                 /************ LOCATION_COORD ****************/
                 partial_benchmark.Num_Locations = num_locations;
@@ -130,8 +140,8 @@ namespace TaskManager.TaskSolvers.DVRP
                     location_coord[j] = new int[2];
                     int clientNodeIndex = benchmark.Visit_Location[cluster_indecies[j - num_depots]];
 
-                    location_coord[j][0] = benchmark.Location_Coord[clientNodeIndex - num_depots][0];
-                    location_coord[j][1] = benchmark.Location_Coord[clientNodeIndex - num_depots][1];
+                    location_coord[j][0] = benchmark.Location_Coord[clientNodeIndex][0];
+                    location_coord[j][1] = benchmark.Location_Coord[clientNodeIndex][1];
                 }
                 partial_benchmark.Location_Coord = location_coord;
 

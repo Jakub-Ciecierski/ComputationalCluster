@@ -36,9 +36,16 @@ namespace Cluster.Math.Clustering
         /******************************************************************/
 
         /// <summary>
+        ///     Author of Prediction strength stated that
+        ///     that any k for which ps has value around 0.8 - 0.9 
+        ///     is good enough to be called an optimal
+        /// </summary>
+        const double STRENGTH_TOL = 0.85;
+
+        /// <summary>
         ///     Number of points in each cloud.
         /// </summary>
-        const int CLOUD_SIZE = 200;
+        const int CLOUD_SIZE = 400;
 
         /// <summary>
         ///     Standard deviation which is used in Normal distribution
@@ -67,6 +74,8 @@ namespace Cluster.Math.Clustering
             get { return best_k; }
             set { best_k = value; }
         }
+
+        private double[] strengths;
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -97,17 +106,18 @@ namespace Cluster.Math.Clustering
             // 2) compute ps for each k and find the best_k
             best_k = 1;
             double max_strength = 0;
-            double[] strengths = new double[max_k];
+            strengths = new double[max_k];
 
             for (int k = start_k; k <= max_k; k++)
             {
                 double strength = psValue(learningSet, testingSet, k);
+                strengths[k - start_k] = strength;
                 if (k == start_k)
                 {
                     max_strength = strength;
                     best_k = k;
                 }
-                else if (max_strength < strength)
+                else if (STRENGTH_TOL < strength)
                 {
                     max_strength = strength;
                     best_k = k;
@@ -196,28 +206,27 @@ namespace Cluster.Math.Clustering
         {
             int len = testingClusterPoints.Count;
             int[][] m = new int[len][];
-            for(int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
             {
                 m[i] = new int[len];
             }
 
-            for (int i = 0; i < len; i++) 
+            for (int i = 0; i < len; i++)
             {
                 for (int j = 0; j < len; j++)
                 {
-                    if (i != j) 
+                    if (i != j)
                     {
-                        for (int k = 0; k < learningCluster.K; k++) 
+                        for (int k = 0; k < learningCluster.K; k++)
                         {
-                            bool i_belongs = false;
-                            bool j_belongs = false;
+                            int i_centroid = learningCluster.GetClosestCentroid(testingClusterPoints[i]);
 
-                            i_belongs = learningCluster.IndexBelongs(k, i);
+                            int j_centroid = learningCluster.GetClosestCentroid(testingClusterPoints[j]);
 
-                            j_belongs = learningCluster.IndexBelongs(k, j);
-
-                            if (i_belongs && j_belongs)
+                            if (i_centroid == j_centroid){
                                 m[i][j] = 1;
+                                break;
+                            }
                             else
                                 m[i][j] = 0;
                         }
@@ -260,6 +269,11 @@ namespace Cluster.Math.Clustering
 
             int originalDataCount = data.Count;
 
+            List<Point> newData = new List<Point>();
+            for (int i = 0; i < originalDataCount; i++)
+            {
+                newData.Add(data[i]);
+            }
             // for each point generate a cloud
             for (int i = 0; i < originalDataCount; i++)
             {
@@ -277,9 +291,10 @@ namespace Cluster.Math.Clustering
                     }
 
                     // Add this point to data set.
-                    data.Add(newPoint);
+                    newData.Add(newPoint);
                 }
             }
+            this.data = newData;
         }
 
         /*******************************************************************/
