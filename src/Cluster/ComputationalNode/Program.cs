@@ -56,8 +56,10 @@ namespace ComputationalNode
             node.MessageProcessor = messageProcessor;
 
             /************ Init all threads ************/
-            // TODO
-
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                node.TaskThreads[i] = new TaskThread(i, problems[0], messageProcessor, (int)node.Id);
+            }
             /************ Register ************/
             client.Connect();
             Console.Write(" >> Sending Register message... \n\n");

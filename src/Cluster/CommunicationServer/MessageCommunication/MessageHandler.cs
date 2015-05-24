@@ -136,6 +136,46 @@ namespace CommunicationServer.MessageCommunication
                          Console.Write(" >> Divide problem message has been sent.\n");
                     }
                 }
+                // IF THERE IS NO TASKS TO COMPUTE THANT TRY TO MERGE SOLUTION (IF THERE IS ONE)
+                if (messageCheck == false)
+                {
+                    for (int i = 0; i < taskTracker.Tasks.Count; i++)
+                    {
+                        bool isSolved = true;
+                        if (taskTracker.Tasks[i].Status != TaskStatus.Merging && taskTracker.Tasks[i].Status != TaskStatus.Merged )
+                        {
+                            for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                            {
+                                if (taskTracker.Tasks[i].subTasks[j].Status != TaskStatus.Solved)
+                                {
+                                    isSolved = false;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            isSolved = false;
+                        }
+                        if (isSolved && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
+                        {
+                            taskTracker.Tasks[i].Status = TaskStatus.Merging;
+                            Solution[] solutions = new Solution[taskTracker.Tasks[i].subTasks.Count];
+                            for (int k = 0; k < solutions.Count(); k++)
+                            {
+                                solutions[k] = new Solution(SolutionsSolutionType.Final);
+                            }
+                                for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                                {
+                                    solutions[j].Data = taskTracker.Tasks[i].subTasks[j].Solutions[0].Data;
+                                }
+                            SolutionsMessage solutionMessage = new SolutionsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, solutions);
+                            server.Send(messagePackage.Socket, solutionMessage);
+                            messageCheck = true;
+                            Console.Write(" >>Solution Message has been sent to Task Manager\n");
+                        }
+                    }
+                }
                 //if divideProblemMessage hasn't been sent than send noOperationMessage
                 if (messageCheck == false)
                 {
@@ -230,6 +270,27 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolutionsMessage(MessagePackage messagePackage)
         {
+            SolutionsMessage message = (SolutionsMessage)messagePackage.Message;
+            Task task = taskTracker.GetTask((int)message.Id);
+            //IT HAS TO BE CHANGED AFTER ADDING SUBTASK ID @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            if (message.Solutions[0].Type == SolutionsSolutionType.Final)
+            {
+                task.Solutions = message.Solutions;
+                task.Status = TaskStatus.Merged;
+            }
+            else
+            {
+                for (int i = 0; i < task.subTasks.Count; i++)
+                {
+                    if (task.subTasks[i].Status == TaskStatus.Solving)
+                    {
+                        task.subTasks[i].Status = TaskStatus.Solved;
+                        task.subTasks[i].Solutions = message.Solutions;
+                        break;
+                    }
+                }
+            }
+
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
