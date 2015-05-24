@@ -87,7 +87,8 @@ namespace Cluster
         public UCCTaskSolver.TaskSolver TaskSolver
         {
             get { return taskSolver; }
-            private set { taskSolver = value; }
+            //setter is no longer private
+            set { taskSolver = value; }
         }
 
         /// <summary>
@@ -113,7 +114,8 @@ namespace Cluster
         public Thread Thread
         {
             get { return thread; }
-            private set { thread = value; }
+            // set is no longer private
+            set { thread = value; }
         }
 
         private MessageProcessor messageProcessor;
@@ -132,11 +134,10 @@ namespace Cluster
 
             NodeID = nodeID;
             ID = id;
-            //UCCTaskSolver.TaskSolver taskSolver = UCCTaskSolver.TaskSolverCreator();
-            TaskSolver = taskSolver;
+           // UCCTaskSolver.TaskSolver taskSolver = UCCTaskSolver.TaskSolverCreator();
+           //TaskSolver = taskSolver;
             StatusThread = new StatusThread(StatusThreadState.Idle);
             MessageProcessor = messageProcessor;
-
             SolvableProblem = solvableProblem;
         }
 
@@ -164,6 +165,7 @@ namespace Cluster
                     SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(currentTask.Type, (ulong) currentTask.ID, currentTask.CommonData, (ulong)4, partialProblems);
 
                     messageProcessor.Communicate(solvePartialProblemsMessage);
+                    
                         break;
                     
                 case TaskStatus.Solving:

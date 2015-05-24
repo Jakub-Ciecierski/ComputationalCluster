@@ -95,13 +95,13 @@ namespace Cluster.Client
         /// <param name="type"></param>
         /// <param name="parallelThreads"></param>
         /// <param name="solvableProblems"></param>
-        public NetworkNode(RegisterType type, TaskThread[] taskThreads)
+       /* public NetworkNode(RegisterType type, TaskThread[] taskThreads)
         {
             Type = type;
 
             TaskThreads = taskThreads;
             ParallelThreads = (byte)TaskThreads.Count();
-        }
+        }*/
         public NetworkNode(RegisterType type, byte parallelThreads, string[] problems)
         {
             Type = type;
@@ -113,7 +113,7 @@ namespace Cluster.Client
             ParallelThreads = parallelThreads;
         }
 
-        public NetworkNode(RegisterType type, ulong id, uint timeout, string[] problems)
+      /*  public NetworkNode(RegisterType type, ulong id, uint timeout, string[] problems)
         {
             Type = type;
 
@@ -122,7 +122,7 @@ namespace Cluster.Client
 
             TaskThreads = taskThreads;
             ParallelThreads = (byte)TaskThreads.Count();
-        }
+        }*/
 
         /******************************************************************/
         /******************* CONSTRUCTORS (SRERVER SIDE) *******************/
@@ -138,9 +138,10 @@ namespace Cluster.Client
             {
                 taskThreads[i] = new TaskThread((int)id, solvableProblems[0], messageProcessor,(int)Id);
             }
-                TaskThreads = taskThreads;
+            TaskThreads = taskThreads;
             ParallelThreads = parallelThreads;
             BackupServers = backupCommunicationServer;
+            SolvableProblems = solvableProblems;
         }
         
         /*******************************************************************/

@@ -16,10 +16,12 @@ namespace Cluster
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
+
+        ////////////******WHY PRIVATE DUDE???????**************//////////////
         /// <summary>
         ///     List of sub tasks associated to that task
         /// </summary>
-        private List<Task> subTasks = new List<Task>();
+        public  List<Task> subTasks = new List<Task>();
 
         /// <summary>
         ///     ID of the base Task

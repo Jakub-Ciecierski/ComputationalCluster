@@ -1,11 +1,14 @@
 ﻿using Cluster.Client.Messaging;
 using Communication;
+using Communication.MessageComponents;
 using Communication.Messages;
 using Communication.Network.TCP;
+using ComputationalNode.TaskSolvers.DVRP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ComputationalNode.MessageCommunication
@@ -46,6 +49,23 @@ namespace ComputationalNode.MessageCommunication
 
         private void handleSolvePartialProblemsMessage(SolvePartialProblemsMessage message)
         {
+
+            for (int i = 0; i < systemTracker.Node.ParallelThreads; i++)
+            {
+                if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
+                {
+                    DVRPSolver dvrpSolver = new DVRPSolver(message.PartialProblems[0].Data);
+                    systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
+                    systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, message.PartialProblems[0].Data) { Status = Cluster.TaskStatus.Solving };
+                    systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
+                    systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
+                    systemTracker.Node.TaskThreads[i].Thread.Start();
+                    Console.Write("Thread number:" + i + " is solving partial problem");
+                    break;
+                }
+            }
+            ///WE SHOULD CHECK HERE WHETHER THERE WAS IDLE THREAD AVALIABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
             // start computations
         }
 
