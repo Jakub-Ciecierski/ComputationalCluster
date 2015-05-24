@@ -6,6 +6,21 @@ using System.Threading.Tasks;
 
 namespace Cluster.Math
 {
+    /// <summary>
+    ///     Computes the prediction strength, ps in short.
+    ///     Split data into: Learning and Test sets
+    ///     Compute k-means for both sets.
+    ///     Computes the co-membership (1.) of each Test cluster
+    ///     in respect to Learnings clusters.
+    ///     Compute strength of each Test cluster and 
+    ///     find the minimum value
+    ///     
+    ///     1. co-membership:
+    ///     Let data be a set of n elements, then co-membership 
+    ///     is an n by n matrix with (i,j)th element equal to 1
+    ///     if i and j fall into the same cluster from the clusters set, 0 otherwise.
+    ///     The clusters and data can come from different samples (of the same population) 
+    /// </summary>
     public class PredictionStrength
     {
         private List<Point> data;
@@ -22,7 +37,6 @@ namespace Cluster.Math
             set { best_k = value; }
         }
 
-
         public PredictionStrength(List<Point> data, int max_k = 5, int start_k = 1)
         {
             this.data = data;
@@ -32,7 +46,10 @@ namespace Cluster.Math
             this.start_k = start_k;
         }
 
-        private void compute() 
+        /// <summary>
+        ///     Runs the algorithm for configuration given by constructor
+        /// </summary>
+        private void psLogic() 
         {
             // 1) get learning and testing set
             List<Point> learning = new List<Point>();
@@ -46,14 +63,14 @@ namespace Cluster.Math
                     testing.Add(data[i]);
             }
 
-            // 2) compute ps 
+            // 2) compute ps for each k and find the best_k
             int best_k = 1;
             double max_strength = 0;
             double[] strenghs = new double[max_k];
 
             for (int k = start_k; k <= max_k; k++)
             {
-                double strength = ps(learning, testing, k);
+                double strength = psValue(learning, testing, k);
                 if (k == start_k)
                 {
                     max_strength = strength;
@@ -64,10 +81,25 @@ namespace Cluster.Math
                     max_strength = strength;
                     best_k = k;
                 }
+
             }
         }
 
-        private double ps(List<Point> learning, List<Point> testing, int k)
+        /// <summary>
+        ///     Take set of points of each Test cluster and 
+        ///     compute its co-membership matrix with respect to
+        ///     the set of Learning clusters.
+        ///
+        ///     Do it for each Test cluster (check of Test points)
+        ///     while computing its strength.
+        ///     The min of strengths of all clusters will be the
+        ///     Predictions strength
+        /// </summary>
+        /// <param name="learning"></param>
+        /// <param name="testing"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        private double psValue(List<Point> learning, List<Point> testing, int k)
         {
             double[] strenghs = new double[k];
             
@@ -115,6 +147,15 @@ namespace Cluster.Math
             return min;
         }
 
+        /// <summary>
+        ///     Let data be a set of n elements, then co-membership 
+        ///     is an n by n matrix with (i,j)th element equal to 1
+        ///     if i and j fall into the same cluster from the clusters set, 0 otherwise.
+        ///     The clusters and data can come from different samples (of the same population) 
+        /// </summary>
+        /// <param name="learningCluster"></param>
+        /// <param name="testingClusterPoints"></param>
+        /// <returns></returns>
         private int[][] co_membership(KMeans learningCluster,List<Point> testingClusterPoints)
         {
             int len = testingClusterPoints.Count;
@@ -153,7 +194,7 @@ namespace Cluster.Math
 
         public void Compute() 
         {
-            compute();
+            psLogic();
         }
     }
 }

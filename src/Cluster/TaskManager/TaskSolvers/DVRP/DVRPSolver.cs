@@ -40,7 +40,7 @@ namespace TaskManager.TaskSolvers.DVRP
             List<Point> data = new List<Point>();
             for (int i = 0; i < benchmark.Num_Visits; i++)
             {
-                List<int> point_coords = new List<int>();
+                List<double> point_coords = new List<double>();
 
                 // does not include depots - which is what we want
                 int loc_index = benchmark.Visit_Location[i];
