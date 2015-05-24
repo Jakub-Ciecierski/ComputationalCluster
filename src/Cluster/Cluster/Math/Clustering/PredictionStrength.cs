@@ -45,7 +45,7 @@ namespace Cluster.Math.Clustering
         /// <summary>
         ///     Number of points in each cloud.
         /// </summary>
-        const int CLOUD_SIZE = 200;
+        const int CLOUD_SIZE = 400;
 
         /// <summary>
         ///     Standard deviation which is used in Normal distribution
@@ -74,6 +74,8 @@ namespace Cluster.Math.Clustering
             get { return best_k; }
             set { best_k = value; }
         }
+
+        private double[] strengths;
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -104,11 +106,12 @@ namespace Cluster.Math.Clustering
             // 2) compute ps for each k and find the best_k
             best_k = 1;
             double max_strength = 0;
-            double[] strengths = new double[max_k];
+            strengths = new double[max_k];
 
             for (int k = start_k; k <= max_k; k++)
             {
                 double strength = psValue(learningSet, testingSet, k);
+                strengths[k - start_k] = strength;
                 if (k == start_k)
                 {
                     max_strength = strength;
@@ -266,6 +269,11 @@ namespace Cluster.Math.Clustering
 
             int originalDataCount = data.Count;
 
+            List<Point> newData = new List<Point>();
+            for (int i = 0; i < originalDataCount; i++)
+            {
+                newData.Add(data[i]);
+            }
             // for each point generate a cloud
             for (int i = 0; i < originalDataCount; i++)
             {
@@ -283,9 +291,10 @@ namespace Cluster.Math.Clustering
                     }
 
                     // Add this point to data set.
-                    data.Add(newPoint);
+                    newData.Add(newPoint);
                 }
             }
+            this.data = newData;
         }
 
         /*******************************************************************/
