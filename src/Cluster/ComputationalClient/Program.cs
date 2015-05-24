@@ -28,7 +28,7 @@ namespace ComputationalClient
             NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
             //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
-            string host = "192.168.111.194";
+            string host = "192.168.0.18";
             IPAddress address = IPAddress.Parse(host);
             int port = 5555;
 

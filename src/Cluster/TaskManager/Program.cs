@@ -12,6 +12,7 @@ using TaskManager.MessageCommunication;
 using System.Threading;
 using Cluster.Client.Messaging;
 using Cluster.Client;
+using Cluster;
 
 namespace TaskManager
 {
@@ -53,7 +54,10 @@ namespace TaskManager
             node.MessageProcessor = messageProcessor;
 
             /************ Init all threads ************/
-            // TODO
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                node.TaskThreads[i] = new TaskThread(i, problems[0], messageProcessor, (int)node.Id);
+            }
 
             /************ Register ************/
             client.Connect();

@@ -120,20 +120,63 @@ namespace CommunicationServer.MessageCommunication
             {
                 networkNode.TaskThreads[i].StatusThread.State = message.Threads[i].State;
             }
-            //message.
+            //if status message was send by TaskManager than check if there are any tasks to divide or merge
             if (networkNode.Type == RegisterType.TaskManager)
             {
+                bool messageCheck = false;
                 for (int i = 0; i < taskTracker.Tasks.Count; i++)
                 {
                     //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
                     if (taskTracker.Tasks[i].Status == TaskStatus.New && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
                     {
                         DivideProblemMessage divideProblemMessage = new DivideProblemMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].BaseData, (ulong)4, (ulong)networkNode.Id);
+                        messageCheck = true;
+                        taskTracker.Tasks[i].Status = TaskStatus.Dividing;
                          server.Send(messagePackage.Socket, divideProblemMessage);
+                         Console.Write(" >> Divide problem message has been sent.\n");
                     }
+                }
+                //if divideProblemMessage hasn't been sent than send noOperationMessage
+                if (messageCheck == false)
+                {
+                    NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                    server.Send(messagePackage.Socket, response);
+                    Console.Write(" >> Sent a NoOperation Message. 0 tasks to divide or 0 apropriate task managers\n");
                 }
               // DivideProblemMessage divideProblemMessage = new DivideProblemMessage(message.,task.ID,task.BaseData,(ulong)4,)
               // server.Send(messagePackage.Socket, response);
+            }
+            //is staty message was send by computational node than check if there are any partial problems to calculate. 
+            else if(networkNode.Type == RegisterType.ComputationalNode){
+                bool messageCheck = false;
+                for (int i = 0; i < taskTracker.Tasks.Count; i++)
+                {
+                    if (taskTracker.Tasks[i].Status == TaskStatus.Divided && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
+                    {
+                        //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
+                        for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                        {
+                            if (taskTracker.Tasks[i].subTasks[j].Status == TaskStatus.New)
+                            {
+                                PartialProblem[] partialProblems = new PartialProblem[1];
+                                partialProblems[i] = new PartialProblem((ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].subTasks[j].BaseData,(ulong)(0));
+
+                                SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, (ulong)4, partialProblems);
+                                server.Send(messagePackage.Socket, solvePartialProblemsMessage);
+                                messageCheck = true;
+                                taskTracker.Tasks[i].subTasks[j].Status = TaskStatus.Solving;
+                                Console.Write(" >> Solve Partial Problems Message has been send (to Computational node). SubTask nr." + j + " \n");
+                            }
+                        }
+
+                    }
+                }
+                if (messageCheck == false)
+                {
+                    NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                    server.Send(messagePackage.Socket, response);
+                    Console.Write(" >> Sent a NoOperation Message. 0 subTasks to divide or 0 apropriate computationalNodes\n");
+                }
             }
             else { 
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
@@ -148,6 +191,17 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolvePartialProblemsMessage(MessagePackage messagePackage)
         {
+            /* add partial tasks to subTask list in a task */
+            SolvePartialProblemsMessage message = (SolvePartialProblemsMessage)messagePackage.Message;
+            Task task = taskTracker.GetTask((int)message.Id);
+            task.Status = TaskStatus.Divided;
+            for (int i = 0; i < message.PartialProblems.Count(); i++)
+            {
+                Task subTask = new Task((int)message.Id, message.ProblemType, message.PartialProblems[i].Data);
+                subTask.Status = TaskStatus.New;
+                task.AddSubTask(subTask);
+            }
+            /***********************************************/
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");

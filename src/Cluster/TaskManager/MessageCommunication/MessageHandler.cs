@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using TaskManager.TaskSolvers.DVRP;
 //using System.Threading.Tasks;
 
 namespace TaskManager.MessageCommunication
@@ -52,9 +54,12 @@ namespace TaskManager.MessageCommunication
             {
                 if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
                 {
+                    DVRPSolver dvrpSolver = new DVRPSolver(message.Data);
                     systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
                     systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, message.Data) {Status = Cluster.TaskStatus.Dividing};
-                    systemTracker.Node.TaskThreads[i].Start();
+                    systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
+                    systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
+                    systemTracker.Node.TaskThreads[i].Thread.Start();
                     break;
                 }
             }
