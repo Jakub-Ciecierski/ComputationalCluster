@@ -30,7 +30,6 @@ namespace TestCluster
         {
             VRPParser benchmark = TestCases.Test1();
             TaskManager.TaskSolvers.DVRP.DVRPSolver.FullSolveTest(benchmark);
-
         }
 
        
