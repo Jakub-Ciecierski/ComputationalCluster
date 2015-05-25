@@ -81,6 +81,8 @@ namespace CommunicationServer.Communication
 
                 foreach (Socket socket in socketsToRead)
                 {
+                    // OLD SENDING MESSAGE
+                    /* 
                     Message message = server.Receive(socket);
 
                     // Message was null if client disconnected
@@ -93,6 +95,29 @@ namespace CommunicationServer.Communication
                         Queue.Enqueue(messageHandler);
                         Console.Write(" >> Added message to queue \n\n");
                     }
+                     */
+                    // END OLD SENDING MESSAGE
+
+                    // NEW SENDING MESSAGE
+                    List<Message> messages = server.ReceiveMessages(socket);
+
+                    for (int i = 0; i < messages.Count; i++) 
+                    {
+                        Message message = messages[i];
+                        // Message was null if client disconnected
+                        if (message == null)
+                            continue;
+
+                        MessagePackage messageHandler = new MessagePackage(message, socket);
+                        lock (Queue)
+                        {
+                            Queue.Enqueue(messageHandler);
+                            Console.Write(" >> Added message to queue \n\n");
+                        }
+                    }
+                    
+                    // END NEW SENDING MESSAGE
+
                 }
             }
             Console.Write(" >> Message Queing Deactived \n\n");

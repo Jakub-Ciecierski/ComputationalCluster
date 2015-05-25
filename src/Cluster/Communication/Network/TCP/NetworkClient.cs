@@ -116,12 +116,25 @@ namespace Communication.Network.TCP
 
         public void Send(Message message)
         {
-            base.Send(socket, message);
+            List<Message> messages = new List<Message>();
+            messages.Add(message);
+            //base.Send(socket, messages);
+            base.Send(socket, messages);
+        }
+
+        public void Send(List<Message> messages)
+        {
+            base.Send(socket, messages);
         }
 
         public Message Receive()
         {
             return base.Receive(socket);
+        }
+
+        public List<Message> ReceiveMessages()
+        {
+            return base.ReceiveMessages(socket);
         }
     }
 }

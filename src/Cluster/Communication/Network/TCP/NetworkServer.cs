@@ -166,9 +166,12 @@ namespace Communication.Network.TCP
         /// <param name="message"></param>
         public void Send(Socket socket, Message message)
         {
+            List<Message> messages = new List<Message>();
+            messages.Add(message);
             try
             {
-                base.Send(socket, message);
+                //base.Send(socket, message);
+                base.Send(socket, messages);
             }
             catch (SocketException e)
             {
@@ -195,6 +198,26 @@ namespace Communication.Network.TCP
             }
             return message;
         }
+
+        /// <summary>
+        ///     Receives many messages
+        /// </summary>
+        /// <param name="socket"></param>
+        /// <returns></returns>
+        public List<Message> ReceiveMessages(Socket socket)
+        {
+            List<Message> messages = new List<Message>();
+            try
+            {
+                messages = base.ReceiveMessages(socket);
+            }
+            catch (SocketException e) {
+                Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");
+                RemoveConnection(socket);
+            }
+            return messages;
+        }
+        
 
         /// <summary>
         ///     Starts listening for clients in the network
