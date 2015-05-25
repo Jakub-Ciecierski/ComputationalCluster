@@ -10,6 +10,14 @@ namespace Communication.Network.TCP
 {
     public abstract class NetworkConnection
     {
+
+        /// <summary>
+        ///     End Of Block transmision
+        /// </summary>
+        const int END_OF_FILE_DECIMEL = 23;
+
+
+
         private int port;
         private IPAddress address;
 
@@ -64,6 +72,30 @@ namespace Communication.Network.TCP
             }
             socket.Send(dataSend, dataSend.Length, SocketFlags.None);
         }
+        /*
+        protected void Send(Socket socket, List<Message> messages)
+        {
+            char endOfFile = char(END_OF_FILE_DECIMEL);
+
+            foreach (Message message in messages) 
+            { 
+
+            }
+
+            // set up data to send
+            byte[] content = Encoding.UTF8.GetBytes(message.ToXmlString());
+            byte[] sizeSend = BitConverter.GetBytes(content.Length);
+
+            byte[] dataSend = new byte[content.Length + sizeSend.Length];
+            for (int i = 0; i < dataSend.Length; i++)
+            {
+                if (i < sizeSend.Length)
+                    dataSend[i] = sizeSend[i];
+                else
+                    dataSend[i] = content[i - sizeSend.Length];
+            }
+            socket.Send(dataSend, dataSend.Length, SocketFlags.None);
+        }*/
 
         /*
         protected void Send(Socket socket, List<Message> messages)

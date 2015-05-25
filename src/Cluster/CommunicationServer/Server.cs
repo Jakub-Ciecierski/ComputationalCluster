@@ -22,6 +22,8 @@ namespace CommunicationServer
             IPAddress address = getIPAddress();
             int port = 5555;
 
+            Console.Write(" >> IP: "+ address.ToString() + " Port: "+ port +"\n");
+
             Console.Write(" >> Starting server... \n\n");
             Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");
 
@@ -66,6 +68,7 @@ namespace CommunicationServer
                 if (ip.AddressFamily.ToString() == "InterNetwork")
                 {
                     localIP = ip.ToString();
+                    return IPAddress.Parse(localIP);
                 }
             }
             return IPAddress.Parse(localIP);
