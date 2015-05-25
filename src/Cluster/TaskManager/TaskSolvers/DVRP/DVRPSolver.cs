@@ -53,7 +53,7 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             var watch = Stopwatch.StartNew();
-            int[] route = TSPTrianIneq.calculate(points);
+           // int[] route = TSPTrianIneq.calculate(points);
             watch.Stop();
 
             var elapsedMs = watch.ElapsedMilliseconds;
@@ -184,8 +184,11 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             /******************* SOLVE *************************/
-            // TSP ...
-
+            List<Result> results = new List<Result>();
+            for (int i = 0; i < partial_benchmarks.Length; i++)
+            {
+                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i]));
+            }
             /******************* MERGE *************************/
         }
 
