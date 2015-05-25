@@ -124,6 +124,8 @@ namespace Communication.Network.TCP
             socket.Receive(contentReceive, PACKGE_SIZE, SocketFlags.None);
 
             string contentStr = System.Text.Encoding.UTF8.GetString(contentReceive);
+            if (contentStr == null || contentStr[0] == '\0') // TODO WOJTEK HACK
+                return messages;
             messagesStr = contentStr.Split(END_OF_FILE).ToList();
 
             for (int i = 0; i < messagesStr.Count; i++) {

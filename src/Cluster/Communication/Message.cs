@@ -160,7 +160,14 @@ namespace Communication
             if (GetMessageName(xmlString) == SolutionsMessage.ELEMENT_NAME)
                 return SolutionsMessage.Construct(xmlString);
             if (GetMessageName(xmlString) == SolvePartialProblemsMessage.ELEMENT_NAME)
+            {
+                try
+                {
+                    //return SolvePartialProblemsMessage.Construct(xmlString);
+                }
+                catch (InvalidOperationException e) { return null; }
                 return SolvePartialProblemsMessage.Construct(xmlString);
+            }
             if (GetMessageName(xmlString) == SolveRequestMessage.ELEMENT_NAME)
                 return SolveRequestMessage.Construct(xmlString);
             if (GetMessageName(xmlString) == SolveRequestResponseMessage.ELEMENT_NAME)

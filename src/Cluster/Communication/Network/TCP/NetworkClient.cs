@@ -124,17 +124,45 @@ namespace Communication.Network.TCP
 
         public void Send(List<Message> messages)
         {
-            base.Send(socket, messages);
+            try
+            {
+                //base.Send(socket, message);
+                base.Send(socket, messages);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Send] Socket unavaible, removing connection... \n");
+            }
         }
 
         public Message Receive()
         {
-            return base.Receive(socket);
+            Message message = null;
+            try
+            {
+                message = base.Receive(socket);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");;
+            }
+            return message;
         }
 
         public List<Message> ReceiveMessages()
         {
-            return base.ReceiveMessages(socket);
+            List<Message> messages = new List<Message>();
+
+            Message message = null;
+            try
+            {
+                messages = base.ReceiveMessages(socket);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");
+            }
+            return messages;
         }
     }
 }

@@ -186,6 +186,7 @@ namespace CommunicationServer
         /// </summary>
         public void CheckNodesTimeOut()
         {
+            /*
             for (; ; )
             {
                 TimeSpan timeDifference;
@@ -228,7 +229,7 @@ namespace CommunicationServer
                     }
                 }
                 Thread.Sleep(500);
-            }
+            }*/
         }
     }
 }

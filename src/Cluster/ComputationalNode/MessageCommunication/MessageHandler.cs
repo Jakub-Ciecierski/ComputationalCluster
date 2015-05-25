@@ -71,17 +71,20 @@ namespace ComputationalNode.MessageCommunication
 
         protected override void handle(Message message)
         {
-            if (message.GetType() == typeof(NoOperationMessage))
-                handleNoOperationMessage((NoOperationMessage)message);
+            if (message != null)
+            {
+                if (message.GetType() == typeof(NoOperationMessage))
+                    handleNoOperationMessage((NoOperationMessage)message);
 
-            else if (message.GetType() == typeof(RegisterResponseMessage))
-                handleRegisterResponsenMessage((RegisterResponseMessage)message);
+                else if (message.GetType() == typeof(RegisterResponseMessage))
+                    handleRegisterResponsenMessage((RegisterResponseMessage)message);
 
-            else if (message.GetType() == typeof(SolvePartialProblemsMessage))
-                handleSolvePartialProblemsMessage((SolvePartialProblemsMessage)message);
+                else if (message.GetType() == typeof(SolvePartialProblemsMessage))
+                    handleSolvePartialProblemsMessage((SolvePartialProblemsMessage)message);
 
-            else
-                Console.Write(" >> Unknow message type, can't handle it... \n\n");
+                else
+                    Console.Write(" >> Unknow message type, can't handle it... \n\n");
+            }
         }
     }
 }

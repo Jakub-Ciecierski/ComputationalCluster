@@ -19,7 +19,7 @@ namespace ComputationalClient
     {
         static void Main(string[] args)
         {
-            RegisterType type = RegisterType.CompuationalClient;
+            RegisterType type = RegisterType.ComputationalClient;
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
             SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
@@ -28,9 +28,10 @@ namespace ComputationalClient
             NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
             //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
-            string host = "169.254.80.80";
+            //string host = "169.254.80.80";
+            string host = "192.168.143.155";
             IPAddress address = IPAddress.Parse(host);
-            int port = 5555;
+            int port = 8080;
 
             Console.Write(" >> I'm a  CompuationalClient \n");
             NetworkClient client = new NetworkClient(address, port);
