@@ -52,13 +52,16 @@ namespace Cluster.Client.Messaging
         /// </summary>
         public void Communicate(Message message)
         {
+            List<Message> messages = new List<Message>();
+            messages.Add(message);
+            this.Communicate(messages);
+            /* TODO
             lock (this)
             {
                 if (!client.Connected) {
                     SmartConsole.PrintLine("Lost connection, reconnecting...");
                     client.Connect();
                 }
-                    
 
                 // Send to server
                 client.Send(message);
@@ -71,7 +74,31 @@ namespace Cluster.Client.Messaging
 
                 //client.Disconnect();
             }
+            */
         }
 
+        public void Communicate(List<Message> messages)
+        {
+            lock (this)
+            {
+                if (!client.Connected)
+                {
+                    SmartConsole.PrintLine("Lost connection, reconnecting...");
+                    client.Connect();
+                }
+                    // Send to server
+                    client.Send(messages);
+
+                    // Wait for response
+                    List<Message> responseMessage = client.ReceiveMessages();
+
+                    for (int i = 0; i < responseMessage.Count; i++)
+                    {
+                        // handle response  
+                        Message message = responseMessage[i];
+                        messageHandler.Handle(message);
+                    }
+            }
+        }
     }
 }

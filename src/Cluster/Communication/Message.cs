@@ -51,6 +51,30 @@ namespace Communication
             return xmlStr;
         }
 
+        private static string concCompabilityIssuesStringWojtekIsGay(string xmlFile)
+        {
+            const string encoding = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+            const string _namespace = "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"http://www.mini.pw.edu.pl/ucc/\"";
+
+            if (xmlFile.Contains(encoding))
+                return xmlFile;
+            string totalFile = "";
+
+            // find first '>'
+            totalFile += encoding;
+
+            int index = xmlFile.IndexOf('>');
+            string part_before_namespace = xmlFile.Substring(0, index);
+            part_before_namespace += " " + _namespace;
+            string part_after_namespace = xmlFile.Substring(index, xmlFile.Length - index);
+
+            part_before_namespace += part_after_namespace;
+
+            totalFile += part_before_namespace;
+
+            return totalFile;
+        }
+
         /// <summary>
         /// Serializes this object to xml string with defualt UTF8 encoding
         /// </summary>
@@ -121,6 +145,8 @@ namespace Communication
         /// </returns>
         public static Message Construct(string xmlString)
         {
+            xmlString = concCompabilityIssuesStringWojtekIsGay(xmlString);
+
             if (GetMessageName(xmlString) == RegisterMessage.ELEMENT_NAME)
                 return RegisterMessage.Construct(xmlString);
             if (GetMessageName(xmlString) == DivideProblemMessage.ELEMENT_NAME)

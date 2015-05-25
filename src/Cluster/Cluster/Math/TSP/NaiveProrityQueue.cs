@@ -29,10 +29,11 @@ namespace Cluster.Math.TSP
             return min;
         }
 
-        public void decreaseKey(FibonacciNode node, float key)
+        public void decreaseKey(FibonacciNode node, float key, float distance2D)
         {
             if (node.key < key || key < 0) return;
             node.key = key;
+            node.distance2D = distance2D;
         }
 
         public bool isQueueEmpty()

@@ -26,7 +26,7 @@ namespace CommunicationServer
 
             Console.Write(" >> Starting server... \n\n");
             Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");
-
+            
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
 

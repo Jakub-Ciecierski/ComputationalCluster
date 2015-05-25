@@ -14,6 +14,7 @@ namespace Cluster.Math.TSP
             for (int i = 0; i < g.n_v; i++)
             {
                 g.v[i].key = float.MaxValue;
+               // g.v[i].distance2D = float.MaxValue;
                 g.v[i].parent = -1;
             }
             /* Set root. */
@@ -35,7 +36,7 @@ namespace Cluster.Math.TSP
                     if (g.v[tmp.index].inQ && g.wageFunction(u.index, tmp.index) < g.v[tmp.index].key)
                     {
                         g.v[tmp.index].parent = u.index;
-                        q.decreaseKey(g.v[tmp.index], g.wageFunction(u.index, tmp.index));
+                        q.decreaseKey(g.v[tmp.index], g.wageFunction(u.index, tmp.index), g.wage2D(u.index, tmp.index));
                     }
                     tmp = tmp.next;
                 }

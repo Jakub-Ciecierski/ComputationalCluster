@@ -9,9 +9,13 @@ namespace Cluster.Math.TSP
     class FibonacciNode
     {
         /**
-         * In our case key represents distance/key between graph's nodes.
+         * In our case key represents distance/key between graph's nodes in 3D.
          */
         public float key = -1;
+        /**
+         * To sum up the route's length.
+         */
+        public float distance2D = -1;
         /**
          * Index of a vertex in graph.
          */
