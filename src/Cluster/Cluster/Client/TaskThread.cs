@@ -163,7 +163,7 @@ namespace Cluster
                         partialProblems[i] = new PartialProblem((ulong)currentTask.ID, dividedProblems[i], (ulong)NodeID);
                     }
                     SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(currentTask.Type, (ulong) currentTask.ID, currentTask.CommonData, (ulong)4, partialProblems);
-
+                    Console.Write(">>Sending solve partial problems message. ");
                     messageProcessor.Communicate(solvePartialProblemsMessage);
                     this.statusThread.State = StatusThreadState.Idle;
                     this.currentTask = null;
@@ -178,6 +178,7 @@ namespace Cluster
                     solutions[0] = new Solution((ulong)currentTask.ID, false, SolutionsSolutionType.Partial, 4000, solvedPartialProblem);
 
                     SolutionsMessage solutionMessage = new SolutionsMessage(currentTask.Type, (ulong)currentTask.ID, currentTask.CommonData, solutions);
+                    Console.Write(">>Sending solution message. ");
                     messageProcessor.Communicate(solutionMessage);
 
                     break;

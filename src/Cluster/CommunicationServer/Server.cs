@@ -20,7 +20,7 @@ namespace CommunicationServer
         {
             // TODO read from config file manager
             IPAddress address = getIPAddress();
-            int port = 5555;
+            int port = 8080;
 
             Console.Write(" >> Starting server... \n\n");
             Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");

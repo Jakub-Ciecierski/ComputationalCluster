@@ -218,6 +218,5 @@ namespace Cluster.Client
             }
             return new StatusMessage(Id, statusThreads);
         }
-
     }
 }

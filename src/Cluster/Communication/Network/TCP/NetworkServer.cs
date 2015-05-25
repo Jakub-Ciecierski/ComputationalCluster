@@ -96,6 +96,7 @@ namespace Communication.Network.TCP
             {
                 Socket socket = server.AcceptSocket();
                 Console.Write(" >> New Client connected: ");
+                
                 Console.Write(RemoteAddressToString(socket) + "\n\n");
                 lock (connections)
                 {

@@ -42,6 +42,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Benchmarks\DVRPData.cs" />
     <Compile Include="Benchmarks\TestCases.cs" />
     <Compile Include="Benchmarks\VRPParser.cs" />
     <Compile Include="Client\ClientSystemTracker.cs" />
