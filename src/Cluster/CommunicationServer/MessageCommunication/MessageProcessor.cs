@@ -1,4 +1,5 @@
-﻿using Communication;
+﻿using Cluster.Util;
+using Communication;
 using CommunicationServer.Communication;
 using System;
 using System.Collections.Generic;

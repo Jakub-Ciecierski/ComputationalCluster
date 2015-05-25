@@ -91,7 +91,7 @@ namespace Communication.Network.TCP
         /// </summary>
         private void listenForClients()
         {
-            Console.Write(" >> Listening for clients Actived \n\n");
+            Console.Write(" >> Listening for clients Activated \n\n");
             while (Active)
             {
                 Socket socket = server.AcceptSocket();
@@ -102,7 +102,7 @@ namespace Communication.Network.TCP
                     connections.Add(socket);
                 }
             }
-            Console.Write(" >> Listening for clients Deactived \n");
+            Console.Write(" >> Listening for clients Deactivated \n");
         }
 
         /*******************************************************************/
@@ -148,7 +148,15 @@ namespace Communication.Network.TCP
         /// <param name="message"></param>
         public void Send(Socket socket, string message)
         {
-            base.Send(socket, message);
+            try
+            {
+                base.Send(socket, message);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Send] Socket unavaible, removing connection... \n");
+                RemoveConnection(socket);
+            }
         }
 
         /// <summary>
@@ -158,7 +166,15 @@ namespace Communication.Network.TCP
         /// <param name="message"></param>
         public void Send(Socket socket, Message message)
         {
-            base.Send(socket, message);
+            try
+            {
+                base.Send(socket, message);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Send] Socket unavaible, removing connection... \n");
+                RemoveConnection(socket);
+            }
         }
 
         /// <summary>
@@ -168,7 +184,16 @@ namespace Communication.Network.TCP
         /// <returns></returns>
         public Message Receive(Socket socket)
         {
-            return base.Receive(socket);
+            Message message = null;
+            try
+            {
+                message = base.Receive(socket);
+            }
+            catch (SocketException e) {
+                Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");
+                RemoveConnection(socket);
+            }
+            return message;
         }
 
         /// <summary>
@@ -210,8 +235,7 @@ namespace Communication.Network.TCP
 
                 foreach (Socket socket in socketsToRemove)
                 {
-                    connections.Remove(socket);
-                    //socket.Close();
+                    RemoveConnection(socket);
                 }
             }
 
@@ -221,6 +245,11 @@ namespace Communication.Network.TCP
             // TODO fix busy waiting
             Socket.Select(sockets, null, null, 1000);
             return sockets;
+        }
+
+        public bool RemoveConnection(Socket socket)
+        {
+            return connections.Remove(socket);
         }
 
         /// <summary>

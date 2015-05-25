@@ -15,7 +15,7 @@ namespace Cluster.Util
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        const string linePrefix = " << ";
+        const string linePrefix = " >> ";
 
         const string headerPrefix = "****************************";
         const string headerSuffix = "****************************";

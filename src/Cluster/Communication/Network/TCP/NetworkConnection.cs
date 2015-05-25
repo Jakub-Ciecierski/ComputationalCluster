@@ -65,6 +65,25 @@ namespace Communication.Network.TCP
             socket.Send(dataSend, dataSend.Length, SocketFlags.None);
         }
 
+        /*
+        protected void Send(Socket socket, List<Message> messages)
+        {
+            // set up data to send
+            byte[] content = Encoding.UTF8.GetBytes(message.ToXmlString());
+            byte[] sizeSend = BitConverter.GetBytes(content.Length);
+
+            byte[] dataSend = new byte[content.Length + sizeSend.Length];
+            for (int i = 0; i < dataSend.Length; i++)
+            {
+                if (i < sizeSend.Length)
+                    dataSend[i] = sizeSend[i];
+                else
+                    dataSend[i] = content[i - sizeSend.Length];
+            }
+            socket.Send(dataSend, dataSend.Length, SocketFlags.None);
+        }*/
+
+
         /// <summary>
         ///     Receive next message
         /// </summary>
@@ -86,5 +105,21 @@ namespace Communication.Network.TCP
 
             return message;
         }
+        /*
+        protected List<Message> ReceiveMany(Socket socket)
+        {
+            byte[] sizeReceiveByte = new byte[sizeof(Int32)];
+            socket.Receive(sizeReceiveByte, sizeof(Int32), 0);
+            int sizeReceive = BitConverter.ToInt32(sizeReceiveByte, 0);
+
+            byte[] contentReceive = new byte[sizeReceive];
+            socket.Receive(contentReceive, sizeReceive, SocketFlags.None);
+
+            string messageStr = System.Text.Encoding.UTF8.GetString(contentReceive);
+
+            Message message = Message.Construct(messageStr);
+
+            return message;
+        }*/
     }
 }
