@@ -13,6 +13,7 @@ using Cluster.Util.Client;
 using ComputationalNode.MessageCommunication;
 using Cluster.Client.Messaging;
 using Cluster.Client;
+using Cluster;
 
 namespace ComputationalNode
 {
@@ -26,8 +27,8 @@ namespace ComputationalNode
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
 
-            //NetworkNode node = new NetworkNode(type, parallelThreads, problems);
-            NetworkNode node = new NetworkNode();
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems);
+            //NetworkNode node = new NetworkNode();
 
             /************ Setup connection ************/
             string inputLine = "";
@@ -52,10 +53,13 @@ namespace ComputationalNode
 
             MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
 
+            node.MessageProcessor = messageProcessor;
 
             /************ Init all threads ************/
-            // TODO
-
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                node.TaskThreads[i] = new TaskThread(i, problems[0], messageProcessor, (int)node.Id);
+            }
             /************ Register ************/
             client.Connect();
             Console.Write(" >> Sending Register message... \n\n");

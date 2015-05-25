@@ -1,4 +1,5 @@
-﻿using Communication.MessageComponents;
+﻿using Cluster.Client.Messaging;
+using Communication.MessageComponents;
 using Communication.Messages;
 using System;
 using System.Collections.Generic;
@@ -75,18 +76,18 @@ namespace Cluster.Client
             private set { taskThreads = value; }
         }
 
+        private MessageProcessor messageProcessor;
 
-        /******************************************************************/
-        /************************** CONSTRUCTORS **************************/
-        /******************************************************************/
-
-        /// <summary>
-        ///     TODO
-        /// </summary>
-        public NetworkNode()
+        public MessageProcessor MessageProcessor
         {
-
+            get { return messageProcessor; }
+            set { messageProcessor = value; }
         }
+
+        
+        /******************************************************************/
+        /******************* CONSTRUCTORS (CLIENT SIDE) *******************/
+        /******************************************************************/
 
         /// <summary>
         ///     Creates Network node
@@ -94,15 +95,25 @@ namespace Cluster.Client
         /// <param name="type"></param>
         /// <param name="parallelThreads"></param>
         /// <param name="solvableProblems"></param>
-        public NetworkNode(RegisterType type, TaskThread[] taskThreads)
+       /* public NetworkNode(RegisterType type, TaskThread[] taskThreads)
         {
             Type = type;
 
             TaskThreads = taskThreads;
             ParallelThreads = (byte)TaskThreads.Count();
+        }*/
+        public NetworkNode(RegisterType type, byte parallelThreads, string[] problems)
+        {
+            Type = type;
+            TaskThreads = new TaskThread[parallelThreads];
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                TaskThreads[i] = new TaskThread(i, problems[0], messageProcessor,(int)Id);
+            }
+            ParallelThreads = parallelThreads;
         }
 
-        public NetworkNode(RegisterType type, ulong id, uint timeout, TaskThread[] taskThreads)
+      /*  public NetworkNode(RegisterType type, ulong id, uint timeout, string[] problems)
         {
             Type = type;
 
@@ -111,8 +122,28 @@ namespace Cluster.Client
 
             TaskThreads = taskThreads;
             ParallelThreads = (byte)TaskThreads.Count();
-        }
+        }*/
 
+        /******************************************************************/
+        /******************* CONSTRUCTORS (SRERVER SIDE) *******************/
+        /******************************************************************/
+        public NetworkNode(RegisterType type, ulong id, uint timeout, byte parallelThreads, string[] solvableProblems, BackupCommunicationServer[] backupCommunicationServer)
+        {
+            Type = type;
+
+            Id = id;
+            Timeout = timeout;
+            TaskThread[] taskThreads = new TaskThread[parallelThreads];
+            for (int i = 0; i < parallelThreads; i++)
+            {
+                taskThreads[i] = new TaskThread((int)id, solvableProblems[0], messageProcessor,(int)Id);
+            }
+            TaskThreads = taskThreads;
+            ParallelThreads = parallelThreads;
+            BackupServers = backupCommunicationServer;
+            SolvableProblems = solvableProblems;
+        }
+        
         /*******************************************************************/
         /************************ PRIVATE METHODS **************************/
         /*******************************************************************/

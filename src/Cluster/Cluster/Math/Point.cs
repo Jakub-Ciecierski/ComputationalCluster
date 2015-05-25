@@ -11,46 +11,78 @@ namespace Cluster.Math
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
+        const int xIndex = 0;
+        const int yIndex = 1;
+        const int zIndex = 2;
 
-        private List<int> coords = new List<int>();
+        private List<double> coords = new List<double>();
 
-	    public int X
+        public double X
         {
-            get { return coords[0]; }
-            set { coords[0] = value; }
+            get
+            {
+                if (xIndex < coords.Count)
+                    return coords[xIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (xIndex < coords.Count)
+                    coords[xIndex] = value;
+            }
         }
 
-        public int Y
+        public double Y
         {
-            get { return coords[1]; }
-            set { coords[1] = value; }
+            get
+            {
+                if (yIndex < coords.Count)
+                    return coords[yIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (yIndex < coords.Count)
+                    coords[yIndex] = value;
+            }
         }
 
-        public int Z
+        public double Z
         {
-            get { return coords[2]; }
-            set { coords[2] = value; }
+            get 
+            {
+                if (zIndex < coords.Count)
+                    return coords[zIndex];
+                else
+                    return 0;
+            }
+            set
+            {
+                if (zIndex < coords.Count)
+                    coords[zIndex] = value; 
+            }
         }
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public Point(int x, int y)
+        public Point(double x, double y)
         {
-            X = x;
-            Y = y;
-            Z = 0;
+            coords.Add(x);
+            coords.Add(y);
         }
 
-        public Point(int x, int y, int z)
+        public Point(double x, double y, double z)
         {
-            X = x;
-            Y = y;
-            Z = z;
+            coords.Add(x);
+            coords.Add(y);
+            coords.Add(z);
         }
 
-        public Point(List<int> coords)
+        public Point(List<double> coords)
         {
             this.coords = coords;
         }
@@ -63,61 +95,31 @@ namespace Cluster.Math
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
-        public int ElementAt(int i)
+        public double GetDimValue(int i)
         {
             return coords[i];
         }
 
-        public int Size()
+        public void SetDimValue(int i, double value)
+        {
+            coords[i] = value;
+        }
+
+        public int DimSize()
         {
             return coords.Count;
         }
 
-        /*******************************************************************/
-        /************************* STATIC METHODS **************************/
-        /*******************************************************************/
-
-        public static double Distance(Point p1, Point p2)
+        public Point Copy()
         {
-            if(p1.Size() != p2.Size())
-                return -1.0;
-            int size = p1.Size();
-            double distance = 0;
-
-            for (int i = 0; i < size; i++)
+            List<double> newCoords = new List<double>();
+            for (int i = 0; i < coords.Count;i++ )
             {
-                double diff = p1.ElementAt(i) - p2.ElementAt(i);
-                distance += diff * diff;
+                newCoords.Add(this.coords[i]);
             }
-            return System.Math.Sqrt(distance);
+
+            Point point = new Point(newCoords);
+            return point;
         }
-
-        public static Point mean(List<Point> points)
-        {
-            List<int> mean_coords = new List<int>();
-            for(int i=0;i<points[0].Size();i++)
-            {
-                mean_coords.Add(0);
-            }
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                Point point = points[i];
-
-                for (int j = 0; j < point.Size(); j++) 
-                {
-                    mean_coords[j] += point.ElementAt(j);
-                }
-                
-            }
-
-            for (int i = 0; i < mean_coords.Count; i++)
-            {
-                mean_coords[i] /= mean_coords.Count;
-            }
-
-            return new Point(mean_coords);
-        }
-        
     }
 }

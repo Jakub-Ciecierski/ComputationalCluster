@@ -1,4 +1,5 @@
-﻿using Cluster.Client;
+﻿using Cluster;
+using Cluster.Client;
 using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
@@ -90,11 +91,11 @@ namespace CommunicationServer.MessageCommunication
                 RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, systemTracker.BackupServers);
                 
                 // Create NetworkNode instance
-                /* TODO
-                NetworkNode node = new NetworkNode(message.Type, message.ParallelThreads, message.SolvableProblems, 
-                                                    response.Id, response.Timeout, response.BackupCommunicationServers);
-                 */
-                NetworkNode node = new NetworkNode();
+                 //TODO
+                NetworkNode node = new NetworkNode(message.Type, response.Id, response.Timeout, message.ParallelThreads, message.SolvableProblems, 
+                                                      response.BackupCommunicationServers);
+                 
+                //NetworkNode node = new NetworkNode();
 
                 // Add the node to system
                 clientTracker.AddNode(node);
@@ -102,7 +103,7 @@ namespace CommunicationServer.MessageCommunication
                 server.Send(socket, response);
 
                 Console.Write(" >> Sent a response \n\n");
-            }
+            }       
         }
 
         /// <summary>
@@ -113,13 +114,115 @@ namespace CommunicationServer.MessageCommunication
         {
             StatusMessage message = (StatusMessage)messagePackage.Message;
             // check what node
+            NetworkNode networkNode = clientTracker.GetNodeByID(message.Id);
             // check if any task is avaible
+            for (int i = 0; i < networkNode.TaskThreads.Count(); i++)
+            {
+                networkNode.TaskThreads[i].StatusThread.State = message.Threads[i].State;
+            }
+            //if status message was send by TaskManager than check if there are any tasks to divide or merge
+            if (networkNode.Type == RegisterType.TaskManager)
+            {
+                bool messageCheck = false;
+                for (int i = 0; i < taskTracker.Tasks.Count; i++)
+                {
+                    //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
+                    if (taskTracker.Tasks[i].Status == TaskStatus.New && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
+                    {
+                        DivideProblemMessage divideProblemMessage = new DivideProblemMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].BaseData, (ulong)4, (ulong)networkNode.Id);
+                        messageCheck = true;
+                        taskTracker.Tasks[i].Status = TaskStatus.Dividing;
+                         server.Send(messagePackage.Socket, divideProblemMessage);
+                         Console.Write(" >> Divide problem message has been sent.\n");
+                    }
+                }
+                // IF THERE IS NO TASKS TO COMPUTE THANT TRY TO MERGE SOLUTION (IF THERE IS ONE)
+                if (messageCheck == false)
+                {
+                    for (int i = 0; i < taskTracker.Tasks.Count; i++)
+                    {
+                        bool isSolved = true;
+                        if (taskTracker.Tasks[i].Status != TaskStatus.Merging && taskTracker.Tasks[i].Status != TaskStatus.Merged )
+                        {
+                            for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                            {
+                                if (taskTracker.Tasks[i].subTasks[j].Status != TaskStatus.Solved)
+                                {
+                                    isSolved = false;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            isSolved = false;
+                        }
+                        if (isSolved && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
+                        {
+                            taskTracker.Tasks[i].Status = TaskStatus.Merging;
+                            Solution[] solutions = new Solution[taskTracker.Tasks[i].subTasks.Count];
+                            for (int k = 0; k < solutions.Count(); k++)
+                            {
+                                solutions[k] = new Solution(SolutionsSolutionType.Final);
+                            }
+                                for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                                {
+                                    solutions[j].Data = taskTracker.Tasks[i].subTasks[j].Solutions[0].Data;
+                                }
+                            SolutionsMessage solutionMessage = new SolutionsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, solutions);
+                            server.Send(messagePackage.Socket, solutionMessage);
+                            messageCheck = true;
+                            Console.Write(" >>Solution Message has been sent to Task Manager\n");
+                        }
+                    }
+                }
+                //if divideProblemMessage hasn't been sent than send noOperationMessage
+                if (messageCheck == false)
+                {
+                    NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                    server.Send(messagePackage.Socket, response);
+                    Console.Write(" >> Sent a NoOperation Message. 0 tasks to divide or 0 apropriate task managers\n");
+                }
+              // DivideProblemMessage divideProblemMessage = new DivideProblemMessage(message.,task.ID,task.BaseData,(ulong)4,)
+              // server.Send(messagePackage.Socket, response);
+            }
+            //is staty message was send by computational node than check if there are any partial problems to calculate. 
+            else if(networkNode.Type == RegisterType.ComputationalNode){
+                bool messageCheck = false;
+                for (int i = 0; i < taskTracker.Tasks.Count; i++)
+                {
+                    if (taskTracker.Tasks[i].Status == TaskStatus.Divided && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
+                    {
+                        //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
+                        for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
+                        {
+                            if (taskTracker.Tasks[i].subTasks[j].Status == TaskStatus.New)
+                            {
+                                PartialProblem[] partialProblems = new PartialProblem[1];
+                                partialProblems[i] = new PartialProblem((ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].subTasks[j].BaseData,(ulong)(0));
 
-            //message.
+                                SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, (ulong)4, partialProblems);
+                                server.Send(messagePackage.Socket, solvePartialProblemsMessage);
+                                messageCheck = true;
+                                taskTracker.Tasks[i].subTasks[j].Status = TaskStatus.Solving;
+                                Console.Write(" >> Solve Partial Problems Message has been send (to Computational node). SubTask nr." + j + " \n");
+                            }
+                        }
 
+                    }
+                }
+                if (messageCheck == false)
+                {
+                    NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                    server.Send(messagePackage.Socket, response);
+                    Console.Write(" >> Sent a NoOperation Message. 0 subTasks to divide or 0 apropriate computationalNodes\n");
+                }
+            }
+            else { 
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
+            }
         }
 
         /// <summary>
@@ -128,6 +231,17 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolvePartialProblemsMessage(MessagePackage messagePackage)
         {
+            /* add partial tasks to subTask list in a task */
+            SolvePartialProblemsMessage message = (SolvePartialProblemsMessage)messagePackage.Message;
+            Task task = taskTracker.GetTask((int)message.Id);
+            task.Status = TaskStatus.Divided;
+            for (int i = 0; i < message.PartialProblems.Count(); i++)
+            {
+                Task subTask = new Task((int)message.Id, message.ProblemType, message.PartialProblems[i].Data);
+                subTask.Status = TaskStatus.New;
+                task.AddSubTask(subTask);
+            }
+            /***********************************************/
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
@@ -140,6 +254,12 @@ namespace CommunicationServer.MessageCommunication
         private void handleSolutionRequestMessage(MessagePackage messagePackage)
         {
             SolutionRequestMessage message = (SolutionRequestMessage)messagePackage.Message;
+            
+            Task task = taskTracker.GetTask((int)message.Id);
+
+            SolutionsMessage solutionMessage = new SolutionsMessage(task.Type, (ulong)task.ID, task.CommonData, task.Solutions);
+
+            server.Send(messagePackage.Socket, solutionMessage);
 
         }
 
@@ -150,6 +270,27 @@ namespace CommunicationServer.MessageCommunication
         /// <param name="messagePackage"></param>
         private void handleSolutionsMessage(MessagePackage messagePackage)
         {
+            SolutionsMessage message = (SolutionsMessage)messagePackage.Message;
+            Task task = taskTracker.GetTask((int)message.Id);
+            //IT HAS TO BE CHANGED AFTER ADDING SUBTASK ID @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            if (message.Solutions[0].Type == SolutionsSolutionType.Final)
+            {
+                task.Solutions = message.Solutions;
+                task.Status = TaskStatus.Merged;
+            }
+            else
+            {
+                for (int i = 0; i < task.subTasks.Count; i++)
+                {
+                    if (task.subTasks[i].Status == TaskStatus.Solving)
+                    {
+                        task.subTasks[i].Status = TaskStatus.Solved;
+                        task.subTasks[i].Solutions = message.Solutions;
+                        break;
+                    }
+                }
+            }
+
             NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
             Console.Write(" >> Sent a NoOperation Message \n");
@@ -162,17 +303,18 @@ namespace CommunicationServer.MessageCommunication
         private void handleSolveRequestMessage(MessagePackage messagePackage)
         {
             SolveRequestMessage message = (SolveRequestMessage)messagePackage.Message;
-
-            /*
+           
             // if the cluster can solve this problem
             if (clientTracker.CanSolveProblem(message.ProblemType))
             {
-                Task task = new Task(systemTracker.GetNextTaskID(), message.ProblemType,
+                Task task = new Task((int)systemTracker.GetNextTaskID(), message.ProblemType,
                                         message.Data);
                 taskTracker.AddTask(task);
-                SolveRequestResponseMessage response = new SolveRequestResponseMessage(task.ID);
-                server.Send(messagePackage.Socket, response);
 
+               // DivideProblemMessage divideProblemMessage = new DivideProblemMessage(task.Type,task.ID,task.BaseData,(ulong)4,)
+               
+                SolveRequestResponseMessage response = new SolveRequestResponseMessage((ulong)task.ID);
+                server.Send(messagePackage.Socket, response);
 
                 Console.Write(" >> Sent a SolveRequestResponse Message \n");
             }
@@ -181,7 +323,7 @@ namespace CommunicationServer.MessageCommunication
                 //TODO RESPONSE MESSAGE
 
                 Console.Write(" >> TM ERROR\n");
-            }*/
+            }
         }
 
         /*******************************************************************/

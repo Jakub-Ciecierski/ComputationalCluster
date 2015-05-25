@@ -35,6 +35,17 @@ namespace Communication.Network.TCP
             set { clientPort = value; }
         }
 
+        public bool Connected { 
+            get 
+            {
+                if (client == null)
+                    return false;
+                if (client.Client == null)
+                    return false;
+                else
+                    return client.Connected;
+            } 
+        }
         /// <summary>
         /// Creates a tcp client
         /// </summary>

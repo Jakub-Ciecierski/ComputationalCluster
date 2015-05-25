@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Communication.MessageComponents;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,12 @@ namespace Cluster
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
+
+        ////////////******WHY PRIVATE DUDE???????**************//////////////
         /// <summary>
         ///     List of sub tasks associated to that task
         /// </summary>
-        private List<Task> subTasks = new List<Task>();
+        public  List<Task> subTasks = new List<Task>();
 
         /// <summary>
         ///     ID of the base Task
@@ -89,6 +92,13 @@ namespace Cluster
             set { commonData = value; }
         }
 
+        private Solution[] solutions;
+
+        public Solution[] Solutions
+        {
+            get { return solutions; }
+            set { solutions = value; }
+        }
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/

@@ -4,57 +4,45 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Client
+namespace Cluster.Util
 {
-    public class TaskTracker
+    /// <summary>
+    ///     Static methods for output
+    /// </summary>
+    public class SmartConsole
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        /// <summary>
-        ///     List of tasks
-        /// </summary>
-        private List<Task> tasks = new List<Task>();
+        const string linePrefix = " >> ";
 
-        public List<Task> Tasks
-        {
-            get { return tasks; }
-            private set { tasks = value; }
-        }
+        const string headerPrefix = "****************************";
+        const string headerSuffix = "****************************";
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public TaskTracker()
-        {
+        private SmartConsole() { }
 
+
+        /*******************************************************************/
+        /******************** PUBLIC / STATIC METHODS **********************/
+        /*******************************************************************/
+
+        /*******************************************************************/
+        /************************* STATIC METHODS **************************/
+        /*******************************************************************/
+
+        public static void PrintHeader(string header) 
+        {
+            Console.Write("\n" + headerPrefix + header + headerSuffix + "\n");
         }
 
-        /*******************************************************************/
-        /************************ PRIVATE METHODS **************************/
-        /*******************************************************************/
-
-        /*******************************************************************/
-        /************************* PUBLIC METHODS **************************/
-        /*******************************************************************/
-
-        public void AddTask(Task task)
+        public static void PrintLine(string line) 
         {
-            tasks.Add(task);
-        }
-
-        public Task GetTask(int id)
-        {
-            foreach(Task task in tasks)
-            {
-                if (task.ID == id)
-                {
-                    return task;
-                }
-            }
-            return null;
+            Console.Write(linePrefix + line + "\n");
         }
     }
 }

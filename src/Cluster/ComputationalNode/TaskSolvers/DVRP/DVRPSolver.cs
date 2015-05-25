@@ -31,7 +31,14 @@ namespace ComputationalNode.TaskSolvers.DVRP
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
-            throw new NotImplementedException();
+
+            byte[] temporarySolution = new byte[5];
+            for (int i = 0; i < 5; i++)
+            {
+                temporarySolution[i] = (byte)i;
+            }
+
+            return temporarySolution;
         }
     }
 }
