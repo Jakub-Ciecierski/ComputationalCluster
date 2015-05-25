@@ -22,14 +22,19 @@ namespace CommunicationServer
             IPAddress address = getIPAddress();
             int port = 8080;
 
+            Console.Write(" >> IP: "+ address.ToString() + " Port: "+ port +"\n");
+
             Console.Write(" >> Starting server... \n\n");
             Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");
-
+            
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
 
             // Create list of all clients
             ClientTracker clientTracker = new ClientTracker();
+
+            Thread timeOutCheckThread = new Thread(new ThreadStart(clientTracker.CheckNodesTimeOut));
+            timeOutCheckThread.Start();
 
             // Task Tracker
             TaskTracker taskTracker = new TaskTracker();
@@ -51,6 +56,8 @@ namespace CommunicationServer
 
             Thread.Sleep(100);
 
+            clientTracker.CheckNodesTimeOut();
+
             // Start console manager
             ConsoleManager consoleManager = new ConsoleManager(server);
             consoleManager.Start();
@@ -66,6 +73,7 @@ namespace CommunicationServer
                 if (ip.AddressFamily.ToString() == "InterNetwork")
                 {
                     localIP = ip.ToString();
+                    return IPAddress.Parse(localIP);
                 }
             }
             return IPAddress.Parse(localIP);

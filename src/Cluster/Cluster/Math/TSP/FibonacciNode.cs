@@ -4,14 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.TSP
 {
     class FibonacciNode
     {
         /**
-         * In our case key represents distance/key between graph's nodes.
+         * In our case key represents distance/key between graph's nodes in 3D.
          */
         public float key = -1;
+        /**
+         * To sum up the route's length.
+         */
+        public float distance2D = -1;
         /**
          * Index of a vertex in graph.
          */
@@ -48,7 +52,7 @@ namespace Cluster.Math
         /**
          * List of children nodes for Fibonacci heap.
          */
-        public DoublyLinkedList children = null;
+        public List<FibonacciNode> children = new List<FibonacciNode>();
         /**
          * List of children for preorder walk.
          */

@@ -84,6 +84,14 @@ namespace Cluster.Client
             set { messageProcessor = value; }
         }
 
+        private DateTime lastSeen;
+
+        public DateTime LastSeen
+        {
+            get { return lastSeen; }
+            set { lastSeen = value; }
+        }
+
         
         /******************************************************************/
         /******************* CONSTRUCTORS (CLIENT SIDE) *******************/

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CommunicationServer
@@ -22,6 +23,10 @@ namespace CommunicationServer
         private List<NetworkNode> taskManagers = new List<NetworkNode>();
 
         private List<NetworkNode> compNodes = new List<NetworkNode>();
+
+        public Object lockObject =  new Object();
+
+       // public Thread timeOutCheckThread = new Thread(new ThreadStart(CheckNodesTimeOut));
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -175,6 +180,55 @@ namespace CommunicationServer
                     removeTaskManager(id);
                     break;
             }
+        }
+        /// <summary>
+        /// This function is running in another thread. It checks out if the function is timed out or not 
+        /// </summary>
+        public void CheckNodesTimeOut()
+        {
+          /*  for (; ; )
+            {
+                TimeSpan timeDifference;
+                DateTime currentTime = DateTime.Now;
+                int minSecMil = currentTime.Minute * 1000 * 60 + currentTime.Second * 1000 + currentTime.Millisecond;
+                for (int i = 0; i < backupServers.Count; i++)
+                {
+                    timeDifference = currentTime.Subtract(backupServers[i].LastSeen);
+                    if (timeDifference > new TimeSpan(0, 0, (int)backupServers[i].Timeout))
+                    {
+                        lock (lockObject)
+                        {
+                            backupServers.RemoveAt(i);
+                            break;
+                        } 
+                    }
+                }
+                for (int i = 0; i < compNodes.Count; i++)
+                {
+                    timeDifference = currentTime.Subtract(compNodes[i].LastSeen);
+                    if (timeDifference > new TimeSpan(0, 0, (int)compNodes[i].Timeout))
+                    {
+                        lock (lockObject)
+                        {
+                            compNodes.RemoveAt(i);
+                            break;
+                        } 
+                    }
+                }
+                for (int i = 0; i < taskManagers.Count; i++)
+                {
+                    timeDifference = currentTime.Subtract(taskManagers[i].LastSeen);
+                    if (timeDifference > new TimeSpan(0, 0, (int)taskManagers[i].Timeout))
+                    {
+                        lock (lockObject)
+                        {
+                            taskManagers.RemoveAt(i);
+                            break;
+                        } 
+                    }
+                }
+                Thread.Sleep(500);
+            }*/
         }
     }
 }

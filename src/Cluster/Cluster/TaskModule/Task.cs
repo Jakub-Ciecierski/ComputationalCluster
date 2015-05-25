@@ -112,6 +112,8 @@ namespace Cluster
             Type = type;
 
             Status = TaskStatus.New;
+            Solutions = new Solution[1];
+            Solutions[0] = new Solution(SolutionsSolutionType.Ongoing);
         }
 
         /*******************************************************************/

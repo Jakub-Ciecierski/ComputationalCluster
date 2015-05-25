@@ -19,7 +19,7 @@ namespace ComputationalClient
     {
         static void Main(string[] args)
         {
-            RegisterType type = RegisterType.ComputationalClient;
+            RegisterType type = RegisterType.CompuationalClient;
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
             SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
@@ -28,11 +28,11 @@ namespace ComputationalClient
             NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
             //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
-            string host = "192.168.143.156";
+            string host = "192.168.0.18";
             IPAddress address = IPAddress.Parse(host);
-            int port = 8080;
+            int port = 5555;
 
-            Console.Write(" >> I'm a  ComputationalClient \n");
+            Console.Write(" >> I'm a  CompuationalClient \n");
             NetworkClient client = new NetworkClient(address, port);
 
             /*************** Register *****************/
@@ -51,15 +51,12 @@ namespace ComputationalClient
             /************ send solve request *****************/
             client.Connect();
             Console.Write(" >> Sending Solve Request message... \n\n");
-
-            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker, solveRequestMessage.Id);
-            messageHandler.clientComputationsCheckTimer = clientComputationsCheckTimer;
-
             messageProcessor.Communicate(solveRequestMessage);
 
+            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker,solveRequestMessage.Id);
            //KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
             /************ Start Logic modules ************/
-           // clientComputationsCheckTimer.Start();
+            clientComputationsCheckTimer.Start();
 
             Object mutex = new Object();
             // TODO Thread pool waiting

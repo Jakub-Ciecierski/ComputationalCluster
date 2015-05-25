@@ -10,6 +10,13 @@ namespace Communication.Network.TCP
 {
     public abstract class NetworkConnection
     {
+        const int PACKGE_SIZE = 1024 * 20;
+
+        /// <summary>
+        ///     End Of Block transmision
+        /// </summary>
+        const char END_OF_FILE = (char)23;
+
         private int port;
         private IPAddress address;
 
@@ -64,25 +71,26 @@ namespace Communication.Network.TCP
             }
             socket.Send(dataSend, dataSend.Length, SocketFlags.None);
         }
-
-        /*
+        
         protected void Send(Socket socket, List<Message> messages)
         {
-            // set up data to send
-            byte[] content = Encoding.UTF8.GetBytes(message.ToXmlString());
-            byte[] sizeSend = BitConverter.GetBytes(content.Length);
+            int count = messages.Count;
+            string strContent = "";
 
-            byte[] dataSend = new byte[content.Length + sizeSend.Length];
-            for (int i = 0; i < dataSend.Length; i++)
-            {
-                if (i < sizeSend.Length)
-                    dataSend[i] = sizeSend[i];
-                else
-                    dataSend[i] = content[i - sizeSend.Length];
+            if(count > 1){
+                for(int i=0;i< messages.Count;i++)
+                {
+                    strContent += messages[i].ToXmlString();
+                    strContent += END_OF_FILE;
+                }
+            }if(count == 1){
+                strContent += messages[0].ToXmlString();
             }
-            socket.Send(dataSend, dataSend.Length, SocketFlags.None);
-        }*/
-
+            
+            // set up data to send
+            byte[] content = Encoding.UTF8.GetBytes(strContent);
+            socket.Send(content , content .Length, SocketFlags.None); // TODO WHEN SERVER IS SHUTDOWN
+        }
 
         /// <summary>
         ///     Receive next message
@@ -105,21 +113,30 @@ namespace Communication.Network.TCP
 
             return message;
         }
-        /*
-        protected List<Message> ReceiveMany(Socket socket)
+        
+        protected List<Message> ReceiveMessages(Socket socket)
         {
-            byte[] sizeReceiveByte = new byte[sizeof(Int32)];
-            socket.Receive(sizeReceiveByte, sizeof(Int32), 0);
-            int sizeReceive = BitConverter.ToInt32(sizeReceiveByte, 0);
+            List<string> messagesStr = new List<string>();
+            
+            List<Message> messages = new List<Message>();
 
-            byte[] contentReceive = new byte[sizeReceive];
-            socket.Receive(contentReceive, sizeReceive, SocketFlags.None);
+            byte[] contentReceive = new byte[PACKGE_SIZE];
+            socket.Receive(contentReceive, PACKGE_SIZE, SocketFlags.None);
 
-            string messageStr = System.Text.Encoding.UTF8.GetString(contentReceive);
+            string contentStr = System.Text.Encoding.UTF8.GetString(contentReceive);
+            messagesStr = contentStr.Split(END_OF_FILE).ToList();
 
-            Message message = Message.Construct(messageStr);
+            for (int i = 0; i < messagesStr.Count; i++) {
+                string messageStr = messagesStr[i];
+                // look for '\0'
+                string[] actualMessageStr;
+                actualMessageStr = messageStr.Split('\0');
 
-            return message;
-        }*/
+                Message message = Message.Construct(actualMessageStr[0]);
+                messages.Add(message);
+            }
+
+            return messages;
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Cluster.Benchmarks;
+using Cluster.Math.TSP;
 using Cluster.Math;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,9 +34,30 @@ namespace TaskManager.TaskSolvers.DVRP
 
         }
 
-        public static void TSPTest(VRPParser benchmark)
+        public static void TSPTest(VRPParser benchmark) 
         {
+            int k = 1;
+            Point[] points = new Point[benchmark.Num_Locations];
 
+            for (int i = 0; i <= benchmark.Num_Visits; i++)
+            {
+                List<double> point_coords = new List<double>();
+
+                point_coords.Add(benchmark.Location_Coord[i][0]);
+                point_coords.Add(benchmark.Location_Coord[i][1]);
+
+                if (i == 0) point_coords.Add(0);
+                else point_coords.Add(benchmark.Time_Avail[i - 1] + benchmark.Duration[i - 1]);
+
+                points[i] = new Point(point_coords);
+            }
+
+            var watch = Stopwatch.StartNew();
+           // int[] route = TSPTrianIneq.calculate(points);
+            watch.Stop();
+
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.Write("");
         }
 
         public static void FullSolveTest(VRPParser benchmark) 
@@ -161,8 +184,11 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             /******************* SOLVE *************************/
-            // TSP ...
-
+            List<Result> results = new List<Result>();
+            for (int i = 0; i < partial_benchmarks.Length; i++)
+            {
+                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i]));
+            }
             /******************* MERGE *************************/
         }
 

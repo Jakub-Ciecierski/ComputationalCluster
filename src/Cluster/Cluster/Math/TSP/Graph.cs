@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cluster.Math
+namespace Cluster.Math.TSP
 {
     class Graph
     {
@@ -30,14 +30,14 @@ namespace Cluster.Math
             }
         }
 
-        public void addEdge(int v1, int v2, float wage) {
+        public void addEdge(int v1, int v2, float wage, float distance2D) {
             if (v1 >= n_v || v1 < 0 || v2 >= n_v || v2 < 0) {
                 Console.WriteLine("[Graph] addEdge(); index out of bound.");
                 return;
             }
 
-            LinkedListNode linkedListNodeV1 = new LinkedListNode(v1, wage);
-            LinkedListNode linkedListNodeV2 = new LinkedListNode(v2, wage);
+            LinkedListNode linkedListNodeV1 = new LinkedListNode(v1, wage, distance2D);
+            LinkedListNode linkedListNodeV2 = new LinkedListNode(v2, wage, distance2D);
 
             adj.getVertex(v1).addToHead(linkedListNodeV2);
             adj.getVertex(v2).addToHead(linkedListNodeV1);
@@ -47,7 +47,11 @@ namespace Cluster.Math
             LinkedListNode node = adj.getVertex(v1).getNodeByIndex(v2);
             return node.key;
         }
-
+        public float wage2D(int v1, int v2)
+        {
+            LinkedListNode node = adj.getVertex(v1).getNodeByIndex(v2);
+            return node.distance2D;
+        }
 
         public void printV() {
             for(int i = 0; i < v.Length; i++) {

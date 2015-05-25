@@ -28,7 +28,7 @@ namespace ComputationalClient
             NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
             //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
-            string host = "192.168.143.156";
+            string host = "192.168.29.1";
             IPAddress address = IPAddress.Parse(host);
             int port = 8080;
 
@@ -51,15 +51,12 @@ namespace ComputationalClient
             /************ send solve request *****************/
             client.Connect();
             Console.Write(" >> Sending Solve Request message... \n\n");
-
-            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker, solveRequestMessage.Id);
-            messageHandler.clientComputationsCheckTimer = clientComputationsCheckTimer;
-
             messageProcessor.Communicate(solveRequestMessage);
 
+            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker,solveRequestMessage.Id);
            //KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
             /************ Start Logic modules ************/
-           // clientComputationsCheckTimer.Start();
+            clientComputationsCheckTimer.Start();
 
             Object mutex = new Object();
             // TODO Thread pool waiting
