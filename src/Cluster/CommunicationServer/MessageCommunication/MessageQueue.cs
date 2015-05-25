@@ -83,6 +83,10 @@ namespace CommunicationServer.Communication
                 {
                     Message message = server.Receive(socket);
 
+                    // Message was null if client disconnected
+                    if (message == null)
+                        continue;
+
                     MessagePackage messageHandler = new MessagePackage(message, socket);
                     lock (Queue)
                     {

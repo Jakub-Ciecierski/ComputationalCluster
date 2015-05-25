@@ -1,4 +1,5 @@
-﻿using Communication;
+﻿using Cluster.Util;
+using Communication;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,12 @@ namespace Cluster.Client.Messaging
         {
             lock (this)
             {
+                if (!client.Connected) {
+                    SmartConsole.PrintLine("Lost connection, reconnecting...");
+                    client.Connect();
+                }
+                    
+
                 // Send to server
                 client.Send(message);
 
@@ -61,6 +68,8 @@ namespace Cluster.Client.Messaging
 
                 // handle response
                 messageHandler.Handle(responseMessage);
+
+                //client.Disconnect();
             }
         }
 
