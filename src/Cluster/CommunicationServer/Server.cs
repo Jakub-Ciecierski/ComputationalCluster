@@ -33,6 +33,9 @@ namespace CommunicationServer
             // Create list of all clients
             ClientTracker clientTracker = new ClientTracker();
 
+            Thread timeOutCheckThread = new Thread(new ThreadStart(clientTracker.CheckNodesTimeOut));
+            timeOutCheckThread.Start();
+
             // Task Tracker
             TaskTracker taskTracker = new TaskTracker();
 
@@ -52,6 +55,8 @@ namespace CommunicationServer
             messageProcessor.Start();
 
             Thread.Sleep(100);
+
+            clientTracker.CheckNodesTimeOut();
 
             // Start console manager
             ConsoleManager consoleManager = new ConsoleManager(server);

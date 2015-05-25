@@ -21,7 +21,7 @@ namespace Cluster.Client.Messaging
 
         private ClientSystemTracker systemTracker;
 
-        private SolutionRequestMessage solutionRequestMessage;
+        public SolutionRequestMessage solutionRequestMessage;
 
         /// <summary>
         ///     Timer for sending messages

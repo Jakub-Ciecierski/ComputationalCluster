@@ -60,7 +60,7 @@ namespace ComputationalNode.MessageCommunication
                     systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
                     systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
                     systemTracker.Node.TaskThreads[i].Thread.Start();
-                    Console.Write("Thread number:" + i + " is solving partial problem");
+                    Console.Write("Thread number: " + i + " is solving partial problem");
                     break;
                 }
             }

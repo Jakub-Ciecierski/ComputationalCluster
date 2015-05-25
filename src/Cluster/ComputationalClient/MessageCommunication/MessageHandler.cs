@@ -13,6 +13,8 @@ namespace ComputationalClient.MessageCommunication
 {
     class MessageHandler : ClientMessageHandler
     {
+
+        public ClientCompuatationsCheckTimer clientComputationsCheckTimer;
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
@@ -41,7 +43,7 @@ namespace ComputationalClient.MessageCommunication
         {
             bool isOnGoing = false;
 
-            if (solutionsMessage.Solutions == null)
+            if (solutionsMessage.Solutions[0].Type ==  SolutionsSolutionType.Ongoing)
             {
                 Console.WriteLine("Ongoing computations. Waiting for full solution");
             }
@@ -60,7 +62,10 @@ namespace ComputationalClient.MessageCommunication
                     Console.WriteLine("Ongoing computations. Waiting for full solution");
                 }
                 else
-                Console.WriteLine("Complete solution has been received");
+                {
+                    Console.WriteLine("Complete solution has been received");
+                    clientComputationsCheckTimer.Stop();
+                }
             }
         }
 
@@ -68,6 +73,8 @@ namespace ComputationalClient.MessageCommunication
         {
             Console.WriteLine("Solve request respone message has been received");
             systemTracker.Node.Id = solveRequestResponseMessage.Id;
+            clientComputationsCheckTimer.solutionRequestMessage = new SolutionRequestMessage(solveRequestResponseMessage.Id);
+            clientComputationsCheckTimer.Start();
 
         }
     }
