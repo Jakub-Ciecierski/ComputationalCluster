@@ -166,6 +166,7 @@ namespace Communication
                     //return SolvePartialProblemsMessage.Construct(xmlString);
                 }
                 catch (InvalidOperationException e) { return null; }
+                Console.WriteLine("******** SOLVE PARTIAL PROBLEM MESSAGE **************");
                 return SolvePartialProblemsMessage.Construct(xmlString);
             }
             if (GetMessageName(xmlString) == SolveRequestMessage.ELEMENT_NAME)

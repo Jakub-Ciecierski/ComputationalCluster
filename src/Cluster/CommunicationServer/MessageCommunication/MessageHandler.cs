@@ -202,15 +202,26 @@ namespace CommunicationServer.MessageCommunication
                             {
                                 if (taskTracker.Tasks[i].subTasks[j].Status == TaskStatus.New)
                                 {
+                                    // CHECK IF THERE IS AVALIABLE THREAD ON COMPUTATAIONAL NODE
+                                    for (int k = 0; k < networkNode.TaskThreads.Count(); k++)
+                                    {
+                                        if(networkNode.TaskThreads[k]
+                                    }
                                     PartialProblem[] partialProblems = new PartialProblem[1];
                                     partialProblems[0] = new PartialProblem((ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].subTasks[j].BaseData, (ulong)(0));
-
                                     SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, (ulong)4, partialProblems);
                                     server.Send(messagePackage.Socket, solvePartialProblemsMessage);
                                     messageCheck = true;
                                     taskTracker.Tasks[i].subTasks[j].Status = TaskStatus.Solving;
                                     Console.Write(" >> Solve Partial Problems Message has been send (to Computational node). SubTask nr." + j + " \n");
+
+                                    // temporary solution @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                    break;
                                 }
+                            }
+                            if (messageCheck)
+                            {
+                                break; 
                             }
 
                         }
