@@ -181,6 +181,20 @@ namespace Communication.Network.TCP
             }
         }
 
+        public void Send(Socket socket, List<Message> messages)
+        {
+            try
+            {
+                //base.Send(socket, message);
+                base.Send(socket, messages);
+            }
+            catch (SocketException e)
+            {
+                Console.Write(" >> [Send] Socket unavaible, removing connection... \n");
+                RemoveConnection(socket);
+            }
+        }
+
         /// <summary>
         ///     Receives a message
         /// </summary>

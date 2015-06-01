@@ -38,9 +38,15 @@ namespace ComputationalClient.MessageCommunication
 
             else if (message.GetType() == typeof(SolutionsMessage))
                 handleSolutionsMessage((SolutionsMessage)message);
-
+            else if (message.GetType() == typeof(NoOperationMessage))
+                handleNoOperationMessage((NoOperationMessage)message);
             else
                 throw new NotImplementedException("Unknow message");
+        }
+
+        private void handleNoOperationMessage(NoOperationMessage message) 
+        {
+            systemTracker.Node.BackupServers = message.BackupCommunicationServers;
         }
 
         private void handleSolutionsMessage(SolutionsMessage solutionsMessage)
