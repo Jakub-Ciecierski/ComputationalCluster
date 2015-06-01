@@ -70,7 +70,8 @@ namespace Cluster.Util.Client
             }
 
 
-            string addressPat = @"-address (\d.+)";
+            //string addressPat = @"-address (\d.+)";
+            string addressPat = @"-address ((\d+.)*)";
 
             string addressStr = "";
             Regex regexAddr = new Regex(addressPat);
@@ -89,6 +90,8 @@ namespace Cluster.Util.Client
                 Port = Int32.Parse(portStr);
 
 
+
+
             string masterPortPat = @"-mport (\d+)";
 
             string masterPortStr = "";
@@ -100,7 +103,7 @@ namespace Cluster.Util.Client
             }
 
 
-            string masterAddressPat = @"-maddress (\d.+)";
+            string masterAddressPat = @"-maddress ((\d+.)*)";
 
             string masterAddressStr = "";
             Regex regexMasterAddr = new Regex(masterAddressPat);

@@ -11,9 +11,17 @@ namespace Cluster.Util
     /// </summary>
     public class SmartConsole
     {
+        public enum DebugLevel
+        {
+            Basic,
+            Advanced
+        };
+
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
+
+        public const DebugLevel DEBUG_LEVEL = DebugLevel.Advanced;
 
         const string linePrefix = " >> ";
 
@@ -40,9 +48,10 @@ namespace Cluster.Util
             Console.Write("\n" + headerPrefix + header + headerSuffix + "\n");
         }
 
-        public static void PrintLine(string line) 
+        public static void PrintLine(string line, DebugLevel debugLevel) 
         {
-            Console.Write(linePrefix + line + "\n");
+            if (debugLevel >= DEBUG_LEVEL )
+                Console.Write(linePrefix + line + "\n");
         }
     }
 }

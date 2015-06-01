@@ -18,6 +18,8 @@ namespace CommunicationServer
 {
     public class Server
     {
+        public const int PRIMARY_PORT = 8090;
+
         public static bool primaryMode = false;
 
         static void Main(string[] args)

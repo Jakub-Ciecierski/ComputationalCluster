@@ -94,18 +94,18 @@ namespace CommunicationServer
 
             // Start network connection
             NetworkServer server = new NetworkServer(myAddress, myPort);
-            //server.Open();
+            server.Open();
 
             // Create messageHandler
             MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, taskTracker, server);
 
             // Start message queue
             MessageQueue messageQueue = new MessageQueue(server);
-            //messageQueue.Start();
+            messageQueue.Start();
 
             // Start Message processor
             CommunicationServer.MessageCommunication.MessageProcessor messageProcessor = new CommunicationServer.MessageCommunication.MessageProcessor(messageQueue, messageHandler);
-            //messageProcessor.Start();
+            messageProcessor.Start();
 
             //Thread.Sleep(100);
 
@@ -127,7 +127,7 @@ namespace CommunicationServer
             Console.Write(" >> Sending Register message... \n\n");
 
             CommunicationServer.MessageCommunication.KeepAliveTimer keepAliveTimer = new 
-                                                CommunicationServer.MessageCommunication.KeepAliveTimer(messageHandler, 
+                                                CommunicationServer.MessageCommunication.KeepAliveTimer(messageHandler,
                                                                                                         client, 
                                                                                                         systemTracker, 
                                                                                                         node);

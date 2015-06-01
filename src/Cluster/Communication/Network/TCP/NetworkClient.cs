@@ -151,18 +151,22 @@ namespace Communication.Network.TCP
 
         public List<Message> ReceiveMessages()
         {
-            List<Message> messages = new List<Message>();
+            lock (this)
+            {
+                List<Message> messages = new List<Message>();
 
-            Message message = null;
-            try
-            {
-                messages = base.ReceiveMessages(socket);
+                Message message = null;
+                try
+                {
+                    messages = base.ReceiveMessages(socket);
+                }
+                catch (SocketException e)
+                {
+                    Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");
+                }
+
+                return messages;
             }
-            catch (SocketException e)
-            {
-                Console.Write(" >> [Receive] Socket unavaible, removing connection... \n");
-            }
-            return messages;
         }
     }
 }

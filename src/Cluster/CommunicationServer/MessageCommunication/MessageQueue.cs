@@ -1,4 +1,5 @@
-﻿using Communication;
+﻿using Cluster.Util;
+using Communication;
 using Communication.Network.TCP;
 using System;
 using System.Collections;
@@ -73,7 +74,8 @@ namespace CommunicationServer.Communication
 
         private void startMessageQueue()
         {
-            Console.Write(" >> Message Queing Actived \n\n");
+            SmartConsole.PrintLine("Message Queing Actived", SmartConsole.DebugLevel.Advanced);
+
             while (Active)
             {
                 // should hang
@@ -81,23 +83,6 @@ namespace CommunicationServer.Communication
 
                 foreach (Socket socket in socketsToRead)
                 {
-                    // OLD SENDING MESSAGE
-                    /* 
-                    Message message = server.Receive(socket);
-
-                    // Message was null if client disconnected
-                    if (message == null)
-                        continue;
-
-                    MessagePackage messageHandler = new MessagePackage(message, socket);
-                    lock (Queue)
-                    {
-                        Queue.Enqueue(messageHandler);
-                        Console.Write(" >> Added message to queue \n\n");
-                    }
-                     */
-                    // END OLD SENDING MESSAGE
-
                     // NEW SENDING MESSAGE
                     List<Message> messages = server.ReceiveMessages(socket);
 
@@ -112,7 +97,6 @@ namespace CommunicationServer.Communication
                         lock (Queue)
                         {
                             Queue.Enqueue(messageHandler);
-                            Console.Write(" >> Added message to queue \n\n");
                         }
                     }
                     
@@ -120,7 +104,7 @@ namespace CommunicationServer.Communication
 
                 }
             }
-            Console.Write(" >> Message Queing Deactived \n\n");
+            SmartConsole.PrintLine("Message Queing Deactived", SmartConsole.DebugLevel.Advanced);
         }
 
         /********************************************************************/

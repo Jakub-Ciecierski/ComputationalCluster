@@ -75,8 +75,8 @@ namespace CommunicationServer.MessageCommunication
 
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
-            Console.Write(" >> Sending Status message... \n\n");
-            
+            SmartConsole.PrintLine("Sending Status message", SmartConsole.DebugLevel.Basic);
+
             Communicate(node.ToStatusMessage());
         }
 
@@ -86,7 +86,7 @@ namespace CommunicationServer.MessageCommunication
             {
                 if (!client.Connected)
                 {
-                    SmartConsole.PrintLine("Lost connection, reconnecting...");
+                    SmartConsole.PrintLine("Lost connection, reconnecting...", SmartConsole.DebugLevel.Advanced);
                     client.Connect();
                 }
                 // Send to server

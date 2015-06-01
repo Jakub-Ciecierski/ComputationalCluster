@@ -1,5 +1,6 @@
 ﻿using Cluster;
 using Cluster.Client.Messaging;
+using Cluster.Util;
 using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
@@ -39,6 +40,8 @@ namespace TaskManager.MessageCommunication
         private void handleNoOperationMessage(NoOperationMessage message)
         {
             systemTracker.Node.BackupServers = message.BackupCommunicationServers;
+
+            SmartConsole.PrintLine("Current Backup count: " + systemTracker.Node.BackupServers.Length, SmartConsole.DebugLevel.Basic);
         }
 
         private void handleRegisterResponsenMessage(RegisterResponseMessage message)

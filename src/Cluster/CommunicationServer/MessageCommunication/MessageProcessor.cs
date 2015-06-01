@@ -67,7 +67,7 @@ namespace CommunicationServer.MessageCommunication
         /// </summary>
         private void startMessageProcessor()
         {
-            Console.Write(" >> Message Processor Actived \n\n");
+            SmartConsole.PrintLine("Message Processor Actived", SmartConsole.DebugLevel.Advanced);
             while (Active)
             {
                 // TODO busy waiting
@@ -78,7 +78,7 @@ namespace CommunicationServer.MessageCommunication
                 }
 
             }
-            Console.Write(" >> Message Processor Deactived \n\n");
+            SmartConsole.PrintLine("Message Processor Deactived", SmartConsole.DebugLevel.Advanced);
         }
 
         /*******************************************************************/

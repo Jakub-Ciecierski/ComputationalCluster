@@ -1,5 +1,6 @@
 ﻿using Cluster;
 using Cluster.Client;
+using Cluster.Util;
 using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
@@ -8,6 +9,7 @@ using CommunicationServer.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -74,36 +76,21 @@ namespace CommunicationServer.MessageCommunication
             RegisterMessage message = (RegisterMessage)messagePackage.Message;
             Socket socket = messagePackage.Socket;
 
+            // If node wants to quit
             if (message.Deregister)
             {
-                Console.Write(" >> Deregister received, removing client... \n\n");
-                socket.Disconnect(false);
-                clientTracker.RemoveNode(message.Id, message.Type);
+                deregisterNode(message, socket);
             }
+            // clean new register
+            else if (!message.Deregister && !message.IdSpecified)
+            {
+                registerNewNode(message, socket);
+            }
+            // for backup to register existing in primary server node.
             else
             {
-                // Place holder, have to fetch info from the System.
-                ulong id = systemTracker.GetNextClientID();
-                uint timeout = 4;
-
-                Console.Write(" >> Adding Node to List \n\n");
-
-                RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, systemTracker.BackupServers);
-                
-                // Create NetworkNode instance
-                 //TODO
-                NetworkNode node = new NetworkNode(message.Type, response.Id, response.Timeout, message.ParallelThreads, message.SolvableProblems, 
-                                                      response.BackupCommunicationServers);
-                node.LastSeen = DateTime.Now;
-                //NetworkNode node = new NetworkNode();
-
-                // Add the node to system
-                clientTracker.AddNode(node);
-
-                server.Send(socket, response);
-
-                Console.Write(" >> Sent a response \n\n");
-            }       
+                registerExistingNode(message);
+            }
         }
 
         /// <summary>
@@ -130,12 +117,13 @@ namespace CommunicationServer.MessageCommunication
                 //is staty message was send by computational node than check if there are any partial problems to calculate. 
                 else if (networkNode.Type == RegisterType.ComputationalNode)
                 {
-                    ReactToComputationalNodeStatusMessage(networkNode, messagePackage);                }
+                    ReactToComputationalNodeStatusMessage(networkNode, messagePackage);
+                }
                 else
                 {
-                    NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                    NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
                     server.Send(messagePackage.Socket, response);
-                    Console.Write(" >> Sent a NoOperation Message \n");
+                    SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
                 }
             }
         }
@@ -157,9 +145,9 @@ namespace CommunicationServer.MessageCommunication
                 task.AddSubTask(subTask);
             }
             /***********************************************/
-            NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+            NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
-            Console.Write(" >> Sent a NoOperation Message \n");
+            SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
         }
 
         /// <summary>
@@ -210,9 +198,9 @@ namespace CommunicationServer.MessageCommunication
                 }
             }
 
-            NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+            NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
             server.Send(messagePackage.Socket, response);
-            Console.Write(" >> Sent a NoOperation Message \n");
+            SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
         }
 
         /// <summary>
@@ -235,7 +223,7 @@ namespace CommunicationServer.MessageCommunication
                 SolveRequestResponseMessage response = new SolveRequestResponseMessage((ulong)task.ID);
                 server.Send(messagePackage.Socket, response);
 
-                Console.Write(" >> Sent a SolveRequestResponse Message \n");
+                SmartConsole.PrintLine("Sent a SolveRequestResponse Message", SmartConsole.DebugLevel.Basic);
             }
             else
             {
@@ -248,9 +236,9 @@ namespace CommunicationServer.MessageCommunication
         private void handleNoOperationMessage(MessagePackage package) 
         {
             NoOperationMessage message = (NoOperationMessage)package.Message;
-            systemTracker.BackupServers = message.BackupCommunicationServers;
+            clientTracker.BackupServers = message.BackupCommunicationServers;
 
-            Console.Write(" >> Received NoOperationMessage \n");
+            SmartConsole.PrintLine("Current Backup count: " + systemTracker.Node.BackupServers.Length, SmartConsole.DebugLevel.Basic);
         }
 
         private void handleRegisterResponsenMessage(MessagePackage package)
@@ -261,7 +249,7 @@ namespace CommunicationServer.MessageCommunication
             systemTracker.Node.Timeout = message.Timeout;
             systemTracker.Node.BackupServers = message.BackupCommunicationServers;
 
-            systemTracker.BackupServers = message.BackupCommunicationServers;
+            clientTracker.BackupServers = message.BackupCommunicationServers;
         }
             
 
@@ -280,25 +268,27 @@ namespace CommunicationServer.MessageCommunication
         public void HandleMessage(MessagePackage package)
         {
             Message message = package.Message;
-
-            if (message.GetType() == typeof(StatusMessage))
-                handleStatusMessage(package);
-            else if (message.GetType() == typeof(RegisterMessage))
-                handleRegisterMessage(package);
-            else if (message.GetType() == typeof(SolvePartialProblemsMessage))
-                handleSolvePartialProblemsMessage(package);
-            else if (message.GetType() == typeof(SolutionRequestMessage))
-                handleSolutionRequestMessage(package);
-            else if (message.GetType() == typeof(SolutionsMessage))
-                handleSolutionsMessage(package);
-            else if (message.GetType() == typeof(SolveRequestMessage))
-                handleSolveRequestMessage(package);
-            else if (message.GetType() == typeof(NoOperationMessage))
-                handleNoOperationMessage(package);
-            else if (message.GetType() == typeof(RegisterResponseMessage))
-                handleRegisterResponsenMessage(package);
-            else
-                throw new NotImplementedException("Unknow message type, can't handle it.");
+            lock (this)
+            {
+                if (message.GetType() == typeof(StatusMessage))
+                    handleStatusMessage(package);
+                else if (message.GetType() == typeof(RegisterMessage))
+                    handleRegisterMessage(package);
+                else if (message.GetType() == typeof(SolvePartialProblemsMessage))
+                    handleSolvePartialProblemsMessage(package);
+                else if (message.GetType() == typeof(SolutionRequestMessage))
+                    handleSolutionRequestMessage(package);
+                else if (message.GetType() == typeof(SolutionsMessage))
+                    handleSolutionsMessage(package);
+                else if (message.GetType() == typeof(SolveRequestMessage))
+                    handleSolveRequestMessage(package);
+                else if (message.GetType() == typeof(NoOperationMessage))
+                    handleNoOperationMessage(package);
+                else if (message.GetType() == typeof(RegisterResponseMessage))
+                    handleRegisterResponsenMessage(package);
+                else
+                    throw new NotImplementedException("Unknow message type, can't handle it.");
+            }
         }
     }
 }

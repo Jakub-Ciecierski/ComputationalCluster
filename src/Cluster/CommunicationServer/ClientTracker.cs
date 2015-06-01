@@ -19,15 +19,21 @@ namespace CommunicationServer
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        private List<NetworkNode> backupServers = new List<NetworkNode>();
+        private BackupCommunicationServer[] backupServersArray;
+
+        public BackupCommunicationServer[] BackupServers
+        {
+            get { return backupServersArray; }
+            set { backupServersArray = value; }
+        }
+
+        private List<NetworkNode> backupServersList = new List<NetworkNode>();
 
         private List<NetworkNode> taskManagers = new List<NetworkNode>();
 
         private List<NetworkNode> compNodes = new List<NetworkNode>();
 
         public Object lockObject =  new Object();
-
-       // public Thread timeOutCheckThread = new Thread(new ThreadStart(CheckNodesTimeOut));
 
         private Thread timeoutThread;
 
@@ -46,7 +52,7 @@ namespace CommunicationServer
 
         public ClientTracker()
         {
-
+            backupServersArray = new BackupCommunicationServer[0];
         }
 
         /*******************************************************************/
@@ -56,62 +62,79 @@ namespace CommunicationServer
         ///     Removes a backup server
         /// </summary>
         /// <param name="id"></param>
-        private void removeBackupServer(ulong id)
+        private bool removeBackupServer(ulong id)
         {
-            for (int i = 0; i < backupServers.Count; i++)
+            for (int i = 0; i < backupServersList.Count; i++)
             {
-                if (backupServers[i].Id == id)
+                if (backupServersList[i].Id == id)
                 {
-                    backupServers.RemoveAt(i);
-                    return;
+                    backupServersList.RemoveAt(i);
+                    return true;
                 }
-            }       
+            }
+            return false;
         }
 
         /// <summary>
         ///     removes a computational node
         /// </summary>
         /// <param name="id"></param>
-        private void removeCompNode(ulong id)
+        private bool removeCompNode(ulong id)
         {
             for (int i = 0; i < compNodes.Count; i++)
             {
                 if (compNodes[i].Id == id)
                 {
                     compNodes.RemoveAt(i);
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
 
         /// <summary>
         ///     removes a task manager
         /// </summary>
         /// <param name="id"></param>
-        private void removeTaskManager(ulong id)
+        private bool removeTaskManager(ulong id)
         {
             for (int i = 0; i < taskManagers.Count; i++)
             {
                 if (taskManagers[i].Id == id)
                 {
                     taskManagers.RemoveAt(i);
-                    return;
+                    return true;
                 }
             }
+            return false;
         }
 
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
 
+        public void AddBackupServer(BackupCommunicationServer backupServer)
+        {
+            int newSize = backupServersArray.Length + 1;
+            BackupCommunicationServer[] newBackupServers = new BackupCommunicationServer[newSize];
+
+            for (int i = 0; i < newSize - 1; i++)
+            {
+                newBackupServers[i] = backupServersArray[i];
+            }
+            newBackupServers[newSize - 1] = backupServer;
+
+            backupServersArray = newBackupServers;
+        }
+
         public BackupCommunicationServer[] ToBackupServersArray() 
         {
-            int backupSize = backupServers.Count;
+            int backupSize = backupServersList.Count;
             BackupCommunicationServer[] backupServersArr = new BackupCommunicationServer[backupSize];
 
             for (int i = 0; i < backupSize; i++)
             {
-                NetworkNode server = backupServers[i];
+                NetworkNode server = backupServersList[i];
                 BackupCommunicationServer backupServer = new BackupCommunicationServer(server.Address.ToString(), server.Port);
                 backupServersArr[i] = backupServer;
             }
@@ -121,6 +144,12 @@ namespace CommunicationServer
 
         public NetworkNode GetNodeByID(ulong id)
         {
+            foreach (NetworkNode tm in backupServersList)
+            {
+                if (tm.Id == id)
+                    return tm;
+            }
+
             foreach (NetworkNode tm in taskManagers)
             {
                 if (tm.Id == id)
@@ -177,7 +206,9 @@ namespace CommunicationServer
             switch (node.Type)
             {
                 case RegisterType.CommunicationServer:
-                    backupServers.Add(node);
+                    backupServersList.Add(node);
+                    BackupCommunicationServer bserver = new BackupCommunicationServer(node.Address.ToString(), node.Port);
+                    AddBackupServer(bserver);
                     break;
                 case RegisterType.ComputationalNode:
                     compNodes.Add(node);
@@ -193,20 +224,21 @@ namespace CommunicationServer
         /// </summary>
         /// <param name="id"></param>
         /// <param name="type"></param>
-        public void RemoveNode(ulong id, RegisterType type)
+        public bool RemoveNode(ulong id, RegisterType type)
         {
             switch (type)
             {
                 case RegisterType.CommunicationServer:
-                    removeBackupServer(id);
-                    break;
+                    return(removeBackupServer(id));
+
                 case RegisterType.ComputationalNode:
-                    removeCompNode(id);
-                    break;
+                    return(removeCompNode(id));
+
                 case RegisterType.TaskManager:
-                    removeTaskManager(id);
-                    break;
+                    return(removeTaskManager(id));
+
             }
+            return false;
         }
 
 
@@ -232,14 +264,14 @@ namespace CommunicationServer
                 TimeSpan timeDifference;
                 DateTime currentTime = DateTime.Now;
                 int minSecMil = currentTime.Minute * 1000 * 60 + currentTime.Second * 1000 + currentTime.Millisecond;
-                for (int i = 0; i < backupServers.Count; i++)
+                for (int i = 0; i < backupServersList.Count; i++)
                 {
-                    timeDifference = currentTime.Subtract(backupServers[i].LastSeen);
-                    if (timeDifference > new TimeSpan(0, 0, (int)backupServers[i].Timeout))
+                    timeDifference = currentTime.Subtract(backupServersList[i].LastSeen);
+                    if (timeDifference > new TimeSpan(0, 0, (int)backupServersList[i].Timeout))
                     {
                         lock (lockObject)
                         {
-                            backupServers.RemoveAt(i);
+                            backupServersList.RemoveAt(i);
                             break;
                         } 
                     }

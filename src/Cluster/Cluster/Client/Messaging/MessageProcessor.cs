@@ -83,7 +83,7 @@ namespace Cluster.Client.Messaging
             {
                 if (!client.Connected)
                 {
-                    SmartConsole.PrintLine("Lost connection, reconnecting...");
+                    SmartConsole.PrintLine("Lost connection, reconnecting...", SmartConsole.DebugLevel.Advanced);
                     client.Connect();
                 }
                     // Send to server

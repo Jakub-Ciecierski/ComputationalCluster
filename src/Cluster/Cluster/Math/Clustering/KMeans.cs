@@ -252,16 +252,16 @@ namespace Cluster.Math.Clustering
         {
             SmartConsole.PrintHeader("K-MEANS");
             if (data.Count < k) {
-                SmartConsole.PrintLine("Cluster count is too big for data set, returning false");
+                SmartConsole.PrintLine("Cluster count is too big for data set, returning false", SmartConsole.DebugLevel.Advanced);
                 return false;
             }
 
-            SmartConsole.PrintLine("The configurations:");
-            SmartConsole.PrintLine("k = " + k);
-            SmartConsole.PrintLine("max_iter = " + max_iter);
-            SmartConsole.PrintLine("distance_tolerance = " + distance_tolerance);
+            SmartConsole.PrintLine("The configurations:", SmartConsole.DebugLevel.Advanced);
+            SmartConsole.PrintLine("k = " + k, SmartConsole.DebugLevel.Advanced);
+            SmartConsole.PrintLine("max_iter = " + max_iter, SmartConsole.DebugLevel.Advanced);
+            SmartConsole.PrintLine("distance_tolerance = " + distance_tolerance, SmartConsole.DebugLevel.Advanced);
             kmeansLogic();
-            SmartConsole.PrintLine("K-means finished after " + current_iter + " iterations");
+            SmartConsole.PrintLine("K-means finished after " + current_iter + " iterations", SmartConsole.DebugLevel.Advanced);
             return true;
         }
 

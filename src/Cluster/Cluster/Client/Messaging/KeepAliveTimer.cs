@@ -1,4 +1,5 @@
-﻿using Communication.Network.TCP;
+﻿using Cluster.Util;
+using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +66,7 @@ namespace Cluster.Client.Messaging
 
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
-            Console.Write(" >> Sending Status message... \n\n");
+            SmartConsole.PrintLine("Sending Status message", SmartConsole.DebugLevel.Basic);
             messageProcessor.Communicate(systemTracker.Node.ToStatusMessage());
         }
 

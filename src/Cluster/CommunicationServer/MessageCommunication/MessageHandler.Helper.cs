@@ -1,11 +1,15 @@
 ﻿using Cluster;
 using Cluster.Client;
+using Cluster.Util;
+using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
 using CommunicationServer.Communication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +17,9 @@ namespace CommunicationServer.MessageCommunication
 {
     public partial class MessageHandler
     {
+        Socket s;
+
+
         /// <summary>
         /// function counting avaliable number of threads
         /// </summary>
@@ -54,7 +61,9 @@ namespace CommunicationServer.MessageCommunication
                 DivideProblemMessage divideProblemMessage = new DivideProblemMessage(taskTracker.Tasks[numOfTask].Type, (ulong)taskTracker.Tasks[numOfTask].ID, taskTracker.Tasks[numOfTask].BaseData, (ulong)4, (ulong)node.Id);
                 taskTracker.Tasks[numOfTask].Status = Cluster.TaskStatus.Dividing;
                 server.Send(messagePackage.Socket, divideProblemMessage);
-                Console.Write(" >> Divide problem message has been sent.\n");
+
+                SmartConsole.PrintLine("Divide problem message has been sent", SmartConsole.DebugLevel.Advanced);
+
                 return true;
             }
             return false;
@@ -98,7 +107,8 @@ namespace CommunicationServer.MessageCommunication
                 SolutionsMessage solutionMessage = new SolutionsMessage(taskTracker.Tasks[numberOfTask].Type, (ulong)taskTracker.Tasks[numberOfTask].ID, taskTracker.Tasks[numberOfTask].CommonData, solutions);
 
                 server.Send(messagePackage.Socket, solutionMessage);
-               Console.Write(" >>Solution Message has been sent to Task Manager\n");
+
+               SmartConsole.PrintLine("Solution Message has been sent to Task Manager", SmartConsole.DebugLevel.Advanced);
                return true;        
             }
             return false;
@@ -135,9 +145,10 @@ namespace CommunicationServer.MessageCommunication
             //if divideProblemMessage hasn't been sent than send noOperationMessage
             if (hasMessageBeenSent == false)
             {
-                NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
                 server.Send(messagePackage.Socket, response);
-                Console.Write(" >> Sent a NoOperation Message. 0 tasks to divide or 0 apropriate task managers\n");
+
+                SmartConsole.PrintLine("Sent a NoOperation Message. 0 tasks to divide or 0 apropriate task managers", SmartConsole.DebugLevel.Basic);
             }
         }
 
@@ -180,9 +191,10 @@ namespace CommunicationServer.MessageCommunication
             }
             if (messageCheck == false)
             {
-                NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
+                NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
                 server.Send(messagePackage.Socket, response);
-                Console.Write(" >> Sent a NoOperation Message. 0 subTasks to divide or 0 apropriate computationalNodes\n");
+
+                SmartConsole.PrintLine("Sent a NoOperation Message. 0 subTasks to divide or 0 apropriate computationalNodes", SmartConsole.DebugLevel.Basic);
             }
         }
 
@@ -202,8 +214,103 @@ namespace CommunicationServer.MessageCommunication
             }
             SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[numOfTask].Type, (ulong)taskTracker.Tasks[numOfTask].ID, taskTracker.Tasks[numOfTask].CommonData, (ulong)4, partialProblems);
             server.Send(messagePackage.Socket, solvePartialProblemsMessage);
-            Console.Write(" >> Solve Partial Problems Message has been send (to Computational node). Number of subTasks." + partialList.Count + " \n");
+
+            SmartConsole.PrintLine("Solve Partial Problems Message has been send (to Computational node). Number of subTasks." + partialList.Count, SmartConsole.DebugLevel.Advanced);
+
             return true;
+        }
+
+        /******************************************************************/
+        /**************************** REGISTER ****************************/
+        /******************************************************************/
+        
+        /// <summary>
+        ///     Removes a node from the server
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="socket"></param>
+        private void deregisterNode(RegisterMessage message, Socket socket)
+        {
+            SmartConsole.PrintLine("Deregister received, removing client...", SmartConsole.DebugLevel.Advanced);
+            socket.Disconnect(false);
+            clientTracker.RemoveNode(message.Id, message.Type);
+        }
+
+        /// <summary>
+        ///     Register new node - Primary server job
+        /// </summary>
+        private void registerNewNode(RegisterMessage message, Socket socket) 
+        {
+            // Place holder, have to fetch info from the System.
+            ulong id = systemTracker.GetNextClientID();
+            uint timeout = (uint)systemTracker.Timeout;
+
+            SmartConsole.PrintLine("Adding new Node", SmartConsole.DebugLevel.Advanced);
+
+            NetworkNode node = new NetworkNode(message.Type, id, timeout, message.ParallelThreads, message.SolvableProblems,
+                                                  clientTracker.BackupServers);
+            node.LastSeen = DateTime.Now;
+
+            // Backup Server
+            if (node.Type == RegisterType.CommunicationServer)
+            {
+                // update Node
+                IPAddress address = (socket.RemoteEndPoint as IPEndPoint).Address;
+                int port = (ushort)Server.PRIMARY_PORT;
+                node.Address = address;
+                node.Port = (ushort)port;
+
+                // add backup
+                BackupCommunicationServer bserver = new BackupCommunicationServer(address.ToString(), (ushort)port);
+                clientTracker.AddBackupServer(bserver);
+            }
+
+            RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, clientTracker.BackupServers);
+
+            // Add the node to system
+            clientTracker.AddNode(node);
+
+            server.Send(socket, response);
+
+            RegisterMessage backUpmessage = new RegisterMessage(message.Type, message.ParallelThreads, message.SolvableProblems);
+            backUpmessage.Id = id;
+            InformBackup(backUpmessage);
+        }
+
+        private bool registerExistingNode(RegisterMessage message)
+        {
+            NetworkNode node = new NetworkNode(message.Type, message.Id, (uint)systemTracker.Timeout, message.ParallelThreads, message.SolvableProblems,
+                                        clientTracker.BackupServers);
+            // Dont inform backup about other backups
+            // It comes naturally in NoOperation message
+            if (node.Type == RegisterType.CommunicationServer)
+                return false;
+
+            SmartConsole.PrintLine("Backup adding existing node", SmartConsole.DebugLevel.Advanced);
+            clientTracker.AddNode(node);
+            return true;
+        }
+
+
+        private void InformBackup(Message message){
+            // If this is primary server and it has atleast one backup
+            if (Server.primaryMode && clientTracker.BackupServers.Length > 0)
+            {
+                
+                s = new Socket(AddressFamily.InterNetwork, 
+                                SocketType.Stream, ProtocolType.Tcp);
+                BackupCommunicationServer bserver = clientTracker.BackupServers[0];
+                IPAddress address = IPAddress.Parse(bserver.address);
+                int port = bserver.port;
+                s.Connect(address, port);
+
+                server.Send(s, message);
+            }
+            // If this is one of the backups
+            else
+            {
+
+            }
         }
     }
 

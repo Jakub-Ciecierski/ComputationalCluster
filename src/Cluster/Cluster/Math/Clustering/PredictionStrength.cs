@@ -122,7 +122,7 @@ namespace Cluster.Math.Clustering
                     max_strength = strength;
                     best_k = k;
                 }
-                SmartConsole.PrintLine("ps(" + k + ") = " + strength);
+                SmartConsole.PrintLine("ps(" + k + ") = " + strength, SmartConsole.DebugLevel.Advanced);
             }
         }
 
@@ -314,12 +314,12 @@ namespace Cluster.Math.Clustering
             SmartConsole.PrintHeader("PREDICTION STRENGTH");
 
             if (runBoostData) {
-                SmartConsole.PrintLine("Running Data Boost ... ");
+                SmartConsole.PrintLine("Running Data Boost ... ", SmartConsole.DebugLevel.Advanced);
                 boostData();
             }
             
             psLogic();
-            SmartConsole.PrintLine("The best k = " + best_k);
+            SmartConsole.PrintLine("The best k = " + best_k, SmartConsole.DebugLevel.Advanced);
         }
     }
 }
