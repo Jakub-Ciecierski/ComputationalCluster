@@ -19,7 +19,7 @@ namespace CommunicationServer.MessageCommunication
     ///     changes the state of the system accordingly and (if needed)
     ///     sends appropriate response messages
     /// </summary>
-    public class MessageHandler
+    public partial class MessageHandler
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
@@ -117,123 +117,20 @@ namespace CommunicationServer.MessageCommunication
             lock (clientTracker.lockObject)
             {
                 NetworkNode networkNode = clientTracker.GetNodeByID(message.Id);
+
                 networkNode.LastSeen = DateTime.Now;
-                // check if any task is avaible
-                for (int i = 0; i < networkNode.TaskThreads.Count(); i++)
-                {
-                    networkNode.TaskThreads[i].StatusThread.State = message.Threads[i].State;
-                }
+                
+                UpdateThreadsStatus(networkNode, message);
                 //if status message was send by TaskManager than check if there are any tasks to divide or merge
                 if (networkNode.Type == RegisterType.TaskManager)
                 {
-                    bool messageCheck = false;
-                    for (int i = 0; i < taskTracker.Tasks.Count; i++)
-                    {
-                        //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
-                        if (taskTracker.Tasks[i].Status == TaskStatus.New && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
-                        {
-                            DivideProblemMessage divideProblemMessage = new DivideProblemMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].BaseData, (ulong)4, (ulong)networkNode.Id);
-                            messageCheck = true;
-                            taskTracker.Tasks[i].Status = TaskStatus.Dividing;
-                            server.Send(messagePackage.Socket, divideProblemMessage);
-                            Console.Write(" >> Divide problem message has been sent.\n");
-                        }
-                    }
-                    // IF THERE IS NO TASKS TO COMPUTE THANT TRY TO MERGE SOLUTION (IF THERE IS ONE)
-                    if (messageCheck == false)
-                    {
-                        for (int i = 0; i < taskTracker.Tasks.Count; i++)
-                        {
-                            bool isSolved = true;
-                            if (taskTracker.Tasks[i].Status != TaskStatus.Merging && taskTracker.Tasks[i].Status != TaskStatus.Merged)
-                            {
-                                for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
-                                {
-                                    if (taskTracker.Tasks[i].subTasks[j].Status != TaskStatus.Solved)
-                                    {
-                                        isSolved = false;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                isSolved = false;
-                            }
-                            if (isSolved && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
-                            {
-                                taskTracker.Tasks[i].Status = TaskStatus.Merging;
-                                Solution[] solutions = new Solution[taskTracker.Tasks[i].subTasks.Count];
-                                for (int k = 0; k < solutions.Count(); k++)
-                                {
-                                    solutions[k] = new Solution(SolutionsSolutionType.Final);
-                                }
-                                for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
-                                {
-                                    solutions[j].Data = taskTracker.Tasks[i].subTasks[j].Solutions[0].Data;
-                                }
-                                SolutionsMessage solutionMessage = new SolutionsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, solutions);
-                                server.Send(messagePackage.Socket, solutionMessage);
-                                messageCheck = true;
-                                Console.Write(" >>Solution Message has been sent to Task Manager\n");
-                            }
-                        }
-                    }
-                    //if divideProblemMessage hasn't been sent than send noOperationMessage
-                    if (messageCheck == false)
-                    {
-                        NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
-                        server.Send(messagePackage.Socket, response);
-                        Console.Write(" >> Sent a NoOperation Message. 0 tasks to divide or 0 apropriate task managers\n");
-                    }
-                    // DivideProblemMessage divideProblemMessage = new DivideProblemMessage(message.,task.ID,task.BaseData,(ulong)4,)
-                    // server.Send(messagePackage.Socket, response);
+                    //Response to TaskManager statusMessage
+                    ReactToTaskManagerStatusMessage(networkNode, messagePackage);
                 }
                 //is staty message was send by computational node than check if there are any partial problems to calculate. 
                 else if (networkNode.Type == RegisterType.ComputationalNode)
                 {
-                    bool messageCheck = false;
-                    for (int i = 0; i < taskTracker.Tasks.Count; i++)
-                    {
-                        if (taskTracker.Tasks[i].Status == TaskStatus.Divided && taskTracker.Tasks[i].Type == networkNode.SolvableProblems[0])
-                        {
-                            //  REMEBER TO CHECK IF THERE IS A AVALIABLE THREAD ******************************************************************************************************
-                            for (int j = 0; j < taskTracker.Tasks[i].subTasks.Count; j++)
-                            {
-                                if (taskTracker.Tasks[i].subTasks[j].Status == TaskStatus.New)
-                                {
-                                    /*
-                                    // CHECK IF THERE IS AVALIABLE THREAD ON COMPUTATAIONAL NODE
-                                    for (int k = 0; k < networkNode.TaskThreads.Count(); k++)
-                                    {
-                                        if (networkNode.TaskThreads[k]) ;
-                                    }*/
-                                    PartialProblem[] partialProblems = new PartialProblem[1];
-                                    partialProblems[0] = new PartialProblem((ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].subTasks[j].BaseData, (ulong)(0));
-                                    SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, (ulong)4, partialProblems);
-                                    server.Send(messagePackage.Socket, solvePartialProblemsMessage);
-                                    messageCheck = true;
-                                    taskTracker.Tasks[i].subTasks[j].Status = TaskStatus.Solving;
-                                    Console.Write(" >> Solve Partial Problems Message has been send (to Computational node). SubTask nr." + j + " \n");
-
-                                    // temporary solution @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-                                    break;
-                                }
-                            }
-                            if (messageCheck)
-                            {
-                                break; 
-                            }
-
-                        }
-                    }
-                    if (messageCheck == false)
-                    {
-                        NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);
-                        server.Send(messagePackage.Socket, response);
-                        Console.Write(" >> Sent a NoOperation Message. 0 subTasks to divide or 0 apropriate computationalNodes\n");
-                    }
-                }
+                    ReactToComputationalNodeStatusMessage(networkNode, messagePackage);                }
                 else
                 {
                     NoOperationMessage response = new NoOperationMessage(systemTracker.BackupServers);

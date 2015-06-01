@@ -13,6 +13,7 @@ using CommunicationServer.MessageCommunication;
 using System.Threading;
 using Cluster.Client;
 using Cluster.Util.Client;
+
 namespace CommunicationServer
 {
     public class Server
@@ -53,8 +54,6 @@ namespace CommunicationServer
                 modeTracker.InitiateBackup(address, port, masterAddress, masterPort);
             }
         }
-
-
 
         private static IPAddress getIPAddress()
         {

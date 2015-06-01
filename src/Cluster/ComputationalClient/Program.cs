@@ -29,9 +29,9 @@ namespace ComputationalClient
             //NetworkNode node = new NetworkNode();
             /************ Setup connection ************/
             //string host = "169.254.80.80";
-            string host = "192.168.143.136";
+            string host = "169.254.80.80";
             IPAddress address = IPAddress.Parse(host);
-            int port = 8080;
+            int port = 5555;
 
             Console.Write(" >> I'm a  ComputationalClient \n");
             NetworkClient client = new NetworkClient(address, port);

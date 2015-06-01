@@ -49,6 +49,7 @@
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="MessageCommunication\KeepAliveTimer.cs" />
     <Compile Include="MessageCommunication\MessageHandler.cs" />
+    <Compile Include="MessageCommunication\MessageHandler.Helper.cs" />
     <Compile Include="MessageCommunication\MessagePackage.cs" />
     <Compile Include="MessageCommunication\MessageProcessor.cs" />
     <Compile Include="MessageCommunication\MessageQueue.cs" />
