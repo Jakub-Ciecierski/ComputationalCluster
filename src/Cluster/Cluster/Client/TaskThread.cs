@@ -178,7 +178,7 @@ namespace Cluster
                     solutions[0] = new Solution((ulong)currentTask.ID, false, SolutionsSolutionType.Partial, 4000, solvedPartialProblem);
 
                     SolutionsMessage solutionMessage = new SolutionsMessage(currentTask.Type, (ulong)currentTask.ID, currentTask.CommonData, solutions);
-                    Console.Write(">>Sending solution message. ");
+                    Console.WriteLine(">>Sending solution message. ");
                     messageProcessor.Communicate(solutionMessage);
 
                     break;

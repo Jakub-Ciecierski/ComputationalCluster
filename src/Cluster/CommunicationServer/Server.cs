@@ -20,7 +20,7 @@ namespace CommunicationServer
         {
             // TODO read from config file manager
             IPAddress address = getIPAddress();
-            int port = 8080;
+            int port = 5555;
 
             Console.Write(" >> IP: "+ address.ToString() + " Port: "+ port +"\n");
 
@@ -70,7 +70,7 @@ namespace CommunicationServer
             host = Dns.GetHostEntry(Dns.GetHostName());
             foreach (IPAddress ip in host.AddressList)
             {
-                if (ip.AddressFamily.ToString() == "InterNetwork")
+                if (ip.AddressFamily.ToString() == "InterNetwork" )
                 {
                     localIP = ip.ToString();
                     return IPAddress.Parse(localIP);

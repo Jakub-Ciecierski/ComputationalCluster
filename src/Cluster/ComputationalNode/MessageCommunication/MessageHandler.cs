@@ -49,19 +49,20 @@ namespace ComputationalNode.MessageCommunication
 
         private void handleSolvePartialProblemsMessage(SolvePartialProblemsMessage message)
         {
-
-            for (int i = 0; i < systemTracker.Node.ParallelThreads; i++)
+            //number of PartialProblems shouldn't be bigger than the number of idle threads.
+            int numberOfPartialProblems = message.PartialProblems.Count();
+            int partialProblemCounter = 0;
+            for (int i = 0; i < systemTracker.Node.ParallelThreads && partialProblemCounter<numberOfPartialProblems; i++)
             {
                 if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
                 {
-                    DVRPSolver dvrpSolver = new DVRPSolver(message.PartialProblems[0].Data);
+                    DVRPSolver dvrpSolver = new DVRPSolver(message.PartialProblems[partialProblemCounter].Data);
                     systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
                     systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, message.PartialProblems[0].Data) { Status = Cluster.TaskStatus.Solving };
                     systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
                     systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
                     systemTracker.Node.TaskThreads[i].Thread.Start();
-                    Console.Write("Thread number: " + i + " is solving partial problem");
-                    break;
+                    Console.WriteLine("Thread number: " + i + " is solving partial problem");
                 }
             }
             ///WE SHOULD CHECK HERE WHETHER THERE WAS IDLE THREAD AVALIABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
