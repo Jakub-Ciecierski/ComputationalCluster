@@ -1,4 +1,5 @@
 ﻿using Cluster.Client.Messaging;
+using Cluster.Util;
 using Communication;
 using Communication.MessageComponents;
 using Communication.Messages;
@@ -39,7 +40,7 @@ namespace ComputationalClient.MessageCommunication
                 handleSolutionsMessage((SolutionsMessage)message);
 
             else
-                Console.Write(" >> Unknow message type, can't handle it... \n\n");
+                throw new NotImplementedException("Unknow message");
         }
 
         private void handleSolutionsMessage(SolutionsMessage solutionsMessage)
@@ -48,7 +49,7 @@ namespace ComputationalClient.MessageCommunication
 
             if (solutionsMessage.Solutions[0].Type ==  SolutionsSolutionType.Ongoing)
             {
-                Console.WriteLine("Ongoing computations. Waiting for full solution");
+                SmartConsole.PrintLine("Ongoing computations. Waiting for full solution", SmartConsole.DebugLevel.Basic);
             }
             else
             {
@@ -62,19 +63,21 @@ namespace ComputationalClient.MessageCommunication
                 }
                 if (isOnGoing)
                 {
-                    Console.WriteLine("Ongoing computations. Waiting for full solution");
+                    SmartConsole.PrintLine("Ongoing computations. Waiting for full solution", SmartConsole.DebugLevel.Basic);
                 }
                 else
                 {
-                    Console.WriteLine("Complete solution has been received");
-                    clientComputationsCheckTimer.Stop();
+                    SmartConsole.PrintLine("Complete solution has been received", SmartConsole.DebugLevel.Advanced);
+                    // TODO print solution
+                    keepAliveTimer.Stop();
                 }
             }
         }
 
         private void handleSolverRequestResponseMessage(SolveRequestResponseMessage solveRequestResponseMessage)
         {
-            Console.WriteLine("Solve request respone message has been received");
+            SmartConsole.PrintLine("Solve request respone message has been received", SmartConsole.DebugLevel.Advanced);
+
             systemTracker.Node.Id = solveRequestResponseMessage.Id;
 
             keepAliveTimer.Start(solveRequestResponseMessage.Id);

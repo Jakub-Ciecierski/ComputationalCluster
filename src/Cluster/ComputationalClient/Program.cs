@@ -70,18 +70,13 @@ namespace ComputationalClient
             client.Connect();
 
             messageProcessor.Communicate(solveRequestMessage);
-            keepAliveTimer.Start();
 
             Object mutex = new Object();
-            // TODO Thread pool waiting
 
             lock (mutex)
             {
                 Monitor.Wait(mutex);
             }
-            //ConsoleManager consoleManager = new ConsoleManager(client);
-            //consoleManager.StartConsole();
-
         }
 
         private static SolveRequestMessage loadDataFromDisc(String filePath)
