@@ -92,10 +92,35 @@ namespace Cluster.Client
             set { lastSeen = value; }
         }
 
+        /// <summary>
+        ///     The address of this node
+        /// </summary>
+        private IPAddress address;
+
+        public IPAddress Address
+        {
+            get { return address; }
+            set { address = value; }
+        }
+
+        private ushort port;
+
+        public ushort Port
+        {
+            get { return port; }
+            set { port = value; }
+        }
+
         
         /******************************************************************/
         /******************* CONSTRUCTORS (CLIENT SIDE) *******************/
         /******************************************************************/
+
+        public NetworkNode(RegisterType type)
+        {
+            Type = type;
+            ParallelThreads = 0;
+        }
 
         /// <summary>
         ///     Creates Network node
@@ -110,6 +135,7 @@ namespace Cluster.Client
             TaskThreads = taskThreads;
             ParallelThreads = (byte)TaskThreads.Count();
         }*/
+
         public NetworkNode(RegisterType type, byte parallelThreads, string[] problems)
         {
             Type = type;
@@ -133,7 +159,7 @@ namespace Cluster.Client
         }*/
 
         /******************************************************************/
-        /******************* CONSTRUCTORS (SRERVER SIDE) *******************/
+        /******************* CONSTRUCTORS (SERVER SIDE) *******************/
         /******************************************************************/
         public NetworkNode(RegisterType type, ulong id, uint timeout, byte parallelThreads, string[] solvableProblems, BackupCommunicationServer[] backupCommunicationServer)
         {

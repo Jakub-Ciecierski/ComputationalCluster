@@ -77,13 +77,13 @@
     <Compile Include="Util\SmartConsole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Util\Server\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Communication\Communication.csproj">
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\Server\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

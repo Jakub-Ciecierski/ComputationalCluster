@@ -202,11 +202,12 @@ namespace CommunicationServer.MessageCommunication
                             {
                                 if (taskTracker.Tasks[i].subTasks[j].Status == TaskStatus.New)
                                 {
+                                    /*
                                     // CHECK IF THERE IS AVALIABLE THREAD ON COMPUTATAIONAL NODE
                                     for (int k = 0; k < networkNode.TaskThreads.Count(); k++)
                                     {
-                                        if(networkNode.TaskThreads[k]
-                                    }
+                                        if (networkNode.TaskThreads[k]) ;
+                                    }*/
                                     PartialProblem[] partialProblems = new PartialProblem[1];
                                     partialProblems[0] = new PartialProblem((ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].subTasks[j].BaseData, (ulong)(0));
                                     SolvePartialProblemsMessage solvePartialProblemsMessage = new SolvePartialProblemsMessage(taskTracker.Tasks[i].Type, (ulong)taskTracker.Tasks[i].ID, taskTracker.Tasks[i].CommonData, (ulong)4, partialProblems);
@@ -347,6 +348,26 @@ namespace CommunicationServer.MessageCommunication
             }
         }
 
+        private void handleNoOperationMessage(MessagePackage package) 
+        {
+            NoOperationMessage message = (NoOperationMessage)package.Message;
+            systemTracker.BackupServers = message.BackupCommunicationServers;
+
+            Console.Write(" >> Received NoOperationMessage \n");
+        }
+
+        private void handleRegisterResponsenMessage(MessagePackage package)
+        {
+            RegisterResponseMessage message = (RegisterResponseMessage)package.Message;
+
+            systemTracker.Node.Id = message.Id;
+            systemTracker.Node.Timeout = message.Timeout;
+            systemTracker.Node.BackupServers = message.BackupCommunicationServers;
+
+            systemTracker.BackupServers = message.BackupCommunicationServers;
+        }
+            
+
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
@@ -375,8 +396,12 @@ namespace CommunicationServer.MessageCommunication
                 handleSolutionsMessage(package);
             else if (message.GetType() == typeof(SolveRequestMessage))
                 handleSolveRequestMessage(package);
+            else if (message.GetType() == typeof(NoOperationMessage))
+                handleNoOperationMessage(package);
+            else if (message.GetType() == typeof(RegisterResponseMessage))
+                handleRegisterResponsenMessage(package);
             else
-                Console.Write(" >> Unknow message type, can't handle it... \n\n");
+                throw new NotImplementedException("Unknow message type, can't handle it.");
         }
     }
 }

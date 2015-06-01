@@ -13,7 +13,6 @@ namespace Cluster.Util.Client
         private string input;
 
         private IPAddress address;
-        private int port;
 
         public IPAddress Address
         { 
@@ -21,15 +20,39 @@ namespace Cluster.Util.Client
            set { address = value;} 
         }
 
+        private int port;
+
         public int Port
         {
             get { return port; }
             set { port = value; }
         }
 
+        private IPAddress masterAddress;
+
+        public IPAddress MasterAddress
+        {
+            get { return masterAddress; }
+            set { masterAddress = value; }
+        }
+
+        private int masterPort;
+
+        public int MasterPort
+        {
+            get { return masterPort; }
+            set { masterPort = value; }
+        }
+
         public InputParser(string input)
         {
             this.input = input;
+
+            Address = null;
+            Port = 0;
+
+            MasterAddress = null;
+            MasterPort = 0;
         }
 
         public void ParseInput()
@@ -57,11 +80,45 @@ namespace Cluster.Util.Client
                 addressStr = m.Groups[1].Value;
             }
 
-            addressStr = addressStr.Trim();
+            if (!addressStr.Equals("")) {
+                addressStr = addressStr.Trim();
+                Address = IPAddress.Parse(addressStr);
+            }
+            
+            if(!portStr.Equals(""))
+                Port = Int32.Parse(portStr);
 
-            Address = IPAddress.Parse(addressStr);
 
-            Port = Int32.Parse(portStr);
+            string masterPortPat = @"-mport (\d+)";
+
+            string masterPortStr = "";
+            Regex regexMasterPort = new Regex(masterPortPat);
+            m = regexMasterPort.Match(input);
+            if (m.Success)
+            {
+                masterPortStr = m.Groups[1].Value;
+            }
+
+
+            string masterAddressPat = @"-maddress (\d.+)";
+
+            string masterAddressStr = "";
+            Regex regexMasterAddr = new Regex(masterAddressPat);
+            m = regexMasterAddr.Match(input);
+            if (m.Success)
+            {
+                masterAddressStr = m.Groups[1].Value;
+            }
+
+
+            if (!masterAddressStr.Equals(""))
+            {
+                masterAddressStr = masterAddressStr.Trim();
+                MasterAddress = IPAddress.Parse(masterAddressStr);
+            }
+
+            if (!masterPortStr.Equals(""))
+                MasterPort = Int32.Parse(masterPortStr);
         }
     }
 }

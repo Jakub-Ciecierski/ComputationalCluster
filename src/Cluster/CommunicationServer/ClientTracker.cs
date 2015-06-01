@@ -1,4 +1,5 @@
 ﻿using Cluster.Client;
+using Communication.MessageComponents;
 using Communication.Messages;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,17 @@ namespace CommunicationServer
         public Object lockObject =  new Object();
 
        // public Thread timeOutCheckThread = new Thread(new ThreadStart(CheckNodesTimeOut));
+
+        private Thread timeoutThread;
+
+        private bool timeoutActive;
+
+        public bool TimeoutActive
+        {
+            get { return timeoutActive; }
+            private set { timeoutActive = value; }
+        }
+
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -91,6 +103,21 @@ namespace CommunicationServer
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/
+
+        public BackupCommunicationServer[] ToBackupServersArray() 
+        {
+            int backupSize = backupServers.Count;
+            BackupCommunicationServer[] backupServersArr = new BackupCommunicationServer[backupSize];
+
+            for (int i = 0; i < backupSize; i++)
+            {
+                NetworkNode server = backupServers[i];
+                BackupCommunicationServer backupServer = new BackupCommunicationServer(server.Address.ToString(), server.Port);
+                backupServersArr[i] = backupServer;
+            }
+            
+            return backupServersArr;
+        }
 
         public NetworkNode GetNodeByID(ulong id)
         {
@@ -181,14 +208,26 @@ namespace CommunicationServer
                     break;
             }
         }
+
+
+        public void StartTimeout()
+        {
+            TimeoutActive = true;
+            timeoutThread = new Thread(CheckNodesTimeOut);
+            timeoutThread.Start();
+        }
+
+        public void StopTimeout()
+        {
+            TimeoutActive = false;
+        }
+
         /// <summary>
         /// This function is running in another thread. It checks out if the function is timed out or not 
         /// </summary>
         public void CheckNodesTimeOut()
         {
-           // for (; ; )
-            /*
-            for (; ; )
+            while (TimeoutActive)
             {
                 TimeSpan timeDifference;
                 DateTime currentTime = DateTime.Now;
@@ -231,7 +270,7 @@ namespace CommunicationServer
                 }
                 Thread.Sleep(500);
            
-            }*/
+            }
         }
     }
 }

@@ -12,56 +12,49 @@ using Communication.MessageComponents;
 using CommunicationServer.MessageCommunication;
 using System.Threading;
 using Cluster.Client;
+using Cluster.Util.Client;
 namespace CommunicationServer
 {
-    class Server
+    public class Server
     {
+        public static bool primaryMode = false;
+
         static void Main(string[] args)
         {
-            // TODO read from config file manager
-            IPAddress address = getIPAddress();
-            int port = 8080;
+            ModeTracker modeTracker = new ModeTracker();
 
-            Console.Write(" >> IP: "+ address.ToString() + " Port: "+ port +"\n");
+            IPAddress address, masterAddress;
+            int port, masterPort;
 
-            Console.Write(" >> Starting server... \n\n");
-            Console.Write("Address: " + address.ToString() + ":" + port + "\n\n");
-            
-            // Create overall system tracker
-            SystemTracker systemTracker = new SystemTracker();
+            // Set up configuration
+            string inputLine = "";
+            foreach (string arg in args)
+                inputLine += arg + " ";
 
-            // Create list of all clients
-            ClientTracker clientTracker = new ClientTracker();
+            InputParser inputParser = new InputParser(inputLine);
+            inputParser.ParseInput();
 
-            Thread timeOutCheckThread = new Thread(new ThreadStart(clientTracker.CheckNodesTimeOut));
-            timeOutCheckThread.Start();
+            address = getIPAddress();
+            port = inputParser.Port;
 
-            // Task Tracker
-            TaskTracker taskTracker = new TaskTracker();
+            // If address was given 
+            if (inputParser.MasterAddress == null)
+            {
+                primaryMode = true;
 
-            // Start network connection
-            NetworkServer server = new NetworkServer(address, port);
-            server.Open();
+                modeTracker.InitiatePrimary(address, port);
+            }
+            else 
+            {
+                primaryMode = false;
+                masterAddress = inputParser.MasterAddress;
+                masterPort = inputParser.MasterPort;
 
-            // Create messageHandler
-            MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, taskTracker, server);
-
-            // Start message queue
-            MessageQueue messageQueue = new MessageQueue(server);
-            messageQueue.Start();
-
-            // Start Message processor
-            MessageProcessor messageProcessor = new MessageProcessor(messageQueue, messageHandler);
-            messageProcessor.Start();
-
-            Thread.Sleep(100);
-
-            clientTracker.CheckNodesTimeOut();
-
-            // Start console manager
-            ConsoleManager consoleManager = new ConsoleManager(server);
-            consoleManager.Start();
+                modeTracker.InitiateBackup(address, port, masterAddress, masterPort);
+            }
         }
+
+
 
         private static IPAddress getIPAddress()
         {
@@ -83,5 +76,6 @@ namespace CommunicationServer
         {
 
         }
+
     }
 }
