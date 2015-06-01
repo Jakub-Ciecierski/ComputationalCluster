@@ -1,5 +1,7 @@
 ﻿using Cluster.Client;
 using Cluster.Client.Messaging;
+using Cluster.Util;
+using Cluster.Util.Client;
 using Communication;
 using Communication.Messages;
 using Communication.Network.TCP;
@@ -17,50 +19,58 @@ namespace ComputationalClient
 {
     class Program
     {
+        /// <summary>
+        ///     How often client asks for solution. in seconds
+        /// </summary>
+        static uint CLIENT_REQUEST_FREQUENCY = 4;
+
         static void Main(string[] args)
         {
             RegisterType type = RegisterType.ComputationalClient;
             byte parallelThreads = 5;
             string[] problems = { "DVRP" };
-            SolveRequestMessage solveRequestMessage = new SolveRequestMessage(); ;
+
+            SolveRequestMessage solveRequestMessage = new SolveRequestMessage();
+
+            string inputLine = "";
+            foreach (string arg in args)
+                inputLine += arg + " ";
+
+            InputParser inputParser = new InputParser(inputLine);
+            inputParser.ParseInput();
+
+            IPAddress address = inputParser.Address;
+            int port = inputParser.Port;
+
+            NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = CLIENT_REQUEST_FREQUENCY };
 
 
-            NetworkNode node = new NetworkNode(type, parallelThreads, problems) { Timeout = 4 };
-            //NetworkNode node = new NetworkNode();
-            /************ Setup connection ************/
-            //string host = "169.254.80.80";
-            string host = "169.254.80.80";
-            IPAddress address = IPAddress.Parse(host);
-            int port = 5555;
 
-            Console.Write(" >> I'm a  ComputationalClient \n");
+            SmartConsole.PrintLine("ComputationalClient starting work", SmartConsole.DebugLevel.Advanced);
+
             NetworkClient client = new NetworkClient(address, port);
 
             /*************** Register *****************/
-            Console.Write(" >>Type in a file path:\n");
+
+            SmartConsole.PrintLine("Type in a file path", SmartConsole.DebugLevel.Advanced);
             String filePath = Console.ReadLine();
             solveRequestMessage = loadDataFromDisc(filePath);
 
             /******  setup logic modules *****************/
             SystemTracker systemTracker = new SystemTracker(node);
-
             MessageHandler messageHandler = new MessageHandler(systemTracker, client);
             MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client, node);
+            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+
+            messageHandler.keepAliveTimer = keepAliveTimer;
 
             node.MessageProcessor = messageProcessor;
 
             /************ send solve request *****************/
             client.Connect();
-            Console.Write(" >> Sending Solve Request message... \n\n");
-
-            ClientCompuatationsCheckTimer clientComputationsCheckTimer = new ClientCompuatationsCheckTimer(messageProcessor, systemTracker, solveRequestMessage.Id);
-            messageHandler.clientComputationsCheckTimer = clientComputationsCheckTimer;
 
             messageProcessor.Communicate(solveRequestMessage);
-
-           //KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
-            /************ Start Logic modules ************/
-           // clientComputationsCheckTimer.Start();
+            keepAliveTimer.Start();
 
             Object mutex = new Object();
             // TODO Thread pool waiting
@@ -97,7 +107,7 @@ namespace ComputationalClient
 
             data = GetBytes(filePath);
             solveRequestMessage = new SolveRequestMessage(problemType, data);
-            Console.WriteLine(">>success");
+            Console.WriteLine(" >> Success");
             return solveRequestMessage;
         }
 

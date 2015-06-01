@@ -1,4 +1,5 @@
-﻿using Communication.Messages;
+﻿using Cluster.Util;
+using Communication.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Cluster.Client.Messaging
     /// <summary>
     /// Sends client solutionRequest messages.
     /// </summary>
-    public class ClientCompuatationsCheckTimer
+    public class ComputationalClientCheckTimer
     {
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
@@ -48,7 +49,7 @@ namespace Cluster.Client.Messaging
         /// </summary>
         /// <param name="messageProcessor"></param>
         /// /// <param name="systemTracker"></param>
-        public ClientCompuatationsCheckTimer(MessageProcessor messageProcessor, ClientSystemTracker systemTracker, ulong id)
+        public ComputationalClientCheckTimer(MessageProcessor messageProcessor, ClientSystemTracker systemTracker, ulong id)
         {
             solutionRequestMessage = new SolutionRequestMessage(id);
 
@@ -68,8 +69,7 @@ namespace Cluster.Client.Messaging
 
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
-            Console.Write(" >> Sending Solution Request message... \n\n");
-            
+            SmartConsole.PrintLine("Sending Solution Request message", SmartConsole.DebugLevel.Basic);
             messageProcessor.Communicate(solutionRequestMessage);
         }
         /*******************************************************************/

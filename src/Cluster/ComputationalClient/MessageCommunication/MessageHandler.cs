@@ -14,7 +14,10 @@ namespace ComputationalClient.MessageCommunication
     class MessageHandler : ClientMessageHandler
     {
 
-        public ClientCompuatationsCheckTimer clientComputationsCheckTimer;
+        public ComputationalClientCheckTimer clientComputationsCheckTimer;
+
+        public KeepAliveTimer keepAliveTimer;
+
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
@@ -73,9 +76,8 @@ namespace ComputationalClient.MessageCommunication
         {
             Console.WriteLine("Solve request respone message has been received");
             systemTracker.Node.Id = solveRequestResponseMessage.Id;
-            clientComputationsCheckTimer.solutionRequestMessage = new SolutionRequestMessage(solveRequestResponseMessage.Id);
-            clientComputationsCheckTimer.Start();
 
+            keepAliveTimer.Start(solveRequestResponseMessage.Id);
         }
     }
 }

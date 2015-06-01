@@ -46,7 +46,7 @@
     <Compile Include="Benchmarks\TestCases.cs" />
     <Compile Include="Benchmarks\VRPParser.cs" />
     <Compile Include="Client\ClientSystemTracker.cs" />
-    <Compile Include="Client\Messaging\ClientCompuatationsCheckTimer.cs" />
+    <Compile Include="Client\Messaging\ComputationalClientCheckTimer.cs" />
     <Compile Include="Client\Messaging\ClientMessageHandler.cs" />
     <Compile Include="Client\Messaging\KeepAliveTimer.cs" />
     <Compile Include="Client\Messaging\MessageProcessor.cs" />

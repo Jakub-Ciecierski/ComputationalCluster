@@ -13,6 +13,7 @@ using System.Threading;
 using Cluster.Client.Messaging;
 using Cluster.Client;
 using Cluster;
+using Cluster.Util;
 
 namespace TaskManager
 {
@@ -39,7 +40,7 @@ namespace TaskManager
             IPAddress address = inputParser.Address;
             int port = inputParser.Port;
 
-            Console.Write("I'm a " + node.Type + "\n\n");
+            SmartConsole.PrintLine("I'm a " + node.Type, SmartConsole.DebugLevel.Advanced);
             NetworkClient client = new NetworkClient(address, port);
 
             /************ Setup Logic modules ************/
@@ -61,7 +62,7 @@ namespace TaskManager
 
             /************ Register ************/
             client.Connect();
-            Console.Write(" >> Sending Register message... \n\n");
+            SmartConsole.PrintLine("Sending Register message", SmartConsole.DebugLevel.Advanced);
             messageProcessor.Communicate(node.ToRegisterMessage());
 
             KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
