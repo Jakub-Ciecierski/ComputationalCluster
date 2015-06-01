@@ -1,5 +1,6 @@
 ﻿using Cluster.Client;
 using Cluster.Client.Messaging;
+using Cluster.Util;
 using Communication.Messages;
 using Communication.Network.TCP;
 using CommunicationServer.Communication;
@@ -38,8 +39,8 @@ namespace CommunicationServer
         /*******************************************************************/
         public void InitiatePrimary(IPAddress address, int port)
         {
-            Console.Write(" >> Starting server... \n\n");
-            Console.Write(" >> Address: " + address.ToString() + ":" + port + "\n\n");
+            SmartConsole.PrintHeader("Starting primary server");
+            SmartConsole.PrintLine("Address: " + address.ToString() + ":" + port, SmartConsole.DebugLevel.Advanced);
 
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
@@ -77,8 +78,8 @@ namespace CommunicationServer
 
         public void InitiateBackup(IPAddress myAddress, int myPort, IPAddress masterAddress, int masterPort)
         {
-            Console.Write(" >> Starting backup server... \n\n");
-            Console.Write(" >> Address: " + myAddress.ToString() + ":" + myPort + "\n\n");
+            SmartConsole.PrintHeader("Starting backup server");
+            SmartConsole.PrintLine("Address: " + myAddress.ToString() + ":" + myPort, SmartConsole.DebugLevel.Advanced);
 
             // Create overall system tracker
             SystemTracker systemTracker = new SystemTracker();
@@ -86,32 +87,27 @@ namespace CommunicationServer
             // Create list of all clients
             ClientTracker clientTracker = new ClientTracker();
 
-            // Start measuring timeout
-            clientTracker.StartTimeout();
-
             // Task Tracker
             TaskTracker taskTracker = new TaskTracker();
 
             // Start network connection
             NetworkServer server = new NetworkServer(myAddress, myPort);
-            server.Open();
 
             // Create messageHandler
             MessageHandler messageHandler = new MessageHandler(systemTracker, clientTracker, taskTracker, server);
 
             // Start message queue
             MessageQueue messageQueue = new MessageQueue(server);
-            messageQueue.Start();
-
+            
             // Start Message processor
             CommunicationServer.MessageCommunication.MessageProcessor messageProcessor = new CommunicationServer.MessageCommunication.MessageProcessor(messageQueue, messageHandler);
+
+            // blockade to block untill server is switched to primary mode
+            Object backupBlockade = new Object();
+
+            server.Open();
+            messageQueue.Start();
             messageProcessor.Start();
-
-            //Thread.Sleep(100);
-
-            // Start console manager
-            ConsoleManager consoleManager = new ConsoleManager(server);
-            //consoleManager.Start();
 
             /********************* REGISTER AS NORMAL CLIENT *********************/
 
@@ -121,31 +117,46 @@ namespace CommunicationServer
 
             NetworkClient client = new NetworkClient(masterAddress, masterPort);
 
-
-            /************ Register ************/
             client.Connect();
-            Console.Write(" >> Sending Register message... \n\n");
+            SmartConsole.PrintLine("Sending Register message...", SmartConsole.DebugLevel.Advanced);
 
             CommunicationServer.MessageCommunication.KeepAliveTimer keepAliveTimer = new 
                                                 CommunicationServer.MessageCommunication.KeepAliveTimer(messageHandler,
                                                                                                         client, 
+                                                                                                        server,
                                                                                                         systemTracker, 
-                                                                                                        node);
+                                                                                                        node,
+                                                                                                        clientTracker,
+                                                                                                        backupBlockade);
             keepAliveTimer.Communicate(node.ToRegisterMessage());
-             
-            /************ Start Logic modules ************/
+
+            /********************* START COMMUNICATING WITH PRIMARY SERVER *********************/
+            SmartConsole.PrintLine("Backup Server starting work", SmartConsole.DebugLevel.Advanced);
+
             keepAliveTimer.Start();
 
-            Object mutex = new Object();
-            //for (; ; ) ;
-            // TODO Thread pool waiting
-
-            lock (mutex)
+            // This will hold untill server is switched to primary mode
+            lock (backupBlockade)
             {
-                Monitor.Wait(mutex);
+                Monitor.Wait(backupBlockade);
             }
 
-            // switch to Primary here
+            /********************* SWITCH TO PRIMARY SERVER *********************/
+
+            SmartConsole.PrintHeader("SWITCHING TO PRIMARY");
+
+            Server.primaryMode = true;
+
+            client.Disconnect();
+
+            clientTracker.RefreshTimeout();
+            
+            // Start measuring timeout
+            clientTracker.StartTimeout();
+
+            // Start console manager
+            ConsoleManager consoleManager = new ConsoleManager(server);
+            consoleManager.Start();
         }
 
         public void SwitchToPrimary()

@@ -51,7 +51,7 @@ namespace ComputationalNode
 
             MessageHandler messageHandler = new MessageHandler(systemTracker, client);
 
-            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client);
+            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client, node);
 
             node.MessageProcessor = messageProcessor;
 

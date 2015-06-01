@@ -259,21 +259,18 @@ namespace CommunicationServer.MessageCommunication
                 int port = (ushort)Server.PRIMARY_PORT;
                 node.Address = address;
                 node.Port = (ushort)port;
-
-                // add backup
-                BackupCommunicationServer bserver = new BackupCommunicationServer(address.ToString(), (ushort)port);
-                clientTracker.AddBackupServer(bserver);
             }
-
-            RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, clientTracker.BackupServers);
 
             // Add the node to system
             clientTracker.AddNode(node);
+
+            RegisterResponseMessage response = new RegisterResponseMessage(id, timeout, clientTracker.BackupServers);
 
             server.Send(socket, response);
 
             RegisterMessage backUpmessage = new RegisterMessage(message.Type, message.ParallelThreads, message.SolvableProblems);
             backUpmessage.Id = id;
+
             InformBackup(backUpmessage);
         }
 

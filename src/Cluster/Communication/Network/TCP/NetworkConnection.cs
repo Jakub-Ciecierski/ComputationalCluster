@@ -23,13 +23,13 @@ namespace Communication.Network.TCP
         public IPAddress Address
         {
             get { return address; }
-            private set { address = value; }
+            set { address = value; }
         }
 
         public int Port
         {
             get { return port; }
-            private set { port = value; }
+            set { port = value; }
         }
 
         public NetworkConnection(IPAddress address, int port)

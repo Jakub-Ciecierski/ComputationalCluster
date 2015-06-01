@@ -21,12 +21,12 @@ namespace Cluster.Util
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        public const DebugLevel DEBUG_LEVEL = DebugLevel.Advanced;
+        public const DebugLevel DEBUG_LEVEL = DebugLevel.Basic;
 
         const string linePrefix = " >> ";
 
-        const string headerPrefix = "****************************";
-        const string headerSuffix = "****************************";
+        const string headerPrefix = "*********************** ";
+        const string headerSuffix = " ***********************";
 
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
@@ -45,7 +45,7 @@ namespace Cluster.Util
 
         public static void PrintHeader(string header) 
         {
-            Console.Write("\n" + headerPrefix + header + headerSuffix + "\n");
+            Console.Write("\n\n" + headerPrefix + header + headerSuffix + "\n\n");
         }
 
         public static void PrintLine(string line, DebugLevel debugLevel) 

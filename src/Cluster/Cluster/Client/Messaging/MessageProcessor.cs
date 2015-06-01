@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -16,25 +17,34 @@ namespace Cluster.Client.Messaging
     /// </summary>
     public class MessageProcessor
     {
+        /// <summary>
+        ///     How many timeouts to wait untill switching to next server
+        /// </summary>
+        private const int SERVER_SWITCH_WAIT_SCALLAR = 2;
+
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        private NetworkClient client;
+        public NetworkClient client;
 
         /// <summary>
         ///     Handles all the messages in the queue
         /// </summary>
         private ClientMessageHandler messageHandler;
 
+        private NetworkNode node;
+
         /******************************************************************/
         /************************** CONSTRUCTORS **************************/
         /******************************************************************/
 
-        public MessageProcessor(ClientMessageHandler messageHandler, NetworkClient client)
+        public MessageProcessor(ClientMessageHandler messageHandler, NetworkClient client, NetworkNode node)
         {
             this.client = client;
             this.messageHandler = messageHandler;
+
+            this.node = node;
         }
 
         /*******************************************************************/
@@ -55,49 +65,28 @@ namespace Cluster.Client.Messaging
             List<Message> messages = new List<Message>();
             messages.Add(message);
             this.Communicate(messages);
-            /* TODO
-            lock (this)
-            {
-                if (!client.Connected) {
-                    SmartConsole.PrintLine("Lost connection, reconnecting...");
-                    client.Connect();
-                }
-
-                // Send to server
-                client.Send(message);
-
-                // Wait for response
-                Message responseMessage = client.Receive();
-
-                // handle response
-                messageHandler.Handle(responseMessage);
-
-                //client.Disconnect();
-            }
-            */
         }
 
         public void Communicate(List<Message> messages)
         {
             lock (this)
             {
-                if (!client.Connected)
+                while (!client.Connected)
                 {
-                    SmartConsole.PrintLine("Lost connection, reconnecting...", SmartConsole.DebugLevel.Advanced);
                     client.Connect();
                 }
-                    // Send to server
-                    client.Send(messages);
+                // Send to server
+                client.Send(messages);
 
-                    // Wait for response
-                    List<Message> responseMessage = client.ReceiveMessages();
+                // Wait for response
+                List<Message> responseMessage = client.ReceiveMessages();
 
-                    for (int i = 0; i < responseMessage.Count; i++)
-                    {
-                        // handle response  
-                        Message message = responseMessage[i];
-                        messageHandler.Handle(message);
-                    }
+                for (int i = 0; i < responseMessage.Count; i++)
+                {
+                    // handle response  
+                    Message message = responseMessage[i];
+                    messageHandler.Handle(message);
+                }
             }
         }
     }

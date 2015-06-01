@@ -1,4 +1,5 @@
 ﻿using Cluster.Client;
+using Cluster.Util;
 using Communication.MessageComponents;
 using Communication.Messages;
 using System;
@@ -18,6 +19,8 @@ namespace CommunicationServer
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
+
+        private const int TIMEOUT_SCALLAR = 3;
 
         private BackupCommunicationServer[] backupServersArray;
 
@@ -127,6 +130,25 @@ namespace CommunicationServer
             backupServersArray = newBackupServers;
         }
 
+        public void RemoveBackupServer(int index)
+        {
+            int newSize = backupServersArray.Length - 1;
+            BackupCommunicationServer[] newBackupServers = new BackupCommunicationServer[newSize];
+
+            int j = 0;
+            for (int i = 0; i < newSize + 1; i++)
+            {
+                if (i != index)
+                {
+                    newBackupServers[j] = backupServersArray[i];
+                    j++;
+                }
+
+            }
+
+            backupServersArray = newBackupServers;
+        }
+
         public BackupCommunicationServer[] ToBackupServersArray() 
         {
             int backupSize = backupServersList.Count;
@@ -221,6 +243,7 @@ namespace CommunicationServer
 
         /// <summary>
         ///     removes a node from the client list
+        ///     BIG TODO, REMOVE BACKUP SERVER FROM ARRAY
         /// </summary>
         /// <param name="id"></param>
         /// <param name="type"></param>
@@ -255,6 +278,27 @@ namespace CommunicationServer
         }
 
         /// <summary>
+        ///     Refreshed LastSeen property for every node
+        ///     Used when server is switched to primary mode
+        /// </summary>
+        public void RefreshTimeout()
+        {
+            DateTime now = DateTime.Now;
+            foreach (NetworkNode bs in backupServersList)
+            {
+                bs.LastSeen = now;
+            }
+            foreach (NetworkNode tm in taskManagers)
+            {
+                tm.LastSeen = now;
+            }
+            foreach (NetworkNode cn in compNodes)
+            {
+                cn.LastSeen = now;
+            }
+        }
+
+        /// <summary>
         /// This function is running in another thread. It checks out if the function is timed out or not 
         /// </summary>
         public void CheckNodesTimeOut()
@@ -267,11 +311,13 @@ namespace CommunicationServer
                 for (int i = 0; i < backupServersList.Count; i++)
                 {
                     timeDifference = currentTime.Subtract(backupServersList[i].LastSeen);
-                    if (timeDifference > new TimeSpan(0, 0, (int)backupServersList[i].Timeout))
+                    if (timeDifference > new TimeSpan(0, 0, (int)backupServersList[i].Timeout * TIMEOUT_SCALLAR))
                     {
                         lock (lockObject)
                         {
+                            SmartConsole.PrintLine("Backup server timeout'ed", SmartConsole.DebugLevel.Advanced);
                             backupServersList.RemoveAt(i);
+                            RemoveBackupServer(i);
                             break;
                         } 
                     }
@@ -279,10 +325,14 @@ namespace CommunicationServer
                 for (int i = 0; i < compNodes.Count; i++)
                 {
                     timeDifference = currentTime.Subtract(compNodes[i].LastSeen);
-                    if (timeDifference > new TimeSpan(0, 0, (int)compNodes[i].Timeout))
+                    if (timeDifference > new TimeSpan(0, 0, (int)compNodes[i].Timeout * TIMEOUT_SCALLAR))
                     {
+
                         lock (lockObject)
                         {
+                            SmartConsole.PrintLine("Computational node timeout'ed", SmartConsole.DebugLevel.Advanced);
+                            SmartConsole.PrintLine("CurrentTime: " + currentTime.ToString() + ", Last Seen: " + compNodes[i].LastSeen.ToString(), SmartConsole.DebugLevel.Advanced);
+
                             compNodes.RemoveAt(i);
                             break;
                         } 
@@ -291,10 +341,11 @@ namespace CommunicationServer
                 for (int i = 0; i < taskManagers.Count; i++)
                 {
                     timeDifference = currentTime.Subtract(taskManagers[i].LastSeen);
-                    if (timeDifference > new TimeSpan(0, 0, (int)taskManagers[i].Timeout))
+                    if (timeDifference > new TimeSpan(0, 0, (int)taskManagers[i].Timeout * TIMEOUT_SCALLAR))
                     {
                         lock (lockObject)
                         {
+                            SmartConsole.PrintLine("Task manager timeout'ed", SmartConsole.DebugLevel.Advanced);
                             taskManagers.RemoveAt(i);
                             break;
                         } 

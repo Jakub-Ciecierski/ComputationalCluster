@@ -1,8 +1,11 @@
 ﻿using Cluster.Util;
+using Communication.MessageComponents;
 using Communication.Network.TCP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -67,7 +70,26 @@ namespace Cluster.Client.Messaging
         private void keepAlive(Object source, ElapsedEventArgs e)
         {
             SmartConsole.PrintLine("Sending Status message", SmartConsole.DebugLevel.Basic);
-            messageProcessor.Communicate(systemTracker.Node.ToStatusMessage());
+
+            try
+            {
+                messageProcessor.Communicate(systemTracker.Node.ToStatusMessage());
+            }
+            catch (SocketException excep)
+            {
+                SmartConsole.PrintLine("Lost connection with primary server, reconnecting to next backup...", SmartConsole.DebugLevel.Advanced);
+
+                if (systemTracker.Node.BackupServers.Length == 0)
+                {
+                    SmartConsole.PrintLine("No other backup server avaiable", SmartConsole.DebugLevel.Advanced);
+                    return;
+                }
+                BackupCommunicationServer bserver = systemTracker.Node.BackupServers[0];
+
+                // connect to next backup server.
+                messageProcessor.client.Address = IPAddress.Parse(bserver.address);
+                messageProcessor.client.Port = bserver.port;
+            }
         }
 
 
