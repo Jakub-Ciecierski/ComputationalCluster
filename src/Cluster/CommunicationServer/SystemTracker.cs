@@ -101,6 +101,7 @@ namespace CommunicationServer
 
         /// <summary>
         ///     Returns unique Id
+        ///     BIG TODO, will not work with nodes added after crash of primary 
         /// </summary>
         /// <returns></returns>
         public ulong GetNextClientID()
