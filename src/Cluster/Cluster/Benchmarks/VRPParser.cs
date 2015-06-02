@@ -12,60 +12,105 @@ namespace Cluster.Benchmarks
         /******************************************************************/
         /************************** CONSTANTS *****************************/
         /******************************************************************/
+        /// <summary>
+        /// Constants connected with loading 'name' field.
+        /// </summary>
         private static String NAME_LABEL = "NAME";
 
+        /// <summary>
+        /// Constants connected with loading 'num_depots' field.
+        /// </summary>
         private static String NUM_DEPOTS_LABEL = "NUM_DEPOTS";
         private static int NUM_DEPOTS_STRIDE = 0;
         private static int NUM_DEPOTS_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'num_capacities' field.
+        /// </summary>
         private static String NUM_CAPACITIES_LABEL = "NUM_CAPACITIES";
         private static int NUM_CAPACITIES_STRIDE = 0;
         private static int NUM_CAPACITIES_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'num_visits' field.
+        /// </summary>
         private static String NUM_VISITS_LABEL = "NUM_VISITS";
         private static int NUM_VISITS_STRIDE = 0;
         private static int NUM_VISITS_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'num_locations' field.
+        /// </summary>
         private static String NUM_LOCATIONS_LABEL = "NUM_LOCATIONS";
         private static int NUM_LOCATIONS_STRIDE = 0;
         private static int NUM_LOCATIONS_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'num_vehicles' field.
+        /// </summary>
         private static String NUM_VEHICLES_LABEL = "NUM_VEHICLES";
         private static int NUM_VEHICLES_STRIDE = 0;
         private static int NUM_VEHICLES_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'capacities' field.
+        /// </summary>
         private static String CAPACITIES_LABEL = "CAPACITIES";
         private static int CAPACITIES_STRIDE = 0;
         private static int CAPACITIES_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'depots_id' field.
+        /// </summary>
         private static String DEPOTS_ID_LABEL = "DEPOTS";
         private static int DEPOTS_ID_STRIDE = 0;
         private static int DEPOTS_ID_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'demands' field.
+        /// </summary>
         private static String DEMANDS_LABEL = "DEMAND_SECTION";
         private static int DEMANDS_STRIDE = 1;
         private static int DEMANDS_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'location_coord' field.
+        /// </summary>
         private static String LOCATION_COORD_LABEL = "LOCATION_COORD_SECTION";
         private static int LOCATION_COORD_STRIDE = 1;
         private static int LOCATION_COORD_SEQ_LENGTH = 2;
 
+        /// <summary>
+        /// Constants connected with loading 'depot_location' field.
+        /// </summary>
         private static String DEPOT_LOCATION_LABEL = "DEPOT_LOCATION_SECTION";
         private static int DEPOT_LOCATION_STRIDE = 1;
         private static int DEPOT_LOCATION_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'visit_location' field.
+        /// </summary>
         private static String VISIT_LOCATION_LABEL = "VISIT_LOCATION_SECTION";
         private static int VISIT_LOCATION_STRIDE = 1;
         private static int VISIT_LOCATION_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'duration' field.
+        /// </summary>
         private static String DURATION_LABEL = "DURATION_SECTION";
         private static int DURATION_STRIDE = 1;
         private static int DURATION_SEQ_LENGTH = 1;
 
+        /// <summary>
+        /// Constants connected with loading 'depot_time_window' field.
+        /// </summary>
         private static String DEPOT_TIME_WINDOW_LABEL = "DEPOT_TIME_WINDOW_SECTION";
         private static int DEPOT_TIME_WINDOW_STRIDE = 1;
         private static int DEPOT_TIME_WINDOW_SEQ_LENGTH = 2;
 
+        /// <summary>
+        /// Constants connected with loading 'time_avail' field.
+        /// </summary>
         private static String TIME_AVAIL_LABEL = "TIME_AVAIL_SECTION";
         private static int TIME_AVAIL_STRIDE = 1;
         private static int TIME_AVAIL_SEQ_LENGTH = 1;
@@ -246,6 +291,18 @@ namespace Cluster.Benchmarks
         /************************ PRIVATE METHODS **************************/
         /*******************************************************************/
 
+        /// <summary>
+        /// Retrieves information about following fields:
+        /// 'name',                         'num_depots',
+        /// 'num_capacities',               'num_visits',
+        /// 'num_locations',                'num_vehicles',
+        /// 'capacites',                    'depots_ids',
+        /// 'demands'                       'location_coord',
+        /// 'depot_location'                'visit_location',
+        /// 'duration'                      'time_avail',
+        /// 'depot_time_window'
+        /// </summary>
+        /// <param name="file">Raw file's content.</param>
         private void parse(string file)
         {
             file = preprocessFile(file);
@@ -270,11 +327,19 @@ namespace Cluster.Benchmarks
             etractTimeAvail(file);
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'name' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>     
         private void extractName(string file)
         {
             this.name = Regex.Replace(extractBlock(NAME_LABEL, file), @"\s+", "");
         }
-        
+
+        /// <summary>
+        /// Extracting and storing data regarding 'num_depots' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>       
         private void extractNumOfDepots(string file)
         {
             this.num_depots = retrieveNumbers(
@@ -283,6 +348,10 @@ namespace Cluster.Benchmarks
                 NUM_DEPOTS_SEQ_LENGTH).ToArray()[0];
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'num_capacities' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param> 
         private void extractNumCapacities(string file)
         {
             this.num_capacities = retrieveNumbers(
@@ -291,6 +360,10 @@ namespace Cluster.Benchmarks
                 NUM_CAPACITIES_SEQ_LENGTH).ToArray()[0];
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'num_visits' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param> 
         private void extractNumOfVisits(string file)
         {
             this.num_visits = retrieveNumbers(
@@ -299,6 +372,10 @@ namespace Cluster.Benchmarks
                 NUM_VISITS_SEQ_LENGTH).ToArray()[0];
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'num_locations' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param> 
         private void extractNumOfLocations(string file)
         {
             this.num_locations = retrieveNumbers(
@@ -307,6 +384,10 @@ namespace Cluster.Benchmarks
                 NUM_LOCATIONS_SEQ_LENGTH).ToArray()[0];
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'num_vehicles' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param> 
         private void extractNumOfVehicles(string file)
         {
             this.num_vehicles = retrieveNumbers(
@@ -315,6 +396,10 @@ namespace Cluster.Benchmarks
                 NUM_VEHICLES_SEQ_LENGTH).ToArray()[0];
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'capacites' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param> 
         private void extractCapacities(string file)
         {
             this.capacites = retrieveNumbers(
@@ -322,7 +407,11 @@ namespace Cluster.Benchmarks
                 CAPACITIES_STRIDE,
                 CAPACITIES_SEQ_LENGTH).ToArray()[0];
         }
-        
+
+        /// <summary>
+        /// Extracting and storing data regarding 'depots_ids' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>  
         private void extractDepots(string file)
         {
             this.depots_ids = retrieveNumbers(
@@ -331,6 +420,10 @@ namespace Cluster.Benchmarks
                 DEPOTS_ID_SEQ_LENGTH).ToArray();
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'demands' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>  
         private void extractDemands(string file)
         {
             this.demands = retrieveNumbers(
@@ -339,6 +432,10 @@ namespace Cluster.Benchmarks
                 DEMANDS_SEQ_LENGTH).ToArray();
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'location_coord' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>  
         private void extractLocationCoord(string file)
         {
             List<int> data = retrieveNumbers(
@@ -349,6 +446,10 @@ namespace Cluster.Benchmarks
             
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'depot_location' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>  
         private void extractDepotLocation(string file)
         {
             this.depot_location = retrieveNumbers(
@@ -356,7 +457,11 @@ namespace Cluster.Benchmarks
                 DEPOT_LOCATION_STRIDE,
                 DEPOT_LOCATION_SEQ_LENGTH).ToArray();
         }
-        
+
+        /// <summary>
+        /// Extracting and storing data regarding 'visit_location' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>      
         private void extractVisitLocation(string file)
         {
             this.visit_location = retrieveNumbers(
@@ -365,6 +470,10 @@ namespace Cluster.Benchmarks
                 VISIT_LOCATION_SEQ_LENGTH).ToArray();
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'duration' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>
         private void extractDuration(string file)
         {
             this.duration = retrieveNumbers(
@@ -373,6 +482,10 @@ namespace Cluster.Benchmarks
                 DURATION_SEQ_LENGTH).ToArray();
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'time_avail' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>
         private void etractTimeAvail(string file)
         {
             this.time_avail = retrieveNumbers(
@@ -381,6 +494,10 @@ namespace Cluster.Benchmarks
                 TIME_AVAIL_SEQ_LENGTH).ToArray();
         }
 
+        /// <summary>
+        /// Extracting and storing data regarding 'depot_time_window' field.
+        /// </summary>
+        /// <param name="file">Preprocessed file content.</param>
         private void extractDepotTimeWindow(string file)
         {
             List<int> data = retrieveNumbers(
@@ -389,6 +506,7 @@ namespace Cluster.Benchmarks
                 DEPOT_TIME_WINDOW_SEQ_LENGTH);
             this.depot_time_window = convertToPoints(data, DEPOT_TIME_WINDOW_SEQ_LENGTH).ToArray();
         }
+
         /// <summary>
         /// Removes unwanted symbols from file's content. Obligatory before eny extraction.
         /// </summary>
@@ -404,7 +522,7 @@ namespace Cluster.Benchmarks
         }
 
         /// <summary>
-        /// Return everything between "blockName" and next string. 
+        /// Returns everything between "blockName" and next string. 
         /// Border constraints are excluded from result string.
         /// </summary>
         /// <param name="blockName">Name of the block we want to extract.</param>
@@ -417,12 +535,18 @@ namespace Cluster.Benchmarks
         }
 
         /// <summary>
-        /// Awesome function for the whole family.
+        /// Awesome function for the whole family. Retrieves integers (negatives and non-negativee)
+        /// from a provided string. Its flexibility allows to extract sequence of substrings with
+        /// specified lengths.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="stride"></param>
-        /// <param name="seqLength"></param>
-        /// <returns></returns>
+        /// <param name="source">String full of numbers one wants to extract.</param>
+        /// <param name="stride">
+        /// Kind of 'space' between data we want to load e.g. one wants to load numbered integers, 
+        /// then stride can be set to 1 (with seqLength = 1) and numbering will be skipped in
+        /// resulting string.
+        /// </param>
+        /// <param name="seqLength"> Length of sequences separated by strides.</param>
+        /// <returns> Sieved list of integers. </returns>
         private List<int> retrieveNumbers(string source, int stride, int seqLength)
         {
             List<int> numbers = new List<int>();
@@ -436,7 +560,13 @@ namespace Cluster.Benchmarks
 
             return numbers;
         }
-
+        /// <summary>
+        /// Converts one dimensional list of integers into array of smaller ones of length 'dim'.
+        /// Note: method will return null if length of the list is not divisable by 'dim'.
+        /// </summary>
+        /// <param name="source">List to convert.</param>
+        /// <param name="dim">Output points' dimension.</param>
+        /// <returns>List of dim-dimensional points.</returns>
         private List<int[]> convertToPoints(List<int> source, int dim)
         {
             if (source.Count % dim != 0) return null;
