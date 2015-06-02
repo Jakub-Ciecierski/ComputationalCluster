@@ -38,6 +38,10 @@ namespace Cluster.Benchmarks
         private static int CAPACITIES_STRIDE = 0;
         private static int CAPACITIES_SEQ_LENGTH = 1;
 
+        private static String DEPOTS_ID_LABEL = "DEPOTS";
+        private static int DEPOTS_ID_STRIDE = 0;
+        private static int DEPOTS_ID_SEQ_LENGTH = 1;
+
         private static String DEMANDS_LABEL = "DEMAND_SECTION";
         private static int DEMANDS_STRIDE = 1;
         private static int DEMANDS_SEQ_LENGTH = 1;
@@ -45,11 +49,26 @@ namespace Cluster.Benchmarks
         private static String LOCATION_COORD_LABEL = "LOCATION_COORD_SECTION";
         private static int LOCATION_COORD_STRIDE = 1;
         private static int LOCATION_COORD_SEQ_LENGTH = 2;
-        private static int LOCATION_COORD_DIMENSIONS = 2;
 
         private static String DEPOT_LOCATION_LABEL = "DEPOT_LOCATION_SECTION";
         private static int DEPOT_LOCATION_STRIDE = 1;
         private static int DEPOT_LOCATION_SEQ_LENGTH = 1;
+
+        private static String VISIT_LOCATION_LABEL = "VISIT_LOCATION_SECTION";
+        private static int VISIT_LOCATION_STRIDE = 1;
+        private static int VISIT_LOCATION_SEQ_LENGTH = 1;
+
+        private static String DURATION_LABEL = "DURATION_SECTION";
+        private static int DURATION_STRIDE = 1;
+        private static int DURATION_SEQ_LENGTH = 1;
+
+        private static String DEPOT_TIME_WINDOW_LABEL = "DEPOT_TIME_WINDOW_SECTION";
+        private static int DEPOT_TIME_WINDOW_STRIDE = 1;
+        private static int DEPOT_TIME_WINDOW_SEQ_LENGTH = 2;
+
+        private static String TIME_AVAIL_LABEL = "TIME_AVAIL_SECTION";
+        private static int TIME_AVAIL_STRIDE = 1;
+        private static int TIME_AVAIL_SEQ_LENGTH = 1;
 
         /******************************************************************/
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
@@ -241,72 +260,14 @@ namespace Cluster.Benchmarks
             extractCapacities(file);
 
             /* Data extraction. */
+            extractDepots(file);
             extractDemands(file);
             extractLocationCoord(file);
             extractDepotLocation(file);
-        }
-
-        /// <summary>
-        /// Removes unwanted symbols from file's content. Obligatory before eny extraction.
-        /// </summary>
-        /// <param name="file">File's content to process.</param>
-        /// <returns>Cleaned file's content.</returns>
-        private string preprocessFile(string file)
-        {
-            return file
-                        .Replace("\r\n", "")
-                        .Replace("\r", "")
-                        .Replace("\n", "")
-                        .Replace(":", " ");
-        }
-
-        /// <summary>
-        /// Return everything between "blockName" and next string. 
-        /// Border constraints are excluded from result string.
-        /// </summary>
-        /// <param name="blockName">Name of the block we want to extract.</param>
-        /// <param name="file">String with file's content. Must be preprocessed with 'preprocessedFile()' function.</param>
-        /// <returns></returns>
-        private string extractBlock(string blockName, string file)
-        {
-            Match result = Regex.Match(file, @"(?<=[^_]("+ blockName+"))(.)*?(?=[A-Z])");
-            return result.Groups[0].ToString();
-        }
-
-        /// <summary>
-        /// Awesome function for whole family.
-        /// </summary>
-        /// <param name="source"></param>
-        /// <param name="stride"></param>
-        /// <param name="seqLength"></param>
-        /// <returns></returns>
-        private List<int> retrieveNumbers(string source, int stride, int seqLength) 
-        {
-            List<int> numbers = new List<int>();
-            MatchCollection matches = Regex.Matches(source, @"-?\d+");
-
-            for (int i = stride; i < matches.Count; i+= stride + seqLength)
-            {
-                for (int j = 0; j < seqLength; j++ )
-                    numbers.Add(int.Parse(matches[i+j].Groups[0].Value));
-            }
-
-            return numbers;
-        }
-
-        private List<int[]> convertToPoints(List<int> source, int dim)
-        {
-            if (source.Count % dim != 0) return null;
- 
-            List<int[]> result = new List<int[]>();
-            for(int i = 0; i < source.Count; i+=dim)
-            {
-                int[] point = new int[dim];
-                for(int j = 0; j < dim; j++) point[j] = source[i+j];
-                result.Add(point);
-            }
-
-            return result;
+            extractVisitLocation(file);
+            extractDuration(file);
+            extractDepotTimeWindow(file);
+            etractTimeAvail(file);
         }
 
         private void extractName(string file)
@@ -361,6 +322,14 @@ namespace Cluster.Benchmarks
                 CAPACITIES_STRIDE,
                 CAPACITIES_SEQ_LENGTH).ToArray()[0];
         }
+        
+        private void extractDepots(string file)
+        {
+            this.depots_ids = retrieveNumbers(
+                extractBlock(DEPOTS_ID_LABEL, file),
+                DEPOTS_ID_STRIDE,
+                DEPOTS_ID_SEQ_LENGTH).ToArray();
+        }
 
         private void extractDemands(string file)
         {
@@ -376,7 +345,7 @@ namespace Cluster.Benchmarks
                 extractBlock(LOCATION_COORD_LABEL, file),
                 LOCATION_COORD_STRIDE,
                 LOCATION_COORD_SEQ_LENGTH);
-            this.location_coord = convertToPoints(data, LOCATION_COORD_DIMENSIONS).ToArray();
+            this.location_coord = convertToPoints(data, LOCATION_COORD_SEQ_LENGTH).ToArray();
             
         }
 
@@ -387,6 +356,102 @@ namespace Cluster.Benchmarks
                 DEPOT_LOCATION_STRIDE,
                 DEPOT_LOCATION_SEQ_LENGTH).ToArray();
         }
+        
+        private void extractVisitLocation(string file)
+        {
+            this.visit_location = retrieveNumbers(
+                extractBlock(VISIT_LOCATION_LABEL, file),
+                VISIT_LOCATION_STRIDE,
+                VISIT_LOCATION_SEQ_LENGTH).ToArray();
+        }
+
+        private void extractDuration(string file)
+        {
+            this.duration = retrieveNumbers(
+                extractBlock(DURATION_LABEL, file),
+                DURATION_STRIDE,
+                DURATION_SEQ_LENGTH).ToArray();
+        }
+
+        private void etractTimeAvail(string file)
+        {
+            this.time_avail = retrieveNumbers(
+                extractBlock(TIME_AVAIL_LABEL, file),
+                TIME_AVAIL_STRIDE,
+                TIME_AVAIL_SEQ_LENGTH).ToArray();
+        }
+
+        private void extractDepotTimeWindow(string file)
+        {
+            List<int> data = retrieveNumbers(
+                extractBlock(DEPOT_TIME_WINDOW_LABEL, file),
+                DEPOT_TIME_WINDOW_STRIDE,
+                DEPOT_TIME_WINDOW_SEQ_LENGTH);
+            this.depot_time_window = convertToPoints(data, DEPOT_TIME_WINDOW_SEQ_LENGTH).ToArray();
+        }
+        /// <summary>
+        /// Removes unwanted symbols from file's content. Obligatory before eny extraction.
+        /// </summary>
+        /// <param name="file">File's content to process.</param>
+        /// <returns>Cleaned file's content.</returns>
+        private string preprocessFile(string file)
+        {
+            return file
+                        .Replace("\r\n", "")
+                        .Replace("\r", "")
+                        .Replace("\n", "")
+                        .Replace(":", " ");
+        }
+
+        /// <summary>
+        /// Return everything between "blockName" and next string. 
+        /// Border constraints are excluded from result string.
+        /// </summary>
+        /// <param name="blockName">Name of the block we want to extract.</param>
+        /// <param name="file">String with file's content. Must be preprocessed with 'preprocessedFile()' function.</param>
+        /// <returns></returns>
+        private string extractBlock(string blockName, string file)
+        {
+            Match result = Regex.Match(file, @"(?<=[^_](" + blockName + "))(.)*?(?=[A-Z])");
+            return result.Groups[0].ToString();
+        }
+
+        /// <summary>
+        /// Awesome function for the whole family.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="stride"></param>
+        /// <param name="seqLength"></param>
+        /// <returns></returns>
+        private List<int> retrieveNumbers(string source, int stride, int seqLength)
+        {
+            List<int> numbers = new List<int>();
+            MatchCollection matches = Regex.Matches(source, @"-?\d+");
+
+            for (int i = stride; i < matches.Count; i += stride + seqLength)
+            {
+                for (int j = 0; j < seqLength; j++)
+                    numbers.Add(int.Parse(matches[i + j].Groups[0].Value));
+            }
+
+            return numbers;
+        }
+
+        private List<int[]> convertToPoints(List<int> source, int dim)
+        {
+            if (source.Count % dim != 0) return null;
+
+            List<int[]> result = new List<int[]>();
+            for (int i = 0; i < source.Count; i += dim)
+            {
+                int[] point = new int[dim];
+                for (int j = 0; j < dim; j++) point[j] = source[i + j];
+                result.Add(point);
+            }
+
+            return result;
+        }
+
         /*******************************************************************/
         /************************* PUBLIC METHODS **************************/
         /*******************************************************************/

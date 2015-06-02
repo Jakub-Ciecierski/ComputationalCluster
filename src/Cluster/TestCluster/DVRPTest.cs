@@ -34,7 +34,7 @@ namespace TestCluster
         [TestMethod]
         public void LOAD_FILE()
         {
-            ComputationalClient.Program.loadDataFromDisc(@"C:\Users\user\Desktop\cipsko2\doc\DVRP\new_benchmarks\io2_8b.vrp");
+            ComputationalClient.Program.loadDataFromDisc(@"C:\Users\user\Desktop\cipsko2\doc\DVRP\e\io2_10_plain_e_D.vrp");
         }
        
     }
