@@ -143,7 +143,7 @@ namespace CommunicationServer.MessageCommunication
             }
 
             //if divideProblemMessage hasn't been sent than send noOperationMessage
-            if (hasMessageBeenSent == false)
+            if (hasMessageBeenSent == false && Server.primaryMode)
             {
                 NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
                 server.Send(messagePackage.Socket, response);
@@ -189,7 +189,7 @@ namespace CommunicationServer.MessageCommunication
 
                 }
             }
-            if (messageCheck == false)
+            if (messageCheck == false && Server.primaryMode)
             {
                 NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
                 server.Send(messagePackage.Socket, response);
@@ -258,6 +258,11 @@ namespace CommunicationServer.MessageCommunication
                 IPAddress address = (socket.RemoteEndPoint as IPEndPoint).Address;
                 int port = (ushort)Server.PRIMARY_PORT;
                 node.Address = address;
+
+                // TODO hack
+                if(clientTracker.BackupServers.Length == 1)
+                    port = (ushort)Server.PRIMARY_PORT2;
+
                 node.Port = (ushort)port;
             }
 
@@ -274,13 +279,24 @@ namespace CommunicationServer.MessageCommunication
             InformBackup(backUpmessage);
         }
 
-        private bool registerExistingNode(RegisterMessage message)
+        private bool registerExistingNode(RegisterMessage message, Socket socket)
         {
             NetworkNode node = new NetworkNode(message.Type, message.Id, (uint)systemTracker.Timeout, message.ParallelThreads, message.SolvableProblems,
                                         clientTracker.BackupServers);
-            // Dont inform backup about other backups
+
+            IPAddress address = (socket.RemoteEndPoint as IPEndPoint).Address;
+            int port = (ushort)Server.PRIMARY_PORT;
+            // TODO hack
+            if (clientTracker.BackupServers.Length == 1)
+                port = (ushort)Server.PRIMARY_PORT2;
+
+            node.Address = address;
+            node.Port = (ushort)port;
+
+            // Dont inform backup about it self
             // It comes naturally in NoOperation message
-            if (node.Type == RegisterType.CommunicationServer)
+            if (node.Type == RegisterType.CommunicationServer && 
+                (server.Address.ToString().Equals(address.ToString()) && server.Port == port))
                 return false;
 
             SmartConsole.PrintLine("Backup adding existing node", SmartConsole.DebugLevel.Advanced);
@@ -289,24 +305,50 @@ namespace CommunicationServer.MessageCommunication
         }
 
 
-        private void InformBackup(Message message){
-            // If this is primary server and it has atleast one backup
-            if (Server.primaryMode && clientTracker.BackupServers.Length > 0)
-            {
-                
-                s = new Socket(AddressFamily.InterNetwork, 
+        private void InformBackup(Message message)
+        {
+            s = new Socket(AddressFamily.InterNetwork,
                                 SocketType.Stream, ProtocolType.Tcp);
+
+            int length = clientTracker.BackupServers.Length;
+
+            // If this is primary server and it has atleast one backup
+            if (Server.primaryMode && length > 0)
+            {
                 BackupCommunicationServer bserver = clientTracker.BackupServers[0];
                 IPAddress address = IPAddress.Parse(bserver.address);
                 int port = bserver.port;
                 s.Connect(address, port);
 
                 server.Send(s, message);
+                SmartConsole.PrintLine("Informed Backup Server: " + address.ToString() + ":" + port, SmartConsole.DebugLevel.Advanced);
             }
             // If this is one of the backups
             else
             {
+                // Find yourself, and inform next backup
 
+                for(int i = 0; i < length ; i++)
+                {
+                    BackupCommunicationServer bserver = clientTracker.BackupServers[i];
+
+                    if (server.Address.ToString().Equals(bserver.address) && server.Port == bserver.port)
+                    {
+                        if (i + 1 < length)
+                        {
+                            BackupCommunicationServer bserverToSend = clientTracker.BackupServers[i+1];
+
+                            IPAddress address = IPAddress.Parse(bserverToSend.address);
+                            int port = bserverToSend.port;
+                            s.Connect(address, port);
+
+                            server.Send(s, message);
+                            SmartConsole.PrintLine("Informed Backup Server: " + address.ToString() + ":" + port, SmartConsole.DebugLevel.Advanced);
+                        }
+                    }
+                }
+                
+                
             }
         }
     }

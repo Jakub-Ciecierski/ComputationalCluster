@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Cluster.Math.TSP
-{
+{   
+    /// <summary>
+    /// Cóż, hiena to zwykły prymityw. Tak zawsze sądziłem, lecz dziś, 
+    /// gdy snuję swój plan znakomity. I hieny przydadzą się mi.
+    /// </summary>
      class NaiveProrityQueue
     {
         private List<FibonacciNode> list = new List<FibonacciNode>();

@@ -20,7 +20,7 @@ namespace CommunicationServer
     {
         public const int PRIMARY_PORT = 5555;
 
-        public const int PRIMARY_PORT2 = 8099;
+        public const int PRIMARY_PORT2 = 8888;
 
         public static bool primaryMode = false;
 

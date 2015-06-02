@@ -15,7 +15,6 @@
 { \bf \large Jakub Ciecierski\\
 Bartlomiej Dybisz \\
 Lukasz Wojcik\\
-Karol Korczak\\
 }
 \end{flushleft}
 
@@ -192,11 +191,8 @@ For technology we have chosen .NET C\#, a powerful tool which we would like to e
 
 	{\large \bf	Update 31.03}
 	Communication stage completed.
-	TODO:
 	\begin{itemize}
-		\item SocketException handlering is required here and there (marked in source).
-		\item Performance of MultiThreadng in Server
-		\item Opening Backup server and properly registering it
+		\item All problems have been fixed
 	\end{itemize}
 	
 	
@@ -205,6 +201,14 @@ For technology we have chosen .NET C\#, a powerful tool which we would like to e
 {\item \large \bf Stage 2: Algorithm \\ \\
 	Deadline 28.04 \\
 	Progress meetings (within the team) 12.04, 25.03 \\}
+	
+	{\large \bf	Update 02.06}
+	Algorithm stage completed, although not in time.
+
+	\begin{itemize}
+		\item A team member has been kicked out due to inactivity.
+		\item Missed a deadline since the team got smaller.
+	\end{itemize}
 
 
 {\item \large \bf Stage 3: Testing All functionalities \\ \\
@@ -214,5 +218,77 @@ For technology we have chosen .NET C\#, a powerful tool which we would like to e
 
 \end{itemize}
 
+	{\large \bf	Update 02.06}
+	Final stage completed.
 
+	\begin{itemize}
+		\item Backup servers completed.
+	\end{itemize}
+
+\section{Algorithm}
+The algorithm uses cluster analysis to predict number of vehicles that should be used in the optimal solution. In other words, the problem of Multiple TSP is split into few single TSP problems. The basic flow of the algorithm looks as follows
+
+\begin{itemize}
+	\item Divide 
+	Combine location coordinates (e.g. (x,y) 2D) and time(z) into 3d (x,y,z) array
+	Compute Cluster evaluation e.g. prediction strength.
+	Each of k clusters is assumed to be one different vehicle. 
+	If there are more clusters than vehicles, take $k = num\_vehicles$
+	
+	\item Solve
+	Now mTSP has been partitioned into k TSP problems.
+	K TSP's are computed.
+	
+	\item Merge
+	Combine costs
+\end{itemize}
+
+\subsection{Divide}        
+Algorithms used in the divide part.
+
+	\subsubsection{K-means}
+	Most common algorithm for constructing clusters
+
+	\begin{enumerate}
+		\item Randomly select k centers
+		\item Group points to their closest centroids
+		\item Update centroids by computing mean
+		\item Repeat 2. and 3. untill convergence
+	\end{enumerate}
+	
+	\subsubsection{Prediction Strength}
+
+
+	\begin{enumerate}
+		\item Split training data set into: Learning and Test sets.
+		
+		\item Compute k-means for both sets.
+		
+		\item Computes the co-membership of 
+		each Test cluster in respect to Learnings clusters.
+			{\bf Definition: co-membership}
+			Let data be a set of n elements, then co-membership 
+			is an n by n matrix with (i,j)th element equal to 1
+			if i and j fall into the same cluster from the clusters set, 0 otherwise.
+			The clusters and data can come from different samples (of the same population) 
+			
+		\item Compute strength of each Test cluster and find the minimum value.
+	\end{enumerate}	
+
+	
+\subsection{Solve}
+Travelling Salesman Problem with Triangle Inequality.
+	\begin{enumerate}
+		\item Extract locations points from provided benchmark.
+		\item Convert [1]'s points into undirect graph with wages based on distances.
+		\item Calculate Prim's Algorithm with root set to a car's starting position.
+		\item Recursively traverse minimum spanning tree from [3] in PRE-ORDER fashion.
+		\item Create hamiltonian cycle by connecting first and last element from [4]'s sequence.
+		\item Pack [5] and its length (in terms of graph's wages).
+		\item Return [6].
+	\end{enumerate}	
+
+\subsection{Merge}
+The final solution is a union of partial solutions.
+	
 \end{document}

@@ -31,7 +31,11 @@ namespace TestCluster
             VRPParser benchmark = TestCases.Test1();
             TaskManager.TaskSolvers.DVRP.DVRPSolver.FullSolveTest(benchmark);
         }
-
+        [TestMethod]
+        public void LOAD_FILE()
+        {
+            ComputationalClient.Program.loadDataFromDisc(@"C:\Users\user\Desktop\cipsko2\doc\DVRP\e\io2_10_plain_e_D.vrp");
+        }
        
     }
 

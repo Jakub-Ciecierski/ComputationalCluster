@@ -134,6 +134,9 @@ namespace Communication.Network.TCP
                 string[] actualMessageStr;
                 actualMessageStr = messageStr.Split('\0');
 
+                if (actualMessageStr[0].Equals("") || actualMessageStr[0][0] == '\0')
+                    continue;
+
                 Message message = Message.Construct(actualMessageStr[0]);
                 messages.Add(message);
             }

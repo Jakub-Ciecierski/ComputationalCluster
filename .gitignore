@@ -131,3 +131,4 @@
 /src/Cluster/TaskManager/obj/
 /src/Cluster/TestCluster/obj/
 /src/Cluster/CommunicationServer/*.user
+/src/Cluster/ComputationalClient/*.user
