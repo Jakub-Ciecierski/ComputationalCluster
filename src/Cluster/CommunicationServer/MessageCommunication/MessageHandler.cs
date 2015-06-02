@@ -89,7 +89,7 @@ namespace CommunicationServer.MessageCommunication
             // for backup to register existing in primary server node.
             else
             {
-                registerExistingNode(message);
+                registerExistingNode(message, socket);
             }
         }
 
@@ -108,6 +108,13 @@ namespace CommunicationServer.MessageCommunication
                 networkNode.LastSeen = DateTime.Now;
                 
                 UpdateThreadsStatus(networkNode, message);
+
+                // inform backup
+                if (networkNode.Type != RegisterType.CommunicationServer)
+                {
+                    InformBackup(message);
+                }
+
                 //if status message was send by TaskManager than check if there are any tasks to divide or merge
                 if (networkNode.Type == RegisterType.TaskManager)
                 {
@@ -121,9 +128,12 @@ namespace CommunicationServer.MessageCommunication
                 }
                 else
                 {
-                    NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
-                    server.Send(messagePackage.Socket, response);
-                    SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+                    if (Server.primaryMode) 
+                    {
+                        NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
+                        server.Send(messagePackage.Socket, response);
+                        SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+                    }
                 }
             }
         }
@@ -136,6 +146,9 @@ namespace CommunicationServer.MessageCommunication
         {
             /* add partial tasks to subTask list in a task */
             SolvePartialProblemsMessage message = (SolvePartialProblemsMessage)messagePackage.Message;
+
+            InformBackup(message);
+
             Task task = taskTracker.GetTask((int)message.Id);
             task.Status = TaskStatus.Divided;
             for (int i = 0; i < message.PartialProblems.Count(); i++)
@@ -145,9 +158,12 @@ namespace CommunicationServer.MessageCommunication
                 task.AddSubTask(subTask);
             }
             /***********************************************/
-            NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
-            server.Send(messagePackage.Socket, response);
-            SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+            if (Server.primaryMode)
+            {
+                NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
+                server.Send(messagePackage.Socket, response);
+                SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+            }
         }
 
         /// <summary>
@@ -178,6 +194,9 @@ namespace CommunicationServer.MessageCommunication
         private void handleSolutionsMessage(MessagePackage messagePackage)
         {
             SolutionsMessage message = (SolutionsMessage)messagePackage.Message;
+
+            InformBackup(message);
+
             Task task = taskTracker.GetTask((int)message.Id);
             //IT HAS TO BE CHANGED AFTER ADDING SUBTASK ID @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
             if (message.Solutions[0].Type == SolutionsSolutionType.Final)
@@ -198,9 +217,12 @@ namespace CommunicationServer.MessageCommunication
                 }
             }
 
-            NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
-            server.Send(messagePackage.Socket, response);
-            SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+            if (Server.primaryMode)
+            {
+                NoOperationMessage response = new NoOperationMessage(clientTracker.BackupServers);
+                server.Send(messagePackage.Socket, response);
+                SmartConsole.PrintLine("Sent a NoOperation Message", SmartConsole.DebugLevel.Basic);
+            }
         }
 
         /// <summary>
@@ -210,7 +232,9 @@ namespace CommunicationServer.MessageCommunication
         private void handleSolveRequestMessage(MessagePackage messagePackage)
         {
             SolveRequestMessage message = (SolveRequestMessage)messagePackage.Message;
-           
+
+            InformBackup(message);
+
             // if the cluster can solve this problem
             if (clientTracker.CanSolveProblem(message.ProblemType))
             {
@@ -218,12 +242,20 @@ namespace CommunicationServer.MessageCommunication
                                         message.Data);
                 taskTracker.AddTask(task);
 
-               // DivideProblemMessage divideProblemMessage = new DivideProblemMessage(task.Type,task.ID,task.BaseData,(ulong)4,)
-               
-                SolveRequestResponseMessage response = new SolveRequestResponseMessage((ulong)task.ID);
-                server.Send(messagePackage.Socket, response);
+                if (Server.primaryMode)
+                {
 
-                SmartConsole.PrintLine("Sent a SolveRequestResponse Message", SmartConsole.DebugLevel.Basic);
+                    NoOperationMessage responseNoOp = new NoOperationMessage(clientTracker.BackupServers);
+                    SolveRequestResponseMessage response = new SolveRequestResponseMessage((ulong)task.ID);
+
+                    List<Message> messages = new List<Message>();
+                    messages.Add(responseNoOp);
+                    messages.Add(response);
+
+                    server.Send(messagePackage.Socket, messages);
+                    SmartConsole.PrintLine("Sent a SolveRequestResponse Message", SmartConsole.DebugLevel.Basic);
+                }
+                
             }
             else
             {
@@ -238,7 +270,7 @@ namespace CommunicationServer.MessageCommunication
             NoOperationMessage message = (NoOperationMessage)package.Message;
             clientTracker.BackupServers = message.BackupCommunicationServers;
 
-            SmartConsole.PrintLine("Current Backup count: " + systemTracker.Node.BackupServers.Length, SmartConsole.DebugLevel.Basic);
+            SmartConsole.PrintLine("Current Backup count: " + clientTracker.BackupServers.Length, SmartConsole.DebugLevel.Basic);
         }
 
         private void handleRegisterResponsenMessage(MessagePackage package)
