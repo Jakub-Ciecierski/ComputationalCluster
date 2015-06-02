@@ -508,7 +508,7 @@ namespace Cluster.Benchmarks
         }
 
         /// <summary>
-        /// Removes unwanted symbols from file's content. Obligatory before eny extraction.
+        /// Removes unwanted symbols from file's content. Obligatory before any extraction.
         /// </summary>
         /// <param name="file">File's content to process.</param>
         /// <returns>Cleaned file's content.</returns>
