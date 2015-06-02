@@ -8,8 +8,19 @@ using System.Threading.Tasks;
 
 namespace Cluster.Math.TSP
 {
+    /// <summary>
+    /// Class calculates Travelling Salesman Problem with Triangle Inequality.
+    /// [1] Extract locations points from provided benchmark.
+    /// [2] Convert [1]'s points into undirect graph with wages based on distances.
+    /// [3] Calculate Prim's Algorithm with root set to a car's starting position.
+    /// [4] Recursively traverse minimum spanning tree from [3] in PRE-ORDER fashion.
+    /// [5] Create hamiltonian cycle by connecting first and last element from [4]'s sequence.
+    /// [6] Pack [5] and its length (in terms of graph's wages).
+    /// [7] Return [6].
+    /// </summary>
     public class TSPTrianIneq
     {
+
         private static float nieUmiemCSharpaWiecJestTaZmienna = 0;
 
         public static Result calculate(VRPParser benchmark)
