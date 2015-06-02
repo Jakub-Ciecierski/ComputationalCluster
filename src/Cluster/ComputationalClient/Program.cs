@@ -1,4 +1,5 @@
-﻿using Cluster.Client;
+﻿using Cluster.Benchmarks;
+using Cluster.Client;
 using Cluster.Client.Messaging;
 using Cluster.Util;
 using Cluster.Util.Client;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace ComputationalClient
 {
-    class Program
+    public class Program
     {
         /// <summary>
         ///     How often client asks for solution. in seconds
@@ -84,11 +85,13 @@ namespace ComputationalClient
 
         }
 
-        private static SolveRequestMessage loadDataFromDisc(String filePath)
+        public static SolveRequestMessage loadDataFromDisc(String filePath)
         {
             SolveRequestMessage solveRequestMessage;
             StreamReader streamReader = new StreamReader(filePath);
             string text = streamReader.ReadToEnd();
+            VRPParser benchmark = new VRPParser(text);
+
             string problemType="";
             byte[] data;
             streamReader.Close();

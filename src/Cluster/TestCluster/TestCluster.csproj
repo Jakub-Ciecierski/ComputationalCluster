@@ -72,6 +72,10 @@
       <Project>{1d383821-18ea-4332-9b71-cd3f0b84b6d8}</Project>
       <Name>Communication</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ComputationalClient\ComputationalClient.csproj">
+      <Project>{37c2c9ff-9b36-48f8-85de-2c7711392acc}</Project>
+      <Name>ComputationalClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TaskManager\TaskManager.csproj">
       <Project>{cbd22081-0767-441c-a0d0-69bc092e9238}</Project>
       <Name>TaskManager</Name>
