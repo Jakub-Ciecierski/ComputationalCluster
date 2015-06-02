@@ -74,6 +74,7 @@
     <Compile Include="Util\Client\InputParser.cs" />
     <Compile Include="Util\Client\ConsoleManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\DataSerialization.cs" />
     <Compile Include="Util\SmartConsole.cs" />
   </ItemGroup>
   <ItemGroup>

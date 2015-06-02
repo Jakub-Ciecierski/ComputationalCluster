@@ -18,7 +18,7 @@ namespace CommunicationServer
 {
     public class Server
     {
-        public const int PRIMARY_PORT = 8090;
+        public const int PRIMARY_PORT = 5555;
 
         public const int PRIMARY_PORT2 = 8099;
 

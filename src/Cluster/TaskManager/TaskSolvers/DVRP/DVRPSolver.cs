@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cluster.Math.Clustering;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+using Cluster.Util;
 
 namespace TaskManager.TaskSolvers.DVRP
 {
@@ -195,12 +198,139 @@ namespace TaskManager.TaskSolvers.DVRP
         // 1) Divide
         public override byte[][] DivideProblem(int threadCount)
         {
-            byte[][] temporarySolution = new byte[5][];
-            for (int i = 0; i < 5; i++)
+            /****************** DESERIALIZE ************************/
+            BinaryFormatter formatter = new BinaryFormatter();
+            VRPParser dvrpData = (VRPParser)formatter.Deserialize(new MemoryStream(_problemData));
+
+            /******************* DIVIDE *************************/
+
+
+            // Combine coords (x, y) and time_avail (z)
+            List<Point> data = new List<Point>();
+            for (int i = 0; i < dvrpData.Num_Visits; i++)
             {
-                temporarySolution[i] = new byte[1];
+                List<double> point_coords = new List<double>();
+
+                // does not include depots - which is what we want
+                int loc_index = dvrpData.Visit_Location[i];
+
+                point_coords.Add(dvrpData.Location_Coord[loc_index][0]);
+                point_coords.Add(dvrpData.Location_Coord[loc_index][1]);
+                point_coords.Add(dvrpData.Time_Avail[loc_index - 1] + dvrpData.Duration[loc_index - 1]);
+
+                data.Add(new Point(point_coords));
             }
 
+            // get optimal number of clusters
+            PredictionStrength ps = new PredictionStrength(data);
+            ps.Compute(true);
+            int k = ps.BestK;
+
+            // compute clusters
+            KMeans clusters = new KMeans(data, k);
+            clusters.Compute();
+
+            // create k benchmarks for k solvers
+            VRPParser[] partial_benchmarks = new VRPParser[k];
+            for (int i = 0; i < k; i++)
+            {
+                VRPParser partial_benchmark = new VRPParser();
+                List<int> cluster_indecies = clusters.GetCluterIndecies(i);
+
+                /************ COMMON ****************/
+                int num_depots = dvrpData.Num_Depots;
+                int num_visits = cluster_indecies.Count;
+                int num_locations = cluster_indecies.Count + num_depots;
+
+                partial_benchmark.Num_Visits = num_visits;
+                partial_benchmark.Num_Depots = num_depots;
+                partial_benchmark.Name = dvrpData.Name;
+                partial_benchmark.Num_Capacities = dvrpData.Num_Capacities;
+                partial_benchmark.Num_Vehicles = 1;
+                partial_benchmark.Capacites = dvrpData.Capacites;
+
+                partial_benchmark.Depots_IDs = new int[dvrpData.Depots_IDs.Length];
+                dvrpData.Depots_IDs.CopyTo(partial_benchmark.Depots_IDs, 0);
+
+                partial_benchmark.Depot_Location = new int[dvrpData.Depot_Location.Length];
+                dvrpData.Depot_Location.CopyTo(partial_benchmark.Depot_Location, 0);
+
+                partial_benchmark.Depot_Time_Window = new int[dvrpData.Depot_Time_Window.Length][];
+                for (int p = 0; p < partial_benchmark.Depot_Time_Window.Length; p++)
+                {
+                    partial_benchmark.Depot_Time_Window[p] = new int[dvrpData.Depot_Time_Window[p].Length];
+                    dvrpData.Depot_Time_Window[p].CopyTo(partial_benchmark.Depot_Time_Window[p], 0);
+                }
+
+                /************ LOCATION_COORD ****************/
+                partial_benchmark.Num_Locations = num_locations;
+
+                int[][] location_coord = new int[num_locations][];
+                // get all depots locations
+                for (int j = 0; j < num_depots; j++)
+                {
+                    location_coord[j] = new int[2];
+                    location_coord[j][0] = dvrpData.Location_Coord[j][0];
+                    location_coord[j][1] = dvrpData.Location_Coord[j][1];
+                }
+
+                // get all partial clients locations
+                for (int j = num_depots; j < num_locations; j++)
+                {
+                    location_coord[j] = new int[2];
+                    int clientNodeIndex = dvrpData.Visit_Location[cluster_indecies[j - num_depots]];
+
+                    location_coord[j][0] = dvrpData.Location_Coord[clientNodeIndex][0];
+                    location_coord[j][1] = dvrpData.Location_Coord[clientNodeIndex][1];
+                }
+                partial_benchmark.Location_Coord = location_coord;
+
+                /************ DEMAND ****************/
+                int[] demands = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    int clientNodeIndex = dvrpData.Visit_Location[cluster_indecies[j]];
+                    demands[j] = dvrpData.Demands[clientNodeIndex - num_depots];
+                }
+                partial_benchmark.Demands = demands;
+
+                /************ VISIT_LOCATION ****************/
+                int[] visit_location = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    visit_location[j] = j + num_depots;
+                }
+                partial_benchmark.Visit_Location = visit_location;
+
+                /************ DURATION ****************/
+                int[] duration = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    int clientNodeIndex = dvrpData.Visit_Location[cluster_indecies[j]];
+                    duration[j] = dvrpData.Duration[clientNodeIndex - num_depots];
+                }
+                partial_benchmark.Duration = duration;
+
+                /************ TIME_AVAIL ****************/
+                int[] time_avail = new int[num_visits];
+                for (int j = 0; j < num_visits; j++)
+                {
+                    int clientNodeIndex = dvrpData.Visit_Location[cluster_indecies[j]];
+                    time_avail[j] = dvrpData.Time_Avail[clientNodeIndex - num_depots];
+                }
+                partial_benchmark.Time_Avail = time_avail;
+
+                partial_benchmarks[i] = partial_benchmark;
+            }
+            
+            /************ SERIALIZATION ******************/
+            byte[][] temporarySolution = new byte[partial_benchmarks.Count()][];   
+            for (int i = 0; i < partial_benchmarks.Count(); i++)
+            {
+
+                temporarySolution[i] = DataSerialization.ObjectToByteArray(partial_benchmarks[i]);
+                
+            }
             return temporarySolution;
         }
 
