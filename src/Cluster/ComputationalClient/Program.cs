@@ -103,7 +103,8 @@ namespace ComputationalClient
                 return null;
             }
 
-            data = GetBytes(filePath);
+            data = DataSerialization.ObjectToByteArray(benchmark);
+        //    data = GetBytes(filePath);
             solveRequestMessage = new SolveRequestMessage(problemType, data);
             Console.WriteLine(" >> Success");
             return solveRequestMessage;

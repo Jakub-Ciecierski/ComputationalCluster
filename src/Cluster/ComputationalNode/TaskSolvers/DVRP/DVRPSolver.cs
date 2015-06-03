@@ -1,6 +1,11 @@
-﻿using System;
+﻿using Cluster.Benchmarks;
+using Cluster.Math.TSP;
+using Cluster.Util;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,14 +36,23 @@ namespace ComputationalNode.TaskSolvers.DVRP
 
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
+            /****************** DESERIALIZE ************************/
+            BinaryFormatter formatter = new BinaryFormatter();
+            VRPParser dvrpData = (VRPParser)formatter.Deserialize(new MemoryStream(partialData));
+            /******************* SOLVE *************************/
+            Result results = TSPTrianIneq.calculate(dvrpData);
 
-            byte[] temporarySolution = new byte[5];
+            byte[] data = DataSerialization.ObjectToByteArray(results);
+
+            return data;
+            
+           /* byte[] temporarySolution = new byte[5];
             for (int i = 0; i < 5; i++)
             {
                 temporarySolution[i] = (byte)i;
             }
 
-            return temporarySolution;
+            return temporarySolution;*/
         }
     }
 }
