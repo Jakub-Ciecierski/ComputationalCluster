@@ -180,7 +180,8 @@ namespace Cluster
                     SolutionsMessage solutionMessage = new SolutionsMessage(currentTask.Type, (ulong)currentTask.ID, currentTask.CommonData, solutions);
                     Console.WriteLine(">>Sending solution message. ");
                     messageProcessor.Communicate(solutionMessage);
-
+                    statusThread.State = StatusThreadState.Idle;
+                    this.currentTask = null;
                     break;
 
                 case TaskStatus.Merging:
