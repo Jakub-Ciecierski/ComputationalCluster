@@ -55,6 +55,8 @@ namespace ComputationalClient
             {
                 /*************** Register *****************/
 
+                doWork = true;
+
                 SmartConsole.PrintLine("Type in a file path", SmartConsole.DebugLevel.Advanced);
                 String filePath = Console.ReadLine();
                 solveRequestMessage = loadDataFromDisc(filePath);

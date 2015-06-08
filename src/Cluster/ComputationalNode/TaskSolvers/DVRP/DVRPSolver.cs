@@ -13,7 +13,8 @@ namespace ComputationalNode.TaskSolvers.DVRP
 {
     public class DVRPSolver : UCCTaskSolver.TaskSolver 
     {
-        
+        float CUT_OFF_COEFF = 1.0f;
+
         public DVRPSolver(byte[] problemData)
             : base(problemData)
         {
@@ -41,7 +42,7 @@ namespace ComputationalNode.TaskSolvers.DVRP
             BinaryFormatter formatter = new BinaryFormatter();
             VRPParser dvrpData = (VRPParser)formatter.Deserialize(new MemoryStream(partialData));
             /******************* SOLVE *************************/
-            float cutOff = 0.2f * (float )dvrpData.Depot_Time_Window[0][1];
+            float cutOff = CUT_OFF_COEFF * (float )dvrpData.Depot_Time_Window[0][1];
             Result results = TSPTrianIneq.calculate(dvrpData, cutOff);
 
             for (int i = dvrpData.Num_Depots; i < results.route.Length - dvrpData.Num_Depots; i++)
