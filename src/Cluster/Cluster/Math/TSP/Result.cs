@@ -18,6 +18,14 @@ namespace Cluster.Math.TSP
             this.length = length;
         }
 
+        private int id;
+
+        public int ID
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
     }
 
 }

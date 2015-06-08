@@ -97,7 +97,6 @@ namespace ComputationalClient.MessageCommunication
         {
             byte[] data = solutionsMessage.Solutions[0].Data;
 
-
             BinaryFormatter formatter = new BinaryFormatter();
             Result finalResults = (Result)formatter.Deserialize(new MemoryStream(data));
 

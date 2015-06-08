@@ -37,10 +37,14 @@ namespace ComputationalNode.TaskSolvers.DVRP
         public override byte[] Solve(byte[] partialData, TimeSpan timeout)
         {
             /****************** DESERIALIZE ************************/
+
             BinaryFormatter formatter = new BinaryFormatter();
             VRPParser dvrpData = (VRPParser)formatter.Deserialize(new MemoryStream(partialData));
+
             /******************* SOLVE *************************/
+
             Result results = TSPTrianIneq.calculate(dvrpData);
+            results.ID = dvrpData.ID;
 
             for (int i = dvrpData.Num_Depots; i < results.route.Length - dvrpData.Num_Depots; i++)
                 results.route[i] = dvrpData.Visit_Location[results.route[i] - dvrpData.Num_Depots] + dvrpData.Num_Depots;
