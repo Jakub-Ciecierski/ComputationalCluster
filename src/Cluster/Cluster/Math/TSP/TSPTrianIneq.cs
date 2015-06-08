@@ -39,16 +39,28 @@ namespace Cluster.Math.TSP
                 points.Add(new Point(benchmark.Location_Coord[j][0],benchmark.Location_Coord[j][1], time));
             }
 
+            /* Get rid of the points which are appearing after cut off */
+            List<Point> tmp = new List<Point>();
+            for (int i = 0; i < points.Count; i++ )
+            {
+                if (points[i].Z < cutOffTime)
+                {
+                    tmp.Add(points[i]);
+
+                }
+                else nextDay.Add(i); 
+            }
+            points = tmp;
+           
+
             /* Convert points into a graph. */
             Graph graph = new Graph(points.Count);
             for (int i = 0; i < points.Count; i++)
             {
-                if (points[i].Z < cutOffTime) 
-                    for (int j = i + 1; j < points.Count; j++)
-                    {
-                        graph.addEdge(i, j, euclidDistance(points[i], points[j]), distance2D(points[i], points[j]));
-                    }
-                else nextDay.Add(i);
+                for (int j = i + 1; j < points.Count; j++)
+                {
+                    graph.addEdge(i, j, euclidDistance(points[i], points[j]), distance2D(points[i], points[j]));
+                }
             }
             PrimAlgorithm.calculate(graph, 0);
             int[] route = preorderWalk(graph, 0);

@@ -12,6 +12,7 @@ namespace Cluster.Math.TSP
         public int[] route;
         public float length;
         public List<int> nextDay;
+
         public Result(int[] route, float length, List<int> nextDay)
         {
             this.route = route;

@@ -211,6 +211,12 @@ namespace TaskManager.TaskSolvers.DVRP
                     results[j].route[i] = partial_benchmarks[j].Visit_Location[results[j].route[i] - partial_benchmarks[j].Num_Depots] + partial_benchmarks[j].Num_Depots;
             }
 
+            for (int j = 0; j < results.Count; j++) 
+            for (int i = 0; i < results[j].nextDay.Count; i++)
+            {
+                results[j].nextDay[i] = partial_benchmarks[j].Visit_Location[results[j].nextDay[i] - partial_benchmarks[j].Num_Depots] + partial_benchmarks[j].Num_Depots;
+            }
+
 
             Console.Write("asd");
         }
