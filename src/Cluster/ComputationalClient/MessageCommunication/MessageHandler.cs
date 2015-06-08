@@ -95,6 +95,11 @@ namespace ComputationalClient.MessageCommunication
 
         private void finalSolutionHelper(SolutionsMessage solutionsMessage)
         {
+            //File.Create("Solution.txt");
+            FileStream fs1 = new FileStream("Solution.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(fs1);
+
+
             byte[] data = solutionsMessage.Solutions[0].Data;
 
 
@@ -102,11 +107,12 @@ namespace ComputationalClient.MessageCommunication
             Result finalResults = (Result)formatter.Deserialize(new MemoryStream(data));
 
             SmartConsole.PrintHeader("TASK ID: "+ solutionsMessage.Id +" RESULTS");
-
+            writer.WriteLine("TASK ID: " + solutionsMessage.Id + " RESULTS");
             int[] finalRoute = finalResults.route;
             float finalDistance = finalResults.length;
 
             SmartConsole.PrintLine("Distance: " + finalDistance, SmartConsole.DebugLevel.Advanced);
+            writer.WriteLine("Distance: " + finalDistance);
             int vehicleIndex = 0;
             string msg = "";
 
@@ -119,7 +125,11 @@ namespace ComputationalClient.MessageCommunication
             }
 
             SmartConsole.PrintLine("Path: \n" + msg, SmartConsole.DebugLevel.Advanced);
+            writer.WriteLine("Path: \n" + msg);
+            writer.Close();
+            fs1.Close();
 
+            Program.doWork = false;
         }
     }
 }
