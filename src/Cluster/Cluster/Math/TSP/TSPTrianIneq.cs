@@ -23,9 +23,10 @@ namespace Cluster.Math.TSP
 
         private static float nieUmiemCSharpaWiecJestTaZmienna = 0;
 
-        public static Result calculate(VRPParser benchmark)
+        public static Result calculate(VRPParser benchmark, float cutOffTime)
         {
             int num_depots = benchmark.Num_Depots;
+            List<int> nextDay = new List<int>();
 
             /* Convert benchmark into points. */
             List<Point> points = new List<Point>();
@@ -42,14 +43,16 @@ namespace Cluster.Math.TSP
             Graph graph = new Graph(points.Count);
             for (int i = 0; i < points.Count; i++)
             {
-                for (int j = i + 1; j < points.Count; j++)
-                {
-                    graph.addEdge(i, j, euclidDistance(points[i], points[j]), distance2D(points[i], points[j]));
-                }
+                if (points[i].Z < cutOffTime) 
+                    for (int j = i + 1; j < points.Count; j++)
+                    {
+                        graph.addEdge(i, j, euclidDistance(points[i], points[j]), distance2D(points[i], points[j]));
+                    }
+                else nextDay.Add(i);
             }
             PrimAlgorithm.calculate(graph, 0);
             int[] route = preorderWalk(graph, 0);
-            Result result = new Result(route, nieUmiemCSharpaWiecJestTaZmienna);
+            Result result = new Result(route, nieUmiemCSharpaWiecJestTaZmienna, nextDay);
 
             return result;
         }

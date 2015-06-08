@@ -45,7 +45,7 @@ namespace Cluster.Math.Clustering
         /// <summary>
         ///     Number of points in each cloud.
         /// </summary>
-        const int CLOUD_SIZE = 200;
+        const int CLOUD_SIZE = 20;
 
         /// <summary>
         ///     Standard deviation which is used in Normal distribution

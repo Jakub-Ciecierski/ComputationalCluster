@@ -52,8 +52,7 @@ namespace Cluster.Math.TSP
         public void print() {
             FibonacciNode x = guard.next;
             while (x != guard) {
-                Console.Write(" (" + x.index + ") " + x.key + " ");
-                x = x.next;
+                               x = x.next;
             }
             Console.WriteLine();
         }

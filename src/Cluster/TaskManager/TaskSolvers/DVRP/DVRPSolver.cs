@@ -30,7 +30,12 @@ namespace TaskManager.TaskSolvers.DVRP
     ///         
     /// </summary>
     public class DVRPSolver : UCCTaskSolver.TaskSolver
-    {
+    {   
+       /// <summary>
+       /// Cut off coefficient. 
+       /// </summary>
+       
+
         public DVRPSolver(byte[] problemData)
             : base(problemData)
         {
@@ -190,10 +195,13 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             /******************* SOLVE *************************/
+            float CUT_OFF_COEFFICIENT = 0.2f;
             List<Result> results = new List<Result>();
+            List<int> nextDay = new List<int>();
+            float cutOffTime = CUT_OFF_COEFFICIENT * benchmark.Depot_Time_Window[0][1];
             for (int i = 0; i < partial_benchmarks.Length; i++)
             {
-                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i]));
+                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i], cutOffTime));
             }
             /******************* MERGE *************************/
 
@@ -525,7 +533,7 @@ namespace TaskManager.TaskSolvers.DVRP
                     finalRoute[finalRouteIndex++] = -1;
             }
 
-            Result finalSolution = new Result(finalRoute, finalDistance);
+            Result finalSolution = new Result(finalRoute, finalDistance, null);
 
             byte[] data = DataSerialization.ObjectToByteArray(finalSolution);
             return data;

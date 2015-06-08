@@ -32,7 +32,6 @@ namespace Cluster.Math.TSP
 
         public void addEdge(int v1, int v2, float wage, float distance2D) {
             if (v1 >= n_v || v1 < 0 || v2 >= n_v || v2 < 0) {
-                Console.WriteLine("[Graph] addEdge(); index out of bound.");
                 return;
             }
 
@@ -54,9 +53,6 @@ namespace Cluster.Math.TSP
         }
 
         public void printV() {
-            for(int i = 0; i < v.Length; i++) {
-                Console.WriteLine("("+v[i].index+") p:" + v[i].parent );
-            }
         }
     }
 }
