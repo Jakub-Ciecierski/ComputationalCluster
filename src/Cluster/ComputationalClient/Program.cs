@@ -24,7 +24,7 @@ namespace ComputationalClient
         ///     How often client asks for solution. in seconds
         /// </summary>
         static uint CLIENT_REQUEST_FREQUENCY = 4;
-
+        public static bool doWork = true;
         static void Main(string[] args)
         {
             RegisterType type = RegisterType.ComputationalClient;
@@ -51,32 +51,40 @@ namespace ComputationalClient
 
             NetworkClient client = new NetworkClient(address, port);
 
-            /*************** Register *****************/
-
-            SmartConsole.PrintLine("Type in a file path", SmartConsole.DebugLevel.Advanced);
-            String filePath = Console.ReadLine();
-            solveRequestMessage = loadDataFromDisc(filePath);
-
-            /******  setup logic modules *****************/
-            SystemTracker systemTracker = new SystemTracker(node);
-            MessageHandler messageHandler = new MessageHandler(systemTracker, client);
-            MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client, node);
-            KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
-
-            messageHandler.keepAliveTimer = keepAliveTimer;
-
-            node.MessageProcessor = messageProcessor;
-
-            /************ send solve request *****************/
-            client.Connect();
-
-            messageProcessor.Communicate(solveRequestMessage);
-
-            Object mutex = new Object();
-
-            lock (mutex)
+            for (; ; )
             {
-                Monitor.Wait(mutex);
+                /*************** Register *****************/
+
+                SmartConsole.PrintLine("Type in a file path", SmartConsole.DebugLevel.Advanced);
+                String filePath = Console.ReadLine();
+                solveRequestMessage = loadDataFromDisc(filePath);
+
+                /******  setup logic modules *****************/
+                SystemTracker systemTracker = new SystemTracker(node);
+                MessageHandler messageHandler = new MessageHandler(systemTracker, client);
+                MessageProcessor messageProcessor = new MessageProcessor(messageHandler, client, node);
+                KeepAliveTimer keepAliveTimer = new KeepAliveTimer(messageProcessor, systemTracker);
+
+                messageHandler.keepAliveTimer = keepAliveTimer;
+
+                node.MessageProcessor = messageProcessor;
+
+                /************ send solve request *****************/
+                client.Connect();
+
+                messageProcessor.Communicate(solveRequestMessage);
+
+                while (doWork)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                /*Object mutex = new Object();
+
+                lock (mutex)
+                {
+                    Monitor.Wait(mutex);
+                }*/
             }
         }
 
