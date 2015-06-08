@@ -21,7 +21,7 @@ namespace Cluster.Util
         /******************* PROPERTIES, PRIVATE FIELDS *******************/
         /******************************************************************/
 
-        public const DebugLevel DEBUG_LEVEL = DebugLevel.Basic;
+        public const DebugLevel DEBUG_LEVEL = DebugLevel.Advanced;
 
         const string linePrefix = " >> ";
 

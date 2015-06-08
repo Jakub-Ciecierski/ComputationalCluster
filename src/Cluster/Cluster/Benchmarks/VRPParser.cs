@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cluster.Benchmarks
 {
+    [Serializable]
     public class VRPParser
     {
         /******************************************************************/

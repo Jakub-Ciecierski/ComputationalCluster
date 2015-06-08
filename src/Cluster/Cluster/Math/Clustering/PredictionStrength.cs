@@ -45,12 +45,12 @@ namespace Cluster.Math.Clustering
         /// <summary>
         ///     Number of points in each cloud.
         /// </summary>
-        const int CLOUD_SIZE = 400;
+        const int CLOUD_SIZE = 200;
 
         /// <summary>
         ///     Standard deviation which is used in Normal distribution
         /// </summary>
-        const double STD_DEV = 0.2;
+        const double STD_DEV = 0.1;
 
         /// <summary>
         ///     The training data set
@@ -99,6 +99,8 @@ namespace Cluster.Math.Clustering
         /// </summary>
         private void psLogic() 
         {
+            SmartConsole.PrintHeader("PREDICTION STRENGTH");
+
             // 1) get learning and testing set
             // 
             splitTrainingData();
@@ -123,6 +125,12 @@ namespace Cluster.Math.Clustering
                     best_k = k;
                 }
                 SmartConsole.PrintLine("ps(" + k + ") = " + strength, SmartConsole.DebugLevel.Advanced);
+            }
+
+            SmartConsole.PrintHeader("PREDICTION STRENGTH FINISHED: ");
+            for (int k = start_k; k <= max_k; k++)
+            {
+                SmartConsole.PrintLine("ps(" + k + ") = " + strengths[k - start_k], SmartConsole.DebugLevel.Advanced);
             }
         }
 

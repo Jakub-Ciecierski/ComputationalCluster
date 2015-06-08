@@ -110,6 +110,14 @@ namespace ComputationalClient
             return solveRequestMessage;
         }
 
+        public static VRPParser getBenchmark(String filePath)
+        {
+            StreamReader streamReader = new StreamReader(filePath);
+            string text = streamReader.ReadToEnd();
+            VRPParser benchmark = new VRPParser(text);
+            return benchmark;
+        }
+
         private static void registerToServer(NetworkClient client, NetworkNode node)
         {
             Console.Write(" >> Press enter to connect to server... \n");

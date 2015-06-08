@@ -36,6 +36,17 @@ namespace TestCluster
         {
             ComputationalClient.Program.loadDataFromDisc(@"C:\Users\user\Desktop\cipsko2\doc\DVRP\e\io2_10_plain_e_D.vrp");
         }
+
+        [TestMethod]
+        public void RUN_BENCHMARK()
+        {
+            VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\Semestr6\cluster\doc\DVRP\champions\e\io2_16_plain_e_D.vrp");
+            //VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\Semestr6\cluster\doc\DVRP\champions\e\io2_8_plain_e_D.vrp");
+
+            TaskManager.TaskSolvers.DVRP.DVRPSolver.FullSolveTest(benchmark);
+
+            Console.Write("BLOCKED");
+        }
        
     }
 

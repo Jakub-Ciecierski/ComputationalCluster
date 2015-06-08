@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cluster.Math.TSP
 {
+    [Serializable]
     public class Result
     {
         public int[] route;

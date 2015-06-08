@@ -42,17 +42,12 @@ namespace ComputationalNode.TaskSolvers.DVRP
             /******************* SOLVE *************************/
             Result results = TSPTrianIneq.calculate(dvrpData);
 
+            for (int i = dvrpData.Num_Depots; i < results.route.Length - dvrpData.Num_Depots; i++)
+                results.route[i] = dvrpData.Visit_Location[results.route[i] - dvrpData.Num_Depots] + dvrpData.Num_Depots;
+
             byte[] data = DataSerialization.ObjectToByteArray(results);
 
             return data;
-            
-           /* byte[] temporarySolution = new byte[5];
-            for (int i = 0; i < 5; i++)
-            {
-                temporarySolution[i] = (byte)i;
-            }
-
-            return temporarySolution;*/
         }
     }
 }
