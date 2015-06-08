@@ -30,7 +30,12 @@ namespace TaskManager.TaskSolvers.DVRP
     ///         
     /// </summary>
     public class DVRPSolver : UCCTaskSolver.TaskSolver
-    {
+    {   
+       /// <summary>
+       /// Cut off coefficient. 
+       /// </summary>
+       
+
         public DVRPSolver(byte[] problemData)
             : base(problemData)
         {
@@ -190,10 +195,13 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             /******************* SOLVE *************************/
+            float CUT_OFF_COEFFICIENT = 0.2f;
             List<Result> results = new List<Result>();
+            List<int> nextDay = new List<int>();
+            float cutOffTime = CUT_OFF_COEFFICIENT * benchmark.Depot_Time_Window[0][1];
             for (int i = 0; i < partial_benchmarks.Length; i++)
             {
-                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i]));
+                results.Add(TSPTrianIneq.calculate(partial_benchmarks[i], cutOffTime));
             }
             /******************* MERGE *************************/
 
@@ -201,6 +209,12 @@ namespace TaskManager.TaskSolvers.DVRP
             {
                 for (int i = partial_benchmarks[j].Num_Depots; i < results[j].route.Length - partial_benchmarks[j].Num_Depots; i++)
                     results[j].route[i] = partial_benchmarks[j].Visit_Location[results[j].route[i] - partial_benchmarks[j].Num_Depots] + partial_benchmarks[j].Num_Depots;
+            }
+
+            for (int j = 0; j < results.Count; j++) 
+            for (int i = 0; i < results[j].nextDay.Count; i++)
+            {
+                results[j].nextDay[i] = partial_benchmarks[j].Visit_Location[results[j].nextDay[i] - partial_benchmarks[j].Num_Depots] + partial_benchmarks[j].Num_Depots;
             }
 
 
@@ -516,9 +530,9 @@ namespace TaskManager.TaskSolvers.DVRP
             }
 
             // get optimal number of clusters
-            PredictionStrength ps = new PredictionStrength(data);
-            ps.Compute(true);
-            int k = ps.BestK;
+            //PredictionStrength ps = new PredictionStrength(data);
+            //ps.Compute(true);
+            //int k = ps.BestK;
             
             int max_k = 5;
             int start_k = 1;
@@ -531,7 +545,7 @@ namespace TaskManager.TaskSolvers.DVRP
             int temporarySolutionIndex = 0;
             byte[][] temporarySolution = new byte[solutionsSize][];
 
-            for (k = start_k; k <= max_k; k++)
+            for (int k = start_k; k <= max_k; k++)
             {
                 // compute clusters
                 KMeans clusters = new KMeans(data, k);
@@ -682,7 +696,7 @@ namespace TaskManager.TaskSolvers.DVRP
                     finalRoute[finalRouteIndex++] = -1;
             }
 
-            Result finalSolution = new Result(finalRoute, finalDistance);
+            Result finalSolution = new Result(finalRoute, finalDistance, null);
 
             byte[] data = DataSerialization.ObjectToByteArray(finalSolution);
             return data;
@@ -716,6 +730,8 @@ namespace TaskManager.TaskSolvers.DVRP
 
             List<float> finalDistances = new List<float>();
 
+            List<List<int>> nextDays = new List<List<int>>();
+
             for(int i = 0; i < partialSolutionsByID.Count; i++)
             {
                 finalRoutesSize.Add(0);
@@ -743,11 +759,16 @@ namespace TaskManager.TaskSolvers.DVRP
 
             for(int i = 0; i < partialSolutionsByID.Count; i++)
             {
+                nextDays.Add( new List<int>());
+
                 int finalRouteIndex = 0;
 
                 for(int j = 0; j < partialSolutionsByID[i].Count; j++)
                 {
                     Result result = partialSolutionsByID[i][j];
+
+                    nextDays[i].AddRange(result.nextDay);
+
                     int[] route = result.route;
 
                     for (int l = 0; l < route.Length; l++)
@@ -760,28 +781,37 @@ namespace TaskManager.TaskSolvers.DVRP
                 }
             }
 
-
              // print
             for (int i = 0; i < finalRoutes.Count; i++) 
             {
+                int[] finalRoute = finalRoutes[i];
+                float finalDistance = finalDistances[i];
+
+                int k = i + 1;
+                SmartConsole.PrintHeader(" RESULT FOR K = " + k);
+
+                SmartConsole.PrintLine("Distance: " + finalDistance, SmartConsole.DebugLevel.Advanced);
                 string msg = "";
-                for (int j = 0; j < finalRoutes[i].Length; j++) 
+
+                for (int l = 0; l < finalRoute.Length; l++)
                 {
-                    int[] finalRoute = finalRoutes[i];
-                    float finalDistance = finalDistances[i];
-
-                    SmartConsole.PrintLine("Distance: " + finalDistance, SmartConsole.DebugLevel.Advanced);
-                    
-                    for (int l = 0; l < finalRoute.Length; l++)
-                    {
-                        if (finalRoute[l] == -1)
-                            msg += "\n";
-                        else
-                            msg += finalRoute[l] + ", ";
-                    }
-
+                    if (finalRoute[l] == -1)
+                        msg += "\n";
+                    else
+                        msg += finalRoute[l] + ", ";
                 }
+
                 SmartConsole.PrintLine("Path: \n" + msg, SmartConsole.DebugLevel.Advanced);
+
+                string nextDayStr = "";
+                for (int l = 0; l < nextDays[i].Count; l++) 
+                {
+                    nextDayStr += nextDays[i][l] + ", ";
+                }
+                if (!nextDayStr.Equals(""))
+                {
+                    SmartConsole.PrintLine("Next Day: \n" + nextDayStr, SmartConsole.DebugLevel.Advanced);
+                }
             }
             
             // Find min
@@ -798,7 +828,7 @@ namespace TaskManager.TaskSolvers.DVRP
                 }
             }
 
-            Result finalSolution = new Result(finalRoutes[minIndex], finalDistances[minIndex]);
+            Result finalSolution = new Result(finalRoutes[minIndex], finalDistances[minIndex], nextDays[minIndex]);
            
             byte[] data = DataSerialization.ObjectToByteArray(finalSolution);
             return data;

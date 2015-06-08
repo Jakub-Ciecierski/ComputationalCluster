@@ -13,6 +13,8 @@ namespace ComputationalNode.TaskSolvers.DVRP
 {
     public class DVRPSolver : UCCTaskSolver.TaskSolver 
     {
+        float CUT_OFF_COEFF = 1.0f;
+
         public DVRPSolver(byte[] problemData)
             : base(problemData)
         {
@@ -42,12 +44,18 @@ namespace ComputationalNode.TaskSolvers.DVRP
             VRPParser dvrpData = (VRPParser)formatter.Deserialize(new MemoryStream(partialData));
 
             /******************* SOLVE *************************/
-
-            Result results = TSPTrianIneq.calculate(dvrpData);
+            float cutOff = CUT_OFF_COEFF * (float )dvrpData.Depot_Time_Window[0][1];
+            Result results = TSPTrianIneq.calculate(dvrpData, cutOff);
+            
             results.ID = dvrpData.ID;
 
             for (int i = dvrpData.Num_Depots; i < results.route.Length - dvrpData.Num_Depots; i++)
                 results.route[i] = dvrpData.Visit_Location[results.route[i] - dvrpData.Num_Depots] + dvrpData.Num_Depots;
+
+            for (int i = 0; i < results.nextDay.Count; i++)
+            {
+                results.nextDay[i] = dvrpData.Visit_Location[results.nextDay[i] - dvrpData.Num_Depots] + dvrpData.Num_Depots;
+            }
 
             byte[] data = DataSerialization.ObjectToByteArray(results);
 

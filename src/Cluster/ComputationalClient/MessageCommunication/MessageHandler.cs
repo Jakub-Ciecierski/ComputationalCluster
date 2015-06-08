@@ -76,8 +76,19 @@ namespace ComputationalClient.MessageCommunication
                 }
                 else
                 {
+                    DateTime nowTime = DateTime.Now;
+
+                    int deltaSecs = nowTime.Second - Program.COMP_TIME.Second;
+                    int deltaMs = nowTime.Millisecond - Program.COMP_TIME.Millisecond;
+
+                    string timeStr = "Seconds = " + deltaSecs + ", Milliseconds = " + deltaMs;
+
                     SmartConsole.PrintLine("Complete solution has been received", SmartConsole.DebugLevel.Advanced);
+
                     finalSolutionHelper(solutionsMessage);
+
+                    SmartConsole.PrintLine("Computation Time: \n" + timeStr, SmartConsole.DebugLevel.Advanced);
+
                     // TODO print solution
                     keepAliveTimer.Stop();
                 }
@@ -95,17 +106,24 @@ namespace ComputationalClient.MessageCommunication
 
         private void finalSolutionHelper(SolutionsMessage solutionsMessage)
         {
+            //File.Create("Solution.txt");
+            FileStream fs1 = new FileStream("Solution.txt", FileMode.OpenOrCreate, FileAccess.Write);
+            StreamWriter writer = new StreamWriter(fs1);
+
+
             byte[] data = solutionsMessage.Solutions[0].Data;
 
             BinaryFormatter formatter = new BinaryFormatter();
             Result finalResults = (Result)formatter.Deserialize(new MemoryStream(data));
 
             SmartConsole.PrintHeader("TASK ID: "+ solutionsMessage.Id +" RESULTS");
-
+            writer.WriteLine("TASK ID: " + solutionsMessage.Id + " RESULTS");
             int[] finalRoute = finalResults.route;
             float finalDistance = finalResults.length;
+            List<int> nextDays = finalResults.nextDay;
 
             SmartConsole.PrintLine("Distance: " + finalDistance, SmartConsole.DebugLevel.Advanced);
+            writer.WriteLine("Distance: " + finalDistance);
             int vehicleIndex = 0;
             string msg = "";
 
@@ -118,7 +136,23 @@ namespace ComputationalClient.MessageCommunication
             }
 
             SmartConsole.PrintLine("Path: \n" + msg, SmartConsole.DebugLevel.Advanced);
+            writer.Write("Path: \n" + msg);
 
+            string nextDayStr = "";
+            for (int l = 0; l < nextDays.Count; l++)
+            {
+                nextDayStr += nextDays[l] + ", ";
+            }
+            if(!nextDayStr.Equals("")) {
+                SmartConsole.PrintLine("Next Day: \n" + nextDayStr, SmartConsole.DebugLevel.Advanced);
+                writer.Write("\nNext Day: \n" + nextDayStr);
+            }
+
+            
+            writer.Close();
+            fs1.Close();
+
+            Program.doWork = false;
         }
     }
 }

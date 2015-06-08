@@ -40,8 +40,8 @@ namespace TestCluster
         [TestMethod]
         public void RUN_BENCHMARK()
         {
-            VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\Semestr6\cluster\doc\DVRP\champions\e\io2_16_plain_e_D.vrp");
-            //VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\Semestr6\cluster\doc\DVRP\champions\e\io2_8_plain_e_D.vrp");
+           // VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\Semestr6\cluster\doc\DVRP\champions\e\io2_16_plain_e_D.vrp");
+            VRPParser benchmark = ComputationalClient.Program.getBenchmark(@"h:\Windows7\Desktop\SE\doc\DVRP\new_benchmarks\io2_8b.vrp");
 
             TaskManager.TaskSolvers.DVRP.DVRPSolver.FullSolveTest(benchmark);
 

@@ -77,7 +77,7 @@ namespace CommunicationServer
         {
             nextClientId = 1;
 
-            Timeout = 4;
+            Timeout = 2;
 
             Node = node;
         }
@@ -86,7 +86,7 @@ namespace CommunicationServer
         {
             nextClientId = 1;
 
-            Timeout = 4;
+            Timeout = 2;
         }
         /*******************************************************************/
         /************************ PRIVATE METHODS **************************/
