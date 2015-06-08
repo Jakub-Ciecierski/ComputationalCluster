@@ -55,17 +55,23 @@ namespace ComputationalNode.MessageCommunication
             //number of PartialProblems shouldn't be bigger than the number of idle threads.
             int numberOfPartialProblems = message.PartialProblems.Count();
             int partialProblemCounter = 0;
-            for (int i = 0; i < systemTracker.Node.ParallelThreads && partialProblemCounter<numberOfPartialProblems; i++)
+            for (int i = 0; i < systemTracker.Node.ParallelThreads && partialProblemCounter < numberOfPartialProblems; i++)
             {
                 if (systemTracker.Node.TaskThreads[i].StatusThread.State == StatusThreadState.Idle)
                 {
+
                     DVRPSolver dvrpSolver = new DVRPSolver(message.PartialProblems[partialProblemCounter].Data);
                     systemTracker.Node.TaskThreads[i].StatusThread.State = StatusThreadState.Busy;
-                    systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, message.PartialProblems[0].Data) { Status = Cluster.TaskStatus.Solving };
+
+                    systemTracker.Node.TaskThreads[i].CurrentTask = new Cluster.Task((int)message.Id, message.ProblemType, 
+                                    message.PartialProblems[i].Data) { Status = Cluster.TaskStatus.Solving };
+
                     systemTracker.Node.TaskThreads[i].TaskSolver = dvrpSolver;
                     systemTracker.Node.TaskThreads[i].Thread = new Thread(new ThreadStart(systemTracker.Node.TaskThreads[i].Start));
                     systemTracker.Node.TaskThreads[i].Thread.Start();
-                    Console.WriteLine("Thread number: " + i + " is solving partial problem");
+
+                    partialProblemCounter++;
+                    SmartConsole.PrintLine("Thread number: " + i + " is solving partial problemŁ " + partialProblemCounter, SmartConsole.DebugLevel.Advanced);
                 }
             }
             ///WE SHOULD CHECK HERE WHETHER THERE WAS IDLE THREAD AVALIABLE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

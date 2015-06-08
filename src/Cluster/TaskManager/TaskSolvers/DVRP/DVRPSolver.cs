@@ -485,6 +485,8 @@ namespace TaskManager.TaskSolvers.DVRP
                 temporarySolution[i] = DataSerialization.ObjectToByteArray(partial_benchmarks[i]);
 
             }
+
+
             return temporarySolution;
         }
 
